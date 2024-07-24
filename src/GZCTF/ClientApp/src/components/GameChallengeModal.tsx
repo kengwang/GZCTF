@@ -1,7 +1,7 @@
 import { ModalProps } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiLoading } from '@mdi/js'
+import {mdiCheck, mdiClose, mdiLoading, mdiTimerAlertOutline} from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -183,7 +183,20 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       if (isDynamic && challenge.context?.instanceEntry) onDestroy()
       mutate()
       props.onClose()
-    } else if (data === AnswerResult.WrongAnswer) {
+    }
+    else if (data === AnswerResult.Expired)
+    {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'teal',
+        title: t('challenge.notification.flag.accepted.title'),
+        message: "Flag 正确, 但已过提交时间",
+        icon: <Icon path={mdiTimerAlertOutline} size={1} />,
+        autoClose: 8000,
+        loading: false,
+      })
+    }
+    else if (data === AnswerResult.WrongAnswer) {
       updateNotification({
         id: 'flag-submitted',
         color: 'red',

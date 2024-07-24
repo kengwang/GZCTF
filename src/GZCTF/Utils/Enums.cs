@@ -389,6 +389,11 @@ public enum AnswerResult : sbyte
     /// 检测到抄袭
     /// </summary>
     CheatDetected = 3,
+    
+    /// <summary>
+    /// 提交超出提交时间
+    /// </summary>
+    Expired = 4,
 
     /// <summary>
     /// 提交的题目实例未找到

@@ -41,6 +41,11 @@ public class ChallengeUpdateModel
     /// 是否启用题目
     /// </summary>
     public bool? IsEnabled { get; set; }
+    
+    /// <summary>
+    /// 是否可提交
+    /// </summary>
+    public bool? CanSubmit { get; set; }
 
     /// <summary>
     /// 统一文件名

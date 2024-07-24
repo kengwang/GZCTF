@@ -1064,6 +1064,8 @@ export interface ChallengeUpdateModel {
   hints?: string[] | null;
   /** 是否启用题目 */
   isEnabled?: boolean | null;
+  /** 是否可提交 */
+  canSubmit?: boolean | null;
   /** 统一文件名 */
   fileName?: string | null;
   /** 镜像名称与标签 */
@@ -1285,8 +1287,6 @@ export interface TimeLine {
    * @format int32
    */
   score?: number;
-  /** @format int32 */
-  "global::MemoryPack.IFixedSizeMemoryPackable.Size"?: number;
 }
 
 export interface ScoreboardItem {
@@ -1465,6 +1465,7 @@ export enum AnswerResult {
   Accepted = "Accepted",
   WrongAnswer = "WrongAnswer",
   CheatDetected = "CheatDetected",
+  Expired = "Expired",
   NotFound = "NotFound",
 }
 

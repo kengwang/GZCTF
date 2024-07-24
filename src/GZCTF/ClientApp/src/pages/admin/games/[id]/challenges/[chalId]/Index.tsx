@@ -317,6 +317,12 @@ const GameChallengeEdit: FC = () => {
           </Grid.Col>
           <Grid.Col span={1}>
             <Stack gap="sm">
+              <Switch
+                disabled={false}
+                label="允许提交计分"
+                onChange={(e) => setChallengeInfo({...challengeInfo, canSubmit: e.target.checked})}
+                checked={challengeInfo.canSubmit == true}
+              />
               <HintList
                 label={
                   <Group gap="sm">

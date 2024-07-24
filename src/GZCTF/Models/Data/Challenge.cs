@@ -104,6 +104,11 @@ public class Challenge
     [MaxLength(Limits.MaxFlagTemplateLength)]
     public string? FlagTemplate { get; set; }
 
+    /// <summary>
+    /// 是否可以提交得分
+    /// </summary>
+    public bool CanSubmit { get; set; } = true;
+    
     #region Db Relationship
 
     /// <summary>

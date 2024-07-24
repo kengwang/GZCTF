@@ -49,6 +49,7 @@ public class GameChallenge : Challenge
         Tag = model.Tag ?? Tag;
         Hints = model.Hints ?? Hints;
         IsEnabled = model.IsEnabled ?? IsEnabled;
+        CanSubmit = model.CanSubmit ?? CanSubmit;
         CPUCount = model.CPUCount ?? CPUCount;
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
         StorageLimit = model.StorageLimit ?? StorageLimit;

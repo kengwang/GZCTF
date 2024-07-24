@@ -138,6 +138,8 @@ public class ChallengeEditDetailModel
     [Required]
     public double Difficulty { get; set; } = 3;
 
+    public bool CanSubmit { get; set; } = true;
+
     internal static ChallengeEditDetailModel FromChallenge(GameChallenge chal) =>
         new()
         {
@@ -152,6 +154,7 @@ public class ChallengeEditDetailModel
             ContainerImage = chal.ContainerImage,
             MemoryLimit = chal.MemoryLimit,
             CPUCount = chal.CPUCount,
+            CanSubmit = chal.CanSubmit,
             StorageLimit = chal.StorageLimit,
             ContainerExposePort = chal.ContainerExposePort,
             EnableTrafficCapture = chal.EnableTrafficCapture,
