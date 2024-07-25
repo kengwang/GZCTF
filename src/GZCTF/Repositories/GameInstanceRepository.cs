@@ -297,11 +297,10 @@ public class GameInstanceRepository(
             updateSub.GameChallenge.SubmissionCount++;
 
 
-            if (firstTime && beforeEnd)
+            if (firstTime && beforeEnd && canSubmit)
             {
                 instance.IsSolved = true;
-                if (canSubmit)
-                    updateSub.GameChallenge.AcceptedCount++;
+                updateSub.GameChallenge.AcceptedCount++;
                 ret = updateSub.GameChallenge.AcceptedCount switch
                 {
                     1 => SubmissionType.FirstBlood,
