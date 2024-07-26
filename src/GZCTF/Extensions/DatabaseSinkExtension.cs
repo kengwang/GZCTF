@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -56,11 +57,12 @@ public class DatabaseSink : ILogEventSink, IDisposable
         {
             TimeUtc = logEvent.Timestamp.ToUniversalTime(),
             Level = logEvent.Level.ToString(),
-            Message = logEvent.RenderMessage(),
+            Message = logEvent.RenderMessageWithExceptions(),
             UserName = LogHelper.GetStringValue(userName, "Anonymous"),
             Logger = LogHelper.GetStringValue(sourceContext, "Unknown"),
             RemoteIP = LogHelper.GetStringValue(ip),
-            Status = LogHelper.GetStringValue(status),
+            Status = logEvent.Exception is null ?
+                LogHelper.GetStringValue(status) : TaskStatus.Failed.ToString(),
             Exception = logEvent.Exception?.ToString()
         };
     }
@@ -79,22 +81,22 @@ public class DatabaseSink : ILogEventSink, IDisposable
                 while (_logBuffer.TryDequeue(out LogModel? logModel))
                     lockedLogBuffer.Add(logModel);
 
-                if (lockedLogBuffer.Count > 50 || DateTimeOffset.Now - _lastFlushTime > TimeSpan.FromSeconds(10))
+                if (lockedLogBuffer.Count <= 50 && DateTimeOffset.Now - _lastFlushTime <= TimeSpan.FromSeconds(10))
+                    continue;
+
+                await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
+
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);
+
+                try
                 {
-                    await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
-
-                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);
-
-                    try
-                    {
-                        await dbContext.SaveChangesAsync(token);
-                    }
-                    finally
-                    {
-                        lockedLogBuffer.Clear();
-                        _lastFlushTime = DateTimeOffset.Now;
-                    }
+                    await dbContext.SaveChangesAsync(token);
+                }
+                finally
+                {
+                    lockedLogBuffer.Clear();
+                    _lastFlushTime = DateTimeOffset.Now;
                 }
             }
         }
