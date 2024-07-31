@@ -534,6 +534,9 @@
   <data name="Game_InvalidOrganization" xml:space="preserve">
     <value>無効な参戦組織</value>
   </data>
+  <data name="Game_InvalidOrganizationVerifyCode" xml:space="preserve">
+    <value>無効な参戦組織招待コード</value>
+  </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} はゲーム {1} に正常に参加しました</value>
   </data>

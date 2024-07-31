@@ -534,6 +534,9 @@
   <data name="Game_InvalidOrganization" xml:space="preserve">
     <value>无效的参赛单位</value>
   </data>
+  <data name="Game_InvalidOrganizationVerifyCode" xml:space="preserve">
+    <value>参赛单位相应邀请码错误</value>
+  </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} 成功报名了比赛 {1}</value>
   </data>

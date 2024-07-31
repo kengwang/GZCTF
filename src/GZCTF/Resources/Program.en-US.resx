@@ -534,6 +534,9 @@
   <data name="Game_InvalidOrganization" xml:space="preserve">
     <value>Invalid organization</value>
   </data>
+  <data name="Game_InvalidOrganizationVerifyCode" xml:space="preserve">
+    <value>Invalid organization invitation code</value>
+  </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} has successfully joined game {1}</value>
   </data>

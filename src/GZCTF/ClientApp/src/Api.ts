@@ -758,7 +758,7 @@ export interface GameInfoModel {
    */
   inviteCode?: string | null;
   /** 参赛所属单位列表 */
-  organizations?: string[] | null;
+  organizations?: Object | null;
   /**
    * 队员数量限制, 0 为无上限
    * @format int32
@@ -1195,6 +1195,8 @@ export interface DetailedGameInfoModel {
   hidden?: boolean;
   /** 参赛所属单位列表 */
   organizations?: string[] | null;
+  /** 是否存在单位需要相应邀请码 */
+  organizationVerifyCodeRequired?: boolean;
   /** 是否需要邀请码 */
   inviteCodeRequired?: boolean;
   /** 是否需要提交 Writeup */
@@ -1239,6 +1241,8 @@ export interface GameJoinModel {
   teamId?: number;
   /** 参赛单位 */
   organization?: string | null;
+  /** 参赛单位对应邀请码 */
+  organizationVerifyCode?: string | null;
   /** 参赛邀请码 */
   inviteCode?: string | null;
 }

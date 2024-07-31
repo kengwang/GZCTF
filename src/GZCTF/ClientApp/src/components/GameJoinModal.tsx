@@ -22,6 +22,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
 
   const [inviteCode, setInviteCode] = useState('')
   const [organization, setOrganization] = useState('')
+  const [organizationVerifyCode, setOrganizationVerifyCode] = useState('')
   const [team, setTeam] = useState('')
   const [disabled, setDisabled] = useState(false)
 
@@ -70,9 +71,11 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
       teamId: parseInt(team),
       inviteCode: game?.inviteCodeRequired ? inviteCode : undefined,
       organization: game?.organizations && game.organizations.length > 0 ? organization : undefined,
+      organizationVerifyCode: game?.organizationVerifyCodeRequired ? organizationVerifyCode : undefined,
     }).finally(() => {
       setInviteCode('')
       setOrganization('')
+      setOrganizationVerifyCode('')
       setDisabled(false)
       props.onClose()
     })
@@ -109,6 +112,15 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
             disabled={disabled}
             value={organization}
             onChange={(e) => setOrganization(e ?? '')}
+          />
+        )}
+        {game?.organizationVerifyCodeRequired && (
+          <TextInput
+            label={t('game.content.join.organization_verify_code.label')}
+            description={t('game.content.join.organization_verify_code.description')}
+            value={organizationVerifyCode}
+            onChange={(e) => setOrganizationVerifyCode(e.target.value.trim())}
+            disabled={disabled}
           />
         )}
         <Button disabled={disabled} onClick={onJoinGame}>

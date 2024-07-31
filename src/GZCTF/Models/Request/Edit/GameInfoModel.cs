@@ -55,7 +55,7 @@ public class GameInfoModel
     /// <summary>
     /// 参赛所属单位列表
     /// </summary>
-    public List<string>? Organizations { get; set; }
+    public Dictionary<string, string?>? Organizations { get; set; }
 
     /// <summary>
     /// 队员数量限制, 0 为无上限
@@ -113,6 +113,14 @@ public class GameInfoModel
     [JsonPropertyName("bloodBonus")]
     public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
+    internal static Dictionary<string, string?>? SerializeOrganizations(Data.Game game) =>
+        game.Organizations?.ToDictionary(
+            x => x,
+            x => game.OrganizationsVerifyCode?.ContainsKey(x) == true
+                ? game.OrganizationsVerifyCode[x]
+                : null
+            );
+
     internal static GameInfoModel FromGame(Data.Game game) =>
         new()
         {
@@ -125,7 +133,7 @@ public class GameInfoModel
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
             PublicKey = game.PublicKey,
-            Organizations = game.Organizations?.ToList(),
+            Organizations = SerializeOrganizations(game),
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,

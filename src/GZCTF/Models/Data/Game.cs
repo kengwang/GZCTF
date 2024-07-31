@@ -80,6 +80,11 @@ public class Game
     public HashSet<string>? Organizations { get; set; }
 
     /// <summary>
+    /// 参赛所属单位与相应邀请码的字典
+    /// </summary>
+    public Dictionary<string, string>? OrganizationsVerifyCode { get; set; }
+
+    /// <summary>
     /// 队员数量限制, 0 为无上限
     /// </summary>
     public int TeamMemberCountLimit { get; set; }
@@ -168,6 +173,22 @@ public class Game
         return DigitalSignature.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
     }
 
+    internal void ParseOrganizations(Dictionary<string, string?>? input)
+    {
+        if (input is null) {
+            Organizations = null;
+            OrganizationsVerifyCode = null;
+            return;
+        }
+        Organizations = new(input.Keys);
+        var dict = new Dictionary<string, string>();
+        foreach (var (key, value) in input) {
+            if (!string.IsNullOrWhiteSpace(value))
+                dict[key] = value;
+        }
+        OrganizationsVerifyCode = dict.Count != 0 ? dict : null;
+    }
+
     internal Game Update(GameInfoModel model)
     {
         Title = model.Title;
@@ -177,7 +198,7 @@ public class Game
         PracticeMode = model.PracticeMode;
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
-        Organizations = model.Organizations?.ToHashSet() ?? Organizations;
+        ParseOrganizations(model.Organizations);
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;
         TeamMemberCountLimit = model.TeamMemberCountLimit;

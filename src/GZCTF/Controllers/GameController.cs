@@ -119,6 +119,12 @@ public class GameController(
         if (game.Organizations is { Count: > 0 } && game.Organizations.All(o => o != model.Organization))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidOrganization)]));
 
+        if (model.Organization is not null
+            && game.OrganizationsVerifyCode is not null
+            && game.OrganizationsVerifyCode.ContainsKey(model.Organization)
+            && game.OrganizationsVerifyCode[model.Organization] != model.OrganizationVerifyCode)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidOrganizationVerifyCode)]));
+
         UserInfo? user = await userManager.GetUserAsync(User);
         Team? team = await teamRepository.GetTeamById(model.TeamId, token);
 

@@ -53,8 +53,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
         ValueConverter<List<string>?, string> listConverter = GetJsonConverter<List<string>>();
         ValueConverter<HashSet<string>?, string> setConverter = GetJsonConverter<HashSet<string>>();
+        ValueConverter<Dictionary<string, string>?, string> dictConverter = GetJsonConverter<Dictionary<string, string>>();
         ValueComparer<List<string>> listComparer = GetEnumerableComparer<List<string>, string>();
         ValueComparer<HashSet<string>> setComparer = GetEnumerableComparer<HashSet<string>, string>();
+        ValueComparer<Dictionary<string, string>> dictComparer = GetEnumerableComparer<Dictionary<string, string>, KeyValuePair<string, string>>();
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -79,6 +81,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion(setConverter)
                 .Metadata
                 .SetValueComparer(setComparer);
+
+            entity.Property(e => e.OrganizationsVerifyCode)
+                .HasConversion(dictConverter)
+                .Metadata
+                .SetValueComparer(dictComparer);
 
             entity.HasMany(e => e.GameEvents)
                 .WithOne(e => e.Game)
