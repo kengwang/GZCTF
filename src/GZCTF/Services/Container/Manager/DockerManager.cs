@@ -79,7 +79,16 @@ public class DockerManager : IContainerManager
         if (_meta.ExposePort)
         {
             parameters.ExposedPorts = new Dictionary<string, EmptyStruct> { [config.ExposedPort.ToString()] = new() };
-            parameters.HostConfig.PublishAllPorts = true;
+            parameters.HostConfig.PortBindings = new Dictionary<string, IList<PortBinding>>
+            {
+                // let docker choose a random port, do not use "PublishAllPorts" option
+                // reference: https://github.com/moby/moby/blob/master/libnetwork/portallocator/portallocator.go
+                // function: RequestPortsInRange
+                // comment:
+                //     If portStart and portEnd are 0 it returns
+                //     the first free port in the default ephemeral range.
+                [config.ExposedPort.ToString()] = [new PortBinding { HostPort = "0" }]
+            };
         }
 
         CreateContainerResponse? containerRes = null;
