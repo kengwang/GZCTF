@@ -50,6 +50,10 @@
         "description": "本场比赛具有多个参赛组织，请选择你的参赛组织",
         "label": "选择参赛组织"
       },
+      "organization_verify_code": {
+        "description": "本场比赛具有需要验证的参赛组织，如果组织不需邀请码请留空",
+        "label": "请输入参赛组织邀请码"
+      },
       "team": {
         "description": "请选择一个队伍参与比赛，选定后不可更改",
         "label": "选择参赛队伍"

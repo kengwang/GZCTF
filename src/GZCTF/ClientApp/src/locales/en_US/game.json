@@ -50,6 +50,10 @@
         "description": "This game has multiple division available. Please select your division.",
         "label": "Select Division"
       },
+      "organization_verify_code": {
+        "description": "This game has invitation-only divisions. If your division doesn't require an invitation code, please leave it blank.",
+        "label": "Please enter the invitation code for the division"
+      },
       "team": {
         "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
         "label": "Select your team"

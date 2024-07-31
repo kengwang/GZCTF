@@ -13,6 +13,11 @@ public class GameJoinModel
     public string? Organization { get; set; }
 
     /// <summary>
+    /// 参赛单位对应邀请码
+    /// </summary>
+    public string? OrganizationVerifyCode { get; set; }
+
+    /// <summary>
     /// 参赛邀请码
     /// </summary>
     public string? InviteCode { get; set; }

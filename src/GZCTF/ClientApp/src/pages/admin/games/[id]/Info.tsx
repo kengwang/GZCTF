@@ -6,11 +6,11 @@ import {
   Group,
   Image,
   Input,
+  JsonInput,
   NumberInput,
   SimpleGrid,
   Stack,
   Switch,
-  TagsInput,
   Text,
   Textarea,
   TextInput,
@@ -60,6 +60,7 @@ const GameInfoEdit: FC = () => {
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
   const [wpddl, setWpddl] = useInputState(3)
+  const [org, setOrg] = useInputState('')
 
   const modals = useModals()
   const clipboard = useClipboard()
@@ -81,6 +82,8 @@ const GameInfoEdit: FC = () => {
       setGame(gameSource)
       setStart(dayjs(gameSource.start))
       setEnd(dayjs(gameSource.end))
+      if (gameSource.organizations)
+        setOrg(JSON.stringify(gameSource.organizations, null, 2))
 
       const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
@@ -132,6 +135,19 @@ const GameInfoEdit: FC = () => {
   const onUpdateInfo = () => {
     if (!game?.title) return
 
+    let orgObject = null
+    try {
+      orgObject = parseOrganizations(org)
+    } catch (error) {
+      showNotification({
+        color: 'red',
+        title: t('common.error.encountered'),
+        message: t('admin.notification.games.info.organizations'),
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      return
+    }
+
     setDisabled(true)
     api.edit
       .editUpdateGame(game.id!, {
@@ -140,6 +156,7 @@ const GameInfoEdit: FC = () => {
         start: start.toJSON(),
         end: end.toJSON(),
         writeupDeadline: end.add(wpddl, 'h').toJSON(),
+        organizations: orgObject,
       })
       .then(() => {
         showNotification({
@@ -178,6 +195,28 @@ const GameInfoEdit: FC = () => {
       message: t('admin.notification.games.info.public_key_copied'),
       icon: <Icon path={mdiCheck} size={1} />,
     })
+  }
+
+  const parseOrganizations = (text: string) => {
+    let input = text.trim()
+    if (input === '')
+      return null
+    if (!input.startsWith('{') && !input.startsWith('['))
+      input = '[' + input + ']'
+
+    let tmp: { [key: string]: string | null } = {}
+    if (input.startsWith('[')) {
+      JSON.parse(input).forEach((o: any) => { tmp[(o ?? 'null').toString().trim()] = null })
+    } else {
+      tmp = JSON.parse(input, (k, v) => k === '' ? v : (v?.toString().trim() ?? null))
+    }
+
+    const out: { [key: string]: string | null } = {}
+    Object.entries(tmp).forEach(([k, v]) => {
+      if (typeof v === 'string' && v.length < 6) throw new Error('Verify code too short')
+      if (k.trim() !== '') out[k.trim()] = v
+    })
+    return out
   }
 
   return (
@@ -407,11 +446,11 @@ const GameInfoEdit: FC = () => {
           w="100%"
           autosize
           disabled={disabled}
-          minRows={3}
-          maxRows={3}
+          minRows={5}
+          maxRows={5}
           onChange={(e) => game && setGame({ ...game, writeupNote: e.target.value })}
         />
-        <TagsInput
+        <JsonInput
           label={
             <Group gap="sm">
               <Text size="sm"> {t('admin.content.games.info.organizations.label')}</Text>
@@ -422,17 +461,14 @@ const GameInfoEdit: FC = () => {
           }
           disabled={disabled}
           placeholder={t('admin.placeholder.games.organizations')}
-          maxDropdownHeight={300}
-          value={game?.organizations ?? []}
-          styles={{
-            input: {
-              minHeight: 79,
-              maxHeight: 79,
-              overflow: 'auto',
-            },
-          }}
-          onChange={(e) => game && setGame({ ...game, organizations: e })}
-          onClear={() => game && setGame({ ...game, organizations: [] })}
+          value={org}
+          deserialize={parseOrganizations}
+          w="100%"
+          autosize
+          formatOnBlur
+          minRows={5}
+          maxRows={5}
+          onChange={(e) => setOrg(e)}
         />
       </Group>
       <Grid grow>

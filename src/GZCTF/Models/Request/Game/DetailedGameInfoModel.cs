@@ -37,6 +37,11 @@ public class DetailedGameInfoModel
     public HashSet<string>? Organizations { get; set; }
 
     /// <summary>
+    /// 是否存在单位需要相应邀请码
+    /// </summary>
+    public bool OrganizationVerifyCodeRequired { get; set; }
+
+    /// <summary>
     /// 是否需要邀请码
     /// </summary>
     public bool InviteCodeRequired { get; set; }
@@ -114,6 +119,7 @@ public class DetailedGameInfoModel
             Content = game.Content,
             PracticeMode = game.PracticeMode,
             Organizations = game.Organizations,
+            OrganizationVerifyCodeRequired = game.OrganizationsVerifyCode?.Count > 0,
             InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
             WriteupRequired = game.WriteupRequired,
             TeamCount = count,
