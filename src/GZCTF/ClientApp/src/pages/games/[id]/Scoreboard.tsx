@@ -2,13 +2,14 @@ import { Stack } from '@mantine/core'
 import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import MobileScoreboardTable from '@Components/MobileScoreboardTable'
-import ScoreboardTable from '@Components/ScoreboardTable'
+import ScoreboardTable, { ScoreboardProps } from '@Components/ScoreboardTable'
 import TeamRank from '@Components/TeamRank'
 import TimeLine from '@Components/TimeLine'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useGameTeamInfo } from '@Utils/useGame'
+import { ChallengeTag } from '@Api'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()
@@ -16,6 +17,18 @@ const Scoreboard: FC = () => {
   const { teamInfo, error } = useGameTeamInfo(numId)
 
   const [organization, setOrganization] = useState<string | null>('all')
+  const [titlePattern, setTitlePattern] = useState<string | null>(null)
+  const [category, setCategory] = useState<ChallengeTag | null>(null)
+
+  const scoreboardProps: ScoreboardProps = {
+    organization: organization ?? 'all',
+    setOrganization,
+    titlePattern,
+    setTitlePattern,
+    category,
+    setCategory,
+  }
+
   const isMobile = useIsMobile(1080)
   const isVertical = useIsMobile()
 
@@ -25,25 +38,16 @@ const Scoreboard: FC = () => {
         <Stack pt="md">
           {teamInfo && !error && <TeamRank />}
           {isVertical ? (
-            <MobileScoreboardTable
-              organization={organization ?? 'all'}
-              setOrganization={setOrganization}
-            />
+            <MobileScoreboardTable {...scoreboardProps} />
           ) : (
-            <ScoreboardTable
-              organization={organization ?? 'all'}
-              setOrganization={setOrganization}
-            />
+            <ScoreboardTable {...scoreboardProps} />
           )}
         </Stack>
       ) : (
         <WithGameTab>
           <Stack pb="2rem">
             <TimeLine organization={organization ?? 'all'} />
-            <ScoreboardTable
-              organization={organization ?? 'all'}
-              setOrganization={setOrganization}
-            />
+            <ScoreboardTable {...scoreboardProps} />
           </Stack>
         </WithGameTab>
       )}

@@ -26,6 +26,11 @@
       "comment": "或许还有更难的挑战在等着你……",
       "title": "题目都被解出啦！"
     },
+    "custom_scoreboard": {
+      "enabled": "已显示临时计算的自定义排行榜，仅供参考",
+      "no_result": "没有满足条件的解题记录，换个筛选条件吧",
+      "regex_error": "⚠ 你输入的正则表达式无效"
+    },
     "duration": "{{hours}} 小时",
     "end_at": "结束于",
     "end_time": "结束时间",
@@ -142,6 +147,8 @@
       "score": "得分",
       "score_total": "总分",
       "solved_count": "解题数量",
+      "tag_all": "全部方向",
+      "tag_empty": "什么都没有找到",
       "team": "战队",
       "type": "类型"
     },
@@ -217,7 +224,8 @@
     }
   },
   "placeholder": {
-    "no_solved": "Ouch! 这支队伍还没有解出题目呢……"
+    "no_solved": "Ouch! 这支队伍还没有解出题目呢……",
+    "scoreboard_search": "正则匹配题目名称，输入后点击放大镜图标"
   },
   "tab": {
     "challenge": "比赛题目",

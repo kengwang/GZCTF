@@ -1,8 +1,11 @@
 import {
+  ActionIcon,
   alpha,
   Avatar,
   Box,
   Center,
+  CloseButton,
+  ComboboxItem,
   Group,
   Input,
   Pagination,
@@ -11,6 +14,7 @@ import {
   Stack,
   Table,
   Text,
+  TextInput,
   Tooltip,
   useMantineColorScheme,
   useMantineTheme,
@@ -25,15 +29,17 @@ import ScoreboardItemModal from '@Components/ScoreboardItemModal'
 import {
   BloodBonus,
   BloodsTypes,
+  ChallengeTagItem,
   useChallengeTagLabelMap,
   SubmissionTypeIconMap,
   useBonusLabels,
   PartialIconProps,
 } from '@Utils/Shared'
-import { useGameScoreboard } from '@Utils/useGame'
+import { useGameScoreboard, generateCustomScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
+import { mdiMagnify } from '@mdi/js'
 
 const Lefts = [0, 55, 110, 280, 350, 410]
 const Widths = Array(5).fill(0)
@@ -228,24 +234,35 @@ const ITEM_COUNT_PER_PAGE = 30
 export interface ScoreboardProps {
   organization: string | null
   setOrganization: (org: string | null) => void
+  titlePattern: string | null
+  setTitlePattern: (pattern: string | null) => void
+  category: ChallengeTag | null
+  setCategory: (tag: ChallengeTag | null) => void
 }
 
-const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization }) => {
+const ScoreboardTable: FC<ScoreboardProps> = ({
+  organization, setOrganization,
+  titlePattern, setTitlePattern,
+  category, setCategory,
+}) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const [searchTextBuffer, setSearchTextBuffer] = useState<string | null>('')
+  const [searchCloseButtonVisible, setSearchCloseButtonVisible] = useState(false)
+  const [filterTips, setFilterTips] = useState('')
+
+  const [updatingBarrier, setUpdatingBarrier] = useState(true)
 
   const { scoreboard } = useGameScoreboard(numId)
-
-  const filtered =
-    organization === 'all'
-      ? scoreboard?.items
-      : scoreboard?.items?.filter((s) => s.organization === organization)
+  const [filteredItems, setFilteredItems] = useState<ScoreboardItem[] | null>(null)
+  const [filteredChallenges, setFilteredChallenges] = useState<Record<string, ChallengeInfo[]> | null>(null)
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
-  const currentItems = filtered?.slice(base, base + ITEM_COUNT_PER_PAGE)
+  const currentItems = filteredItems?.slice(base, base + ITEM_COUNT_PER_PAGE)
 
   const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
   const [itemDetailOpened, setItemDetailOpened] = useState(false)
@@ -256,15 +273,37 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
     if (scoreboard) {
       setBloodBonus(new BloodBonus(scoreboard.bloodBonus))
     }
-  }, [scoreboard])
+
+    setUpdatingBarrier(false)
+    try {
+      const customScoreboard = generateCustomScoreboard(
+        scoreboard,
+        organization ?? 'all',
+        titlePattern?.trim() ?? '',
+        category
+      )
+      setFilteredItems(customScoreboard.items)
+      setFilteredChallenges(customScoreboard.challenges)
+      setFilterTips(
+        (titlePattern ?? '') === '' && category === null
+          ? ''
+          : Object.keys(customScoreboard.challenges ?? {}).length
+            ? t('game.content.custom_scoreboard.enabled')
+            : t('game.content.custom_scoreboard.no_result')
+      )
+    } catch (error) {
+      setFilterTips(t('game.content.custom_scoreboard.regex_error'))
+    }
+    setUpdatingBarrier(true)
+  }, [scoreboard, organization, titlePattern, category])
 
   const bloodData = useBonusLabels(bloodBonus)
 
   return (
     <Paper shadow="md" p="md">
       <Stack gap="xs">
-        {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
-          <Group>
+        <Group style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
+          {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
             <Select
               defaultValue="all"
               data={[
@@ -277,94 +316,155 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                   })),
               ]}
               value={organization}
+              searchable
               onChange={(org) => {
                 setOrganization(org)
                 setPage(1)
               }}
               styles={{
-                input: {
-                  width: 300,
+                root: {
+                  width: "24%",
                 },
               }}
             />
-          </Group>
-        )}
-        <Box pos="relative">
-          <Table.ScrollContainer
-            minWidth="100%"
-            styles={{
-              scrollContainer: {
-                // Hide scrollbar (type = "never" for ScrollArea)
-                '--scrollarea-scrollbar-size': '0pt',
-              },
-            }}
-          >
-            <Table className={classes.table}>
-              <TableHeader {...scoreboard?.challenges} />
-              <Table.Tbody>
-                {scoreboard &&
-                  currentItems?.map((item, idx) => (
-                    <TableRow
-                      key={base + idx}
-                      allRank={organization === 'all'}
-                      tableRank={base + idx + 1}
-                      item={item}
-                      onOpenDetail={() => {
-                        setCurrentItem(item)
-                        setItemDetailOpened(true)
-                      }}
-                      challenges={scoreboard.challenges}
-                      iconMap={iconMap}
-                    />
-                  ))}
-              </Table.Tbody>
-            </Table>
-          </Table.ScrollContainer>
-          <Box className={classes.legend}>
-            <Stack gap="xs">
-              <Tooltip.Group>
-                <Group gap="lg">
-                  {BloodsTypes.map((type, idx) => (
-                    <Tooltip
-                      key={idx}
-                      label={bloodData.get(type)?.name}
-                      transitionProps={{ transition: 'pop' }}
-                    >
-                      <Group justify="left" gap={2}>
-                        <Icon {...iconMap.get(type)!} />
-                        <Text>{bloodData.get(type)?.descr}</Text>
-                      </Group>
-                    </Tooltip>
-                  ))}
-                </Group>
-              </Tooltip.Group>
-              <Text size="sm" c="dimmed">
-                {t('game.content.scoreboard_note')}
-              </Text>
-            </Stack>
-          </Box>
-        </Box>
-        <Group justify="space-between">
-          <Text size="sm" c="dimmed">
-            {t('game.content.scoreboard_tip')}
-          </Text>
-          <Pagination
-            value={activePage}
-            onChange={setPage}
-            total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
-            boundaries={2}
-          />
+          )}
+          {scoreboard?.challenges && Object.keys(scoreboard.challenges).length > 0 && (
+            <>
+              <TextInput
+                placeholder={t('game.placeholder.scoreboard_search')}
+                leftSection={
+                  <ActionIcon variant="transparent" color="dimmed" onClick={() => {
+                    setTitlePattern(searchTextBuffer ?? '')
+                    setPage(1)
+                  }}>
+                    <Icon path={mdiMagnify} size={0.8} />
+                  </ActionIcon>
+                }
+                rightSection={searchCloseButtonVisible &&
+                  <CloseButton color="dimmed" size={'sm'} onClick={() => {
+                    setSearchTextBuffer(null)
+                    setSearchCloseButtonVisible(false)
+                    setTitlePattern('')
+                    setPage(1)
+                  }} />}
+                value={searchTextBuffer ?? ''}
+                onChange={(e) => {
+                  setSearchTextBuffer(e.currentTarget.value)
+                  setSearchCloseButtonVisible(e.currentTarget.value.length > 0)
+                }}
+                styles={{
+                  root: {
+                    width: "36%",
+                  },
+                }}
+              />
+              <Select
+                placeholder={t('game.label.score_table.tag_all')}
+                clearable
+                searchable
+                value={category}
+                nothingFoundMessage={t('game.label.score_table.tag_empty')}
+                onChange={(value) => {
+                  setCategory(value as ChallengeTag | null)
+                  setPage(1)
+                }}
+                renderOption={ChallengeTagItem}
+                data={Object.entries(ChallengeTag).filter((tag) =>
+                  (scoreboard?.challenges ?? {})[tag[1]]?.length ?? 0 > 0
+                ).map((tag) => {
+                  const data = challengeTagLabelMap.get(tag[1])
+                  return { value: tag[1], label: data?.name, ...data } as ComboboxItem
+                })}
+                styles={{
+                  root: {
+                    width: "24%",
+                  },
+                }}
+              />
+            </>
+          )}
         </Group>
+        <Text size="md" c="dimmed" style={{ textAlign: 'center' }}>
+          {filterTips}
+        </Text>
+        {updatingBarrier && Object.keys(filteredChallenges ?? {}).length > 0 && <>
+          <Box pos="relative">
+            <Table.ScrollContainer
+              minWidth="100%"
+              styles={{
+                scrollContainer: {
+                  // Hide scrollbar (type = "never" for ScrollArea)
+                  '--scrollarea-scrollbar-size': '0pt',
+                },
+              }}
+            >
+              <Table className={classes.table}>
+                <TableHeader {...filteredChallenges} />
+                <Table.Tbody>
+                  {scoreboard &&
+                    currentItems?.map((item, idx) => (
+                      <TableRow
+                        key={base + idx}
+                        allRank={organization === 'all'}
+                        tableRank={base + idx + 1}
+                        item={item}
+                        onOpenDetail={() => {
+                          setCurrentItem(item)
+                          setItemDetailOpened(true)
+                        }}
+                        challenges={filteredChallenges ?? {}}
+                        iconMap={iconMap}
+                      />
+                    ))}
+                </Table.Tbody>
+              </Table>
+            </Table.ScrollContainer>
+            <Box className={classes.legend}>
+              <Stack gap="xs">
+                <Tooltip.Group>
+                  <Group gap="lg">
+                    {BloodsTypes.map((type, idx) => (
+                      <Tooltip
+                        key={idx}
+                        label={bloodData.get(type)?.name}
+                        transitionProps={{ transition: 'pop' }}
+                      >
+                        <Group justify="left" gap={2}>
+                          <Icon {...iconMap.get(type)!} />
+                          <Text>{bloodData.get(type)?.descr}</Text>
+                        </Group>
+                      </Tooltip>
+                    ))}
+                  </Group>
+                </Tooltip.Group>
+                <Text size="sm" c="dimmed">
+                  {t('game.content.scoreboard_note')}
+                </Text>
+              </Stack>
+            </Box>
+          </Box>
+          <Group justify="space-between">
+            <Text size="sm" c="dimmed">
+              {t('game.content.scoreboard_tip')}
+            </Text>
+            <Pagination
+              value={activePage}
+              onChange={setPage}
+              total={Math.ceil((filteredItems?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
+              boundaries={2}
+            />
+          </Group>
+        </>}  
       </Stack>
-      <ScoreboardItemModal
-        challenges={scoreboard?.challenges}
+      {updatingBarrier && Object.keys(filteredChallenges ?? {}).length > 0 && <ScoreboardItemModal
+        challenges={filteredChallenges ?? {}}
         bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}
         size="45rem"
         onClose={() => setItemDetailOpened(false)}
         item={currentItem}
-      />
+      />}
     </Paper>
   )
 }
