@@ -456,15 +456,17 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
           </Group>
         </>}  
       </Stack>
-      {updatingBarrier && Object.keys(filteredChallenges ?? {}).length > 0 && <ScoreboardItemModal
-        challenges={filteredChallenges ?? {}}
-        bloodBonusMap={bloodData}
-        opened={itemDetailOpened}
-        withCloseButton={false}
-        size="45rem"
-        onClose={() => setItemDetailOpened(false)}
-        item={currentItem}
-      />}
+      {updatingBarrier && Object.keys(filteredChallenges ?? {}).length > 0 &&
+        <ScoreboardItemModal
+          challenges={scoreboard?.challenges}
+          bloodBonusMap={bloodData}
+          opened={itemDetailOpened}
+          withCloseButton={false}
+          size="45rem"
+          onClose={() => setItemDetailOpened(false)}
+          item={currentItem}
+        />
+      }
     </Paper>
   )
 }
