@@ -74,11 +74,12 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
             <tr key={key}>
               <td>{key}</td>
               <td>
-                {value}
-                {/* <TextInput
+                <TextInput
                   value={value ?? ''}
+                  variant="filled"
+                  size="xs"
                   onChange={(e) => handleValueChange(key, e.currentTarget.value)}
-                /> */}
+                />
               </td>
               <td>
                 <ActionIcon variant="transparent" aria-label={t('admin.game.edit.organizations.delete')} color='red' onClick={() => handleDeleteItem(key)}>
