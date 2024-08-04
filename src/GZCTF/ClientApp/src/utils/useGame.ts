@@ -74,12 +74,11 @@ export const generateCustomScoreboard = (
   if (!scoreboard || !scoreboard.items || !scoreboard.challenges)
     return { items: null, challenges: null }
 
-  // 先筛选组织，因为不用重新算，减少计算量
+  // 先筛选组织，以减少统计分数的计算量
   const items = organization === 'all'
     ? scoreboard.items
     : scoreboard.items.filter((s) => s.organization === organization)
 
-  console.log('genCustomScoreboard', organization, titlePattern, category)
   const pattern = titlePattern !== '' ? new RegExp(titlePattern, 'i') : null
 
   // 不筛选或只筛选组织：直接出结果
@@ -101,9 +100,11 @@ export const generateCustomScoreboard = (
   // ChallengeInfo 数组是新的，但每个 ChallengeInfo 对象是原来的引用，不会修改所以不需要深拷贝 
   // 至此 includeChallengeIds 与 challenges 赋值完成
 
+  // 只在数据量（题目数*队伍数）不太大时进行字符串比较
+  const handleLastSubmissionTime = 10000 > includeChallengeIds.length * items.length
+
   // 对于 items：
-  // 第一步筛选 item.challenges，统计分数，更新 score 和 solvedCount
-  // 不管 lastSubmissionTime 因为它是字符串，比较耗时
+  // 第一步筛选 item.challenges，统计分数，更新 score, solvedCount 和可选的 lastSubmissionTime
   const copiedItems: ScoreboardItem[] = []
   items.forEach((item) => {
     const newItem = {
@@ -111,21 +112,29 @@ export const generateCustomScoreboard = (
       challenges: item.challenges?.filter((c) => c.id && includeChallengeIds.includes(c.id)) ?? [],
       score: 0,
       solvedCount: 0,
+      lastSubmissionTime: handleLastSubmissionTime ? '' : item.lastSubmissionTime,
     }
-    console.log('222', newItem)
     newItem.challenges.forEach((c) => {
       if (c.type && c.type !== SubmissionType.Unaccepted) {
         newItem.score! += (c.score ?? 0)
-        newItem.solvedCount! += 1
+        newItem.solvedCount! ++
+        if (handleLastSubmissionTime && c.time && c.time > newItem.lastSubmissionTime!)
+          newItem.lastSubmissionTime = c.time
       }
     })
-    console.log('333', newItem)
     copiedItems.push(newItem)
   })
   // item 是新的，但每个 ChallengeItem 对象是原来的引用
 
-  // 第二步排序，只按分数排，同分则不稳定；更新 rank 和 organizationRank
-  copiedItems.sort((a, b) => b.score! - a.score!)
+  // 第二步原地排序，成绩倒序，（可选的）最后提交时间正序；更新 rank 和 organizationRank
+  if (!handleLastSubmissionTime) {
+    copiedItems.sort((a, b) => b.score! - a.score!)
+  } else {
+    copiedItems.sort((a, b) => {
+      if (b.score !== a.score) return b.score! - a.score!
+      return (a.lastSubmissionTime ?? '') <= (b.lastSubmissionTime ?? '') ? -1 : 1
+    })
+  }
   const currentOrgRanks: Record<string, number> = {}
   copiedItems.forEach((item, i) => {
     item.rank = i + 1
@@ -135,8 +144,6 @@ export const generateCustomScoreboard = (
       item.organizationRank = ++currentOrgRanks[item.organization]
     }
   })
-
-  console.log('genCustomScoreboard', copiedItems, challenges)
 
   return { items: copiedItems, challenges }
 }

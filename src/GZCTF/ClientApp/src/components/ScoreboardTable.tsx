@@ -285,14 +285,14 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
       setFilteredItems(customScoreboard.items)
       setFilteredChallenges(customScoreboard.challenges)
       setFilterTips(
-        (titlePattern ?? '') === '' && category === null
+        (titlePattern?.trim() ?? '') === '' && category === null
           ? ''
           : Object.keys(customScoreboard.challenges ?? {}).length
-            ? t('game.content.custom_scoreboard.enabled')
-            : t('game.content.custom_scoreboard.no_result')
+            ? 'game.content.custom_scoreboard.enabled'
+            : 'game.content.custom_scoreboard.no_result'
       )
     } catch (error) {
-      setFilterTips(t('game.content.custom_scoreboard.regex_error'))
+      setFilterTips('game.content.custom_scoreboard.regex_error')
     }
     setUpdatingBarrier(true)
   }, [scoreboard, organization, titlePattern, category])
@@ -334,7 +334,10 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                 placeholder={t('game.placeholder.scoreboard_search')}
                 leftSection={
                   <ActionIcon variant="transparent" color="dimmed" onClick={() => {
-                    setTitlePattern(searchTextBuffer ?? '')
+                    const searchText = searchTextBuffer?.trim() ?? ''
+                    setTitlePattern(searchText)
+                    setSearchTextBuffer(searchText)
+                    setSearchCloseButtonVisible(searchText.length > 0)
                     setPage(1)
                   }}>
                     <Icon path={mdiMagnify} size={0.8} />
@@ -342,7 +345,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                 }
                 rightSection={searchCloseButtonVisible &&
                   <CloseButton color="dimmed" size={'sm'} onClick={() => {
-                    setSearchTextBuffer(null)
+                    setSearchTextBuffer('')
                     setSearchCloseButtonVisible(false)
                     setTitlePattern('')
                     setPage(1)
@@ -385,7 +388,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
           )}
         </Group>
         <Text size="md" c="dimmed" style={{ textAlign: 'center' }}>
-          {filterTips}
+          {t(filterTips)}
         </Text>
         {updatingBarrier && Object.keys(filteredChallenges ?? {}).length > 0 && <>
           <Box pos="relative">

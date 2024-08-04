@@ -26,6 +26,11 @@
       "comment": "Perhaps more difficult challenges are waiting for you...",
       "title": "All challenges were solved!"
     },
+    "custom_scoreboard": {
+      "enabled": "Temporary custom scoreboard is displayed, for reference only.",
+      "no_result": "No records match the current conditions. Try adjusting your search conditions.",
+      "regex_error": "⚠ The regular expression you entered is invalid."
+    },
     "duration": "{{hours}} hour(s)",
     "end_at": "Ends at",
     "end_time": "End Time",
@@ -142,6 +147,8 @@
     "score_table": {
       "rank_organization": "Rank",
       "rank_total": "Overall",
+      "tag_all": "All",
+      "tag_empty": "Nothing found",
       "score": "Score",
       "score_total": "Score",
       "solved_count": "Solved",
@@ -221,7 +228,8 @@
     }
   },
   "placeholder": {
-    "no_solved": "Ouch! This team has not solved any challenges..."
+    "no_solved": "Ouch! This team has not solved any challenges...",
+    "scoreboard_search": "Match challenge titles with a regular expression"
   },
   "tab": {
     "challenge": "Challenges",
