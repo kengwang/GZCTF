@@ -57,7 +57,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
       return
     }
 
-    if (game?.organizations && game.organizations.length > 0 && !organization) {
+    if (game?.organizations && Object.keys(game.organizations).length > 0 && !organization) {
       showNotification({
         color: 'orange',
         message: t('game.notification.no_organization'),
@@ -70,7 +70,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     onSubmitJoin({
       teamId: parseInt(team),
       inviteCode: game?.inviteCodeRequired ? inviteCode : undefined,
-      organization: game?.organizations && game.organizations.length > 0 ? organization : undefined,
+      organization: game?.organizations && Object.keys(game.organizations).length > 0 ? organization : undefined,
       organizationVerifyCode: game?.organizationVerifyCodeRequired ? organizationVerifyCode : undefined,
     }).finally(() => {
       setInviteCode('')
@@ -103,12 +103,14 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
             disabled={disabled}
           />
         )}
-        {game?.organizations && game.organizations.length > 0 && (
+        {game?.organizations && game.organizations && Object.keys(game.organizations).length > 0 && (
           <Select
             required
             label={t('game.content.join.organization.label')}
             description={t('game.content.join.organization.description')}
-            data={game.organizations}
+            data={
+              Object.keys(game.organizations)
+            }
             disabled={disabled}
             value={organization}
             onChange={(e) => setOrganization(e ?? '')}

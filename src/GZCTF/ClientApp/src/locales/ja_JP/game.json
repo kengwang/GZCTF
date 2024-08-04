@@ -181,6 +181,7 @@
       "submitted": "記事が正常に提出されました"
     }
   },
+  "organization": "団体",
   "participation": {
     "actions": {
       "accepted": "承認済み",

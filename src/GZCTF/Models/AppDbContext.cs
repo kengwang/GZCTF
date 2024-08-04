@@ -78,11 +78,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         builder.Entity<Game>(entity =>
         {
             entity.Property(e => e.Organizations)
-                .HasConversion(setConverter)
-                .Metadata
-                .SetValueComparer(setComparer);
-
-            entity.Property(e => e.OrganizationsVerifyCode)
                 .HasConversion(dictConverter)
                 .Metadata
                 .SetValueComparer(dictComparer);

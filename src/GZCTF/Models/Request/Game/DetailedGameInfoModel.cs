@@ -34,7 +34,7 @@ public class DetailedGameInfoModel
     /// <summary>
     /// 参赛所属单位列表
     /// </summary>
-    public HashSet<string>? Organizations { get; set; }
+    public Dictionary<string, string?>? Organizations { get; set; }
 
     /// <summary>
     /// 是否存在单位需要相应邀请码
@@ -118,8 +118,8 @@ public class DetailedGameInfoModel
             Summary = game.Summary,
             Content = game.Content,
             PracticeMode = game.PracticeMode,
-            Organizations = game.Organizations,
-            OrganizationVerifyCodeRequired = game.OrganizationsVerifyCode?.Count > 0,
+            Organizations = game.Organizations?.ToDictionary(t => t.Key, _ => "")!,
+            OrganizationVerifyCodeRequired = game.Organizations?.Any(t => !string.IsNullOrWhiteSpace(t.Value)) is true,
             InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
             WriteupRequired = game.WriteupRequired,
             TeamCount = count,

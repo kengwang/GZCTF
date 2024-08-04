@@ -113,14 +113,6 @@ public class GameInfoModel
     [JsonPropertyName("bloodBonus")]
     public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
-    internal static Dictionary<string, string?>? SerializeOrganizations(Data.Game game) =>
-        game.Organizations?.ToDictionary(
-            x => x,
-            x => game.OrganizationsVerifyCode?.ContainsKey(x) == true
-                ? game.OrganizationsVerifyCode[x]
-                : null
-            );
-
     internal static GameInfoModel FromGame(Data.Game game) =>
         new()
         {
@@ -133,7 +125,7 @@ public class GameInfoModel
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
             PublicKey = game.PublicKey,
-            Organizations = SerializeOrganizations(game),
+            Organizations = game.Organizations,
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,

@@ -182,6 +182,7 @@
           "label": "队伍人数限制"
         },
         "organizations": {
+          "add": "添加组织",
           "description": "添加参赛组织以开启分组榜单，留空则不分组",
           "label": "参赛可选组织列表"
         },
@@ -337,6 +338,14 @@
         "title": "为 {{name}} 重置密码"
       },
       "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 用户"
+    }
+  },
+  "game": {
+    "edit": {
+      "organizations": {
+        "add": "添加组织",
+        "delete": "删除组织"
+      }
     }
   },
   "label": {

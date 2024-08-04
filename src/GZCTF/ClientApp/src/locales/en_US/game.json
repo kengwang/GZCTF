@@ -181,6 +181,7 @@
       "submitted": "Writeup was successfully submitted"
     }
   },
+  "organization": "Organization",
   "participation": {
     "actions": {
       "accepted": "Approved",
