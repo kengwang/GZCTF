@@ -400,7 +400,7 @@
         "accept_count_updated": "AC counter updated",
         "deleted": "Game deleted",
         "info_updated": "Game updated",
-        "organizations": "There is error in the list of participating divisions. Please use the format { \"Division Name 1\": \"Invite-Code-1\", \"Division Name 2\": null } , with an invitation code length of at least 6",
+        "organizations": "Click to edit divisions",
         "poster": {
           "upload_failed": "Post upload failed",
           "uploaded": "Poster successfully uploaded",
@@ -454,7 +454,7 @@
           }
         }
       },
-      "organizations": "Format like { \"Division Name 1\": \"Invite-Code-1\", \"Division Name 2\": null }",
+      "organizations": "Click to edit divisions",
       "participation": {
         "bio": "(no bio)",
         "team": "(no name)"

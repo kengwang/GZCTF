@@ -400,7 +400,7 @@
         "accept_count_updated": "解题数量已刷新",
         "deleted": "比赛已删除",
         "info_updated": "比赛信息已更新",
-        "organizations": "参赛组织列表仍有待处理的错误，请使用 { \"组织名称1\": \"邀请码1\", \"组织名称2\": null } 格式，邀请码长度至少为 6",
+        "organizations": "点击此处编辑组织",
         "poster": {
           "upload_failed": "海报上传失败",
           "uploaded": "海报上传成功",
@@ -454,7 +454,7 @@
           }
         }
       },
-      "organizations": "格式：{ \"组织名称1\": \"邀请码1\", \"组织名称2\": null }",
+      "organizations": "点击此处编辑组织",
       "participation": {
         "bio": "（无简介）",
         "team": "（无名队伍）"
