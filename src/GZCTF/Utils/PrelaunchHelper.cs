@@ -83,8 +83,9 @@ public static class PrelaunchHelper
             cache.SetString("_ValidCheck", "GZCTF");
             return cache.GetString("_ValidCheck") == "GZCTF";
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             return false;
         }
     }
