@@ -567,6 +567,33 @@ public class AdminController(
     }
 
     /// <summary>
+    /// 更新队伍所属组织
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口更新队伍所属参赛组织，需要Admin权限
+    /// </remarks>
+    /// <response code="200">更新成功</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    /// <response code="404">参与对象未找到</response>
+    [HttpPut("Participation/Organization/{id:int}/{organization}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ParticipationOrganization(int id, string organization,
+        CancellationToken token = default)
+    {
+        Participation? participation = await participationRepository.GetParticipationById(id, token);
+
+        if (participation is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)],
+                StatusCodes.Status404NotFound));
+
+        await participationRepository.UpdateParticipationOrganization(participation, organization, token);
+
+        return Ok();
+    }
+
+    /// <summary>
     /// 获取全部 Writeup 基本信息
     /// </summary>
     /// <remarks>

@@ -226,6 +226,11 @@
         "participation": {
           "joined": "参加申請済み",
           "not_joined": "参加未申請",
+          "organization": {
+            "edit": "組織の編集",
+            "save": "保存",
+            "cancel": "キャンセル"
+          },
           "stats": "{{count}}/{{total}} 参加申請済み",
           "update": "{{status}}に設定してもよろしいですか?"
         }
@@ -418,6 +423,8 @@
         "updated": "お知らせが更新されました"
       },
       "participation": {
+        "organization_empty": "組織リストが空です",
+        "organization_updated": "組織が更新されました",
         "updated": "チームの承認状態が更新されました"
       }
     },
@@ -453,9 +460,10 @@
           }
         }
       },
-      "organizations": "フォーマット：{ \"参加団体1\": \"招待コード1\", \"参加団体2\": null }",
+      "organizations": "ここをクリックして組織を編集",
       "participation": {
         "bio": "（自己紹介なし）",
+        "organization": "組織を選択してください",
         "team": "（チーム名なし）"
       }
     },

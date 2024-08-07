@@ -123,4 +123,14 @@ public interface IParticipationRepository : IRepository
     /// <returns></returns>
     public Task UpdateParticipationStatus(Participation part, ParticipationStatus status,
         CancellationToken token = default);
+
+    /// <summary>
+    /// 更新比赛参与组织
+    /// </summary>
+    /// <param name="part">参与对象</param>
+    /// <param name="organization">参与组织</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task UpdateParticipationOrganization(Participation part, string organization,
+        CancellationToken token = default);
 }

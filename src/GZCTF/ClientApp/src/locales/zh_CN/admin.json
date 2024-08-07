@@ -226,6 +226,11 @@
         "participation": {
           "joined": "已报名",
           "not_joined": "未报名",
+          "organization": {
+            "edit": "编辑所属组织",
+            "save": "保存",
+            "cancel": "取消"
+          },
           "stats": "{{count}}/{{total}} 已报名",
           "update": "确定要设为 \"{{status}}\" 吗？"
         }
@@ -419,6 +424,8 @@
         "updated": "公告已更新"
       },
       "participation": {
+        "organization_empty": "队伍参赛组织不能为空",
+        "organization_updated": "队伍参赛组织已更新",
         "updated": "队伍审核状态已更新"
       }
     },
@@ -457,6 +464,7 @@
       "organizations": "点击此处编辑组织",
       "participation": {
         "bio": "（无简介）",
+        "organization": "选择组织",
         "team": "（无名队伍）"
       }
     },

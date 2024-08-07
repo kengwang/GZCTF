@@ -226,6 +226,11 @@
         "participation": {
           "joined": "Joined",
           "not_joined": "Not Registered",
+          "organization": {
+            "edit": "Edit Team Division",
+            "save": "Save",
+            "cancel": "Cancel"
+          },
           "stats": "{{count}}/{{total}} joined",
           "update": "Set this team's status to: \"{{status}}\"?"
         }
@@ -419,6 +424,8 @@
         "updated": "Notice updated"
       },
       "participation": {
+        "organization_empty": "Team division cannot be empty",
+        "organization_updated": "Team division has been updated",
         "updated": "Team status has been updated"
       }
     },
@@ -457,6 +464,7 @@
       "organizations": "Click to edit divisions",
       "participation": {
         "bio": "(no bio)",
+        "organization": "Choose a division",
         "team": "(no name)"
       }
     },

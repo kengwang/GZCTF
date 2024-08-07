@@ -84,6 +84,14 @@ public class ParticipationRepository(
             await cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
 
+    public async Task UpdateParticipationOrganization(Participation part, string organization,
+        CancellationToken token = default)
+    {
+        part.Organization = organization;
+        await EnsureInstances(part, part.Game, token);
+        await cacheHelper.FlushScoreboardCache(part.Game.Id, token);
+    }
+
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default) =>
         Context.Participations.Where(p => ids.Contains(p.Id))
             .Include(p => p.Team)

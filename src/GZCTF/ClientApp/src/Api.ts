@@ -2520,6 +2520,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 使用此接口更新队伍所属参赛组织，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminParticipationOrganization
+     * @summary 更新队伍所属组织
+     * @request PUT:/api/admin/participation/{id}/{organization}
+     */
+    adminParticipationOrganization: (id: number, organization: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/participation/organization/${id}/${organization}`,
+        method: "PUT",
+        ...params,
+      }),
+
+    /**
      * @description 使用此接口重置平台 Logo，需要Admin权限
      *
      * @tags Admin

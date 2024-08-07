@@ -3,6 +3,7 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   Center,
   Grid,
   Group,
@@ -40,6 +41,7 @@ import { useParticipationStatusMap } from '@Utils/Shared'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
 import classes from '@Styles/Accordion.module.css'
 import reviewClasses from './Review.module.css'
+import { useGame } from '@Utils/useGame'
 
 interface MemberItemProps {
   user: ProfileUserInfoModel
@@ -119,12 +121,16 @@ const MemberItem: FC<MemberItemProps> = (props) => {
 interface ParticipationItemProps {
   participation: ParticipationInfoModel
   disabled: boolean
+  gameOrganizations: string[]
+  setParticipationOrganization: (id: number, organization: string) => Promise<void>
   setParticipationStatus: (id: number, status: ParticipationStatus) => Promise<void>
 }
 
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
-  const { participation, disabled, setParticipationStatus } = props
+  const { participation, disabled, gameOrganizations, setParticipationOrganization, setParticipationStatus } = props
   const part = useParticipationStatusMap().get(participation.status!)!
+  const [isOrganizationEditing, setIsOrganizationEditing] = useState(false)
+  const [organizationToBeUpdated, setOrganizationToBeUpdated] = useState(participation.organization)
 
   const { t } = useTranslation()
 
@@ -185,6 +191,60 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
               isCaptain={participation.team?.captainId === user.userId}
             />
           ))}
+          {gameOrganizations.length > 0 && !isOrganizationEditing &&
+            <Button
+              disabled={disabled}
+              variant="filled"
+              size="sm"
+              maw="10rem"
+              onClick={() => setIsOrganizationEditing(true)}
+            >
+              {t('admin.content.games.review.participation.organization.edit')}
+            </Button>
+          }
+          {gameOrganizations.length > 0 && isOrganizationEditing && <Group>
+            <Select
+              required
+              searchable
+              disabled={disabled}
+              placeholder={t('admin.placeholder.games.participation.organization')}
+              data={gameOrganizations}
+              value={organizationToBeUpdated}
+              onChange={(value) => setOrganizationToBeUpdated(value)}
+            />
+            <Button
+              disabled={disabled}
+              variant="filled"
+              size="sm"
+              maw="10rem"
+              onClick={() => {
+                if (organizationToBeUpdated) {
+                  setParticipationOrganization(participation.id!, organizationToBeUpdated)
+                } else {
+                  showNotification({
+                    color: 'red',
+                    message: t('admin.notification.games.participation.organization_empty'),
+                    icon: <Icon path={mdiClose} size={1} />,
+                  })
+                }
+                setIsOrganizationEditing(false)
+              }}
+            >
+              {t('admin.content.games.review.participation.organization.save')}
+            </Button>
+            <Button
+              disabled={disabled}
+              variant="default"
+              size="sm"
+              maw="10rem"
+              onClick={() => {
+                setOrganizationToBeUpdated(participation.organization)
+                setIsOrganizationEditing(false)
+              }}
+            >
+              {t('admin.content.games.review.participation.organization.cancel')}
+            </Button>
+          </Group>}
         </Stack>
       </Accordion.Panel>
     </Accordion.Item>
@@ -197,6 +257,7 @@ const GameTeamReview: FC = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
+  const { game } = useGame(numId)
   const [disabled, setDisabled] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
   const [selectedOrg, setSelectedOrg] = useState<string | null>(null)
@@ -217,6 +278,25 @@ const GameTeamReview: FC = () => {
       showNotification({
         color: 'teal',
         message: t('admin.notification.games.participation.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+    } catch (err: any) {
+      showErrorNotification(err, t)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
+  const setParticipationOrganization = async (id: number, organization: string) => {
+    setDisabled(true)
+    try {
+      await api.admin.adminParticipationOrganization(id, organization)
+      setParticipations(
+        participations?.map((value) => (value.id === id ? { ...value, organization } : value))
+      )
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.participation.organization_updated'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {
@@ -316,6 +396,8 @@ const GameTeamReview: FC = () => {
                 key={participation.id}
                 participation={participation}
                 disabled={disabled}
+                gameOrganizations={Object.keys(game?.organizations ?? {})}
+                setParticipationOrganization={setParticipationOrganization}
                 setParticipationStatus={setParticipationStatus}
               />
             ))}
