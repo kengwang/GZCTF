@@ -106,6 +106,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
         {game?.organizations && game.organizations && Object.keys(game.organizations).length > 0 && (
           <Select
             required
+            searchable
             label={t('game.content.join.organization.label')}
             description={t('game.content.join.organization.description')}
             data={
