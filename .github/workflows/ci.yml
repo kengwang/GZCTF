@@ -57,6 +57,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Login to BaseCTF Private Registry
+        uses: docker/login-action@v3
+        with:
+          registry: docker-registry.basectf.fun
+          username: ${{ secrets.BASECTF_REGISTRY_USERNAME }}
+          password: ${{ secrets.BASECTF_REGISTRY_PASSWORD }}
 
       - name: Docker metadata action
         uses: docker/metadata-action@v5
@@ -67,6 +74,7 @@ jobs:
         with:
           images: |
             ghcr.io/${{ github.repository }}/gzctf
+            docker-registry.basectf.fun/gzctf
           flavor: |
             latest=${{ env.RELEASE }}
           tags: |
@@ -89,7 +97,7 @@ jobs:
         uses: vlaurin/action-ghcr-prune@v0.6.0
         with:
           dry-run: false
-          token: ${{ secrets.PACKAGE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           container: ${{ github.event.repository.name }}/gzctf
           keep-tags-regexes: ^v\d+\.\d+\.\d+$
           prune-tags-regexes: ^[0-9a-f]{6,40}
