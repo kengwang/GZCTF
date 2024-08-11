@@ -147,6 +147,7 @@
     "score_table": {
       "rank_organization": "順位",
       "rank_total": "総合順位",
+      "rank_nopub": "非公開順位",
       "score": "得点",
       "score_total": "合計得点",
       "solved_count": "解答数",

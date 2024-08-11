@@ -73,11 +73,16 @@ export const generateCustomScoreboard = (
 ) => {
   if (!scoreboard || !scoreboard.items || !scoreboard.challenges)
     return { items: null, challenges: null }
-
+  let items = scoreboard.items
   // 先筛选组织，以减少统计分数的计算量
-  const items = organization === 'all'
-    ? scoreboard.items
-    : scoreboard.items.filter((s) => s.organization === organization)
+  if (organization === 'nopub'){
+    items = scoreboard.items.filter((s) => s.organization !== '公开赛道')
+  }else{
+    items = organization === 'all'
+      ? scoreboard.items
+      : scoreboard.items.filter((s) => s.organization === organization)
+
+  }
 
   const pattern = titlePattern !== '' ? new RegExp(titlePattern, 'i') : null
 
@@ -97,7 +102,7 @@ export const generateCustomScoreboard = (
     })
     if (filteredChalls.length > 0) challenges[tag] = filteredChalls
   }
-  // ChallengeInfo 数组是新的，但每个 ChallengeInfo 对象是原来的引用，不会修改所以不需要深拷贝 
+  // ChallengeInfo 数组是新的，但每个 ChallengeInfo 对象是原来的引用，不会修改所以不需要深拷贝
   // 至此 includeChallengeIds 与 challenges 赋值完成
 
   // 只在数据量（题目数*队伍数）不太大时进行字符串比较

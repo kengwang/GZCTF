@@ -147,6 +147,7 @@
     "score_table": {
       "rank_organization": "Rank",
       "rank_total": "Overall",
+      "rank_nopub": "No Public",
       "tag_all": "All",
       "tag_empty": "Nothing found",
       "score": "Score",

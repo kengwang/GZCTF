@@ -147,6 +147,7 @@
     "score_table": {
       "rank_organization": "排名",
       "rank_total": "总排名",
+      "rank_nopub": "非公开赛道",
       "score": "得分",
       "score_total": "总分",
       "solved_count": "解题数量",
