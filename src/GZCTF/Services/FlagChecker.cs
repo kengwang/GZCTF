@@ -14,6 +14,7 @@ public class FlagChecker(
 {
     CancellationTokenSource TokenSource { get; set; } = new();
     const int MaxWorkerCount = 2;
+    List<string> _fakeFlags = [];
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -24,6 +25,8 @@ public class FlagChecker(
             await Task.Factory.StartNew(() => Checker(i, TokenSource.Token), cancellationToken,
                 TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
+
+        _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", cancellationToken)).Select(t=>t.Trim()).ToList();
 
         await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
 
@@ -138,6 +141,31 @@ public class FlagChecker(
                                     UserId = item.UserId,
                                     GameId = item.GameId
                                 }, token);
+                        }
+                        else
+                        {
+                            if (_fakeFlags.Contains(item.Answer))
+                            {
+                                logger.Log(
+                                    Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected),
+                                        item.Team.Name,
+                                        item.GameChallenge.Title,
+                                        result.SourceTeamName ?? ""],
+                                    item.User, TaskStatus.Success, LogLevel.Information);
+
+                                await eventRepository.AddEvent(
+                                    new()
+                                    {
+                                        Type = EventType.CheatDetected,
+                                        Values =
+                                            [item.GameChallenge.Title, item.Team.Name, result.SourceTeamName ?? ""],
+                                        TeamId = item.TeamId,
+                                        UserId = item.UserId,
+                                        GameId = item.GameId
+                                    }, token);
+                                result.AnswerResult = AnswerResult.Accepted;
+                                ans = AnswerResult.Accepted;
+                            }
                         }
                     }
 
