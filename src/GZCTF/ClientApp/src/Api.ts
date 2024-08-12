@@ -2525,7 +2525,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminParticipationOrganization
      * @summary 更新队伍所属组织
-     * @request PUT:/api/admin/participation/{id}/{organization}
+     * @request PUT:/api/admin/participation/organization/{id}/{organization}
      */
     adminParticipationOrganization: (id: number, organization: string, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
