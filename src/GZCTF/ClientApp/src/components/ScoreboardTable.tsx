@@ -308,12 +308,11 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
               defaultValue="all"
               data={[
                 { value: 'all', label: t('game.label.score_table.rank_total') },
-                { value: 'nopub', label: t('game.label.score_table.rank_nopub') },
                 ...Object.keys(scoreboard.timeLines)
                   .filter((k) => k !== 'all')
                   .map((o) => ({
                     value: o,
-                    label: o === 'all' ? t('game.label.score_table.rank_total') : o,
+                    label: o === 'nopub' ? t('game.label.score_table.rank_nopub') : o,
                   })),
               ]}
               value={organization}

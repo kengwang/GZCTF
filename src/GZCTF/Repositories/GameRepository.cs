@@ -329,6 +329,11 @@ public class GameRepository(
         timelines["all"] = items.Take(10)
             .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
             .ToArray();
+        timelines["nopub"] = items
+            .Where(t=>t.Organization is not "公开赛道")
+            .Take(10)
+            .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
+            .ToArray();
 
         return timelines;
     }
