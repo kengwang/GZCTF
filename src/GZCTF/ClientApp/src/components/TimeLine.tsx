@@ -41,6 +41,13 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
     if (!scoreboard?.timeLines || !game) return
 
     const timeLine = scoreboard?.timeLines[organization ?? 'all'] ?? []
+    if (organization === 'nopub'){
+      for (const timeLineKey in timeLine) {
+        if (timeLineKey === '公开赛道') continue;
+        timeLine.concat(timeLine[timeLineKey])
+      }
+    }
+
     const current = dayjs()
     const last = endTime.diff(current, 's') < 0 ? endTime : current
 
