@@ -11,6 +11,7 @@ import {
   Switch,
   Tabs,
   Text,
+  TextInput,
   Title,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
@@ -44,17 +45,23 @@ const ChallengePanel: FC = () => {
     defaultValue: false,
     getInitialValueInEffect: false,
   })
+  const [searchText, setSearchText] = useState<string>('')
+  const [searchPattern, setSearchPattern] = useState<RegExp | null>(null)
 
   const allChallenges = Object.values(challenges ?? {}).flat()
-  const currentChallenges =
-    challenges &&
-    (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
-      (chal) =>
-        !hideSolved ||
-        (teamInfo &&
-          teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type ===
+  const unsolvedTaggedChallenges =
+    (challenges &&
+      (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
+        (chal) =>
+          !hideSolved ||
+          (teamInfo &&
+            teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type ===
             SubmissionType.Unaccepted)
-    )
+      )) ?? []
+  const searchedChallenges = unsolvedTaggedChallenges.filter(
+    (chal) => !searchPattern || chal.title && searchPattern.test(chal.title)
+  )
+  const currentChallenges = searchedChallenges.length ? searchedChallenges : unsolvedTaggedChallenges
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
   const [detailOpened, setDetailOpened] = useState(false)
@@ -156,6 +163,25 @@ const ChallengePanel: FC = () => {
               {t('game.button.hide_solved')}
             </Text>
           }
+        />
+        <TextInput
+          placeholder={t('game.placeholder.scoreboard_search')}
+          value={searchText ?? ''}
+          error={searchText.trim() !== '' && (!searchPattern || searchedChallenges.length === 0)}
+          onChange={(e) => {
+            setSearchText(e.currentTarget.value)
+            try {
+              setSearchPattern(e.currentTarget.value.trim() ? new RegExp(e.currentTarget.value.trim(), 'i') : null)
+            } catch {
+              setSearchPattern(null)
+            }
+          }}
+          w="10rem"
+          styles={{
+            body: {
+              justifyContent: 'space-between',
+            },
+          }}
         />
         <Tabs
           orientation="vertical"

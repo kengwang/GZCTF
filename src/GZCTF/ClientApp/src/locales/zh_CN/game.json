@@ -229,6 +229,7 @@
     }
   },
   "placeholder": {
+    "challenge_search": "正则匹配题目名称",
     "no_solved": "Ouch! 这支队伍还没有解出题目呢……",
     "scoreboard_search": "正则匹配题目名称，输入后点击放大镜图标"
   },

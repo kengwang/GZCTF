@@ -229,6 +229,7 @@
     }
   },
   "placeholder": {
+    "challenge_search": "正規一致タイトル名",
     "no_solved": "あかん！このチームはまだ何のチャレンジも解いていません……",
     "scoreboard_search": "正規表現を使用したトピック名の一致"
   },
