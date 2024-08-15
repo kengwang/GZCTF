@@ -285,7 +285,14 @@ public class GameInstanceRepository(
             Submission updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
             if (_fakeFlags.Contains(submission.Answer))
             {
-                await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
+                var cheatInfo = new CheatInfo()
+                {
+                    GameId = submission.GameId,
+                    Submission = submission,
+                    SubmitTeam = submission.Participation,
+                    SourceTeam = submission.Participation
+                };
+                await cheatInfoRepository.AddCheatInfo(cheatInfo, token);
                 updateSub.Status = AnswerResult.Accepted;
             }
             else

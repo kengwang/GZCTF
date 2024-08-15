@@ -27,7 +27,13 @@ public class CheatInfoRepository(
 
         return info;
     }
-
+    
+    public async Task<CheatInfo> AddCheatInfo(CheatInfo info, CancellationToken token = default)
+    {
+        await Context.AddAsync(info, token);
+        return info;
+    }
+    
     public Task<CheatInfo[]> GetCheatInfoByGameId(int gameId, CancellationToken token = default) =>
         Context.CheatInfo.IgnoreAutoIncludes().Where(i => i.GameId == gameId)
             .Include(i => i.SourceTeam).ThenInclude(t => t.Team)

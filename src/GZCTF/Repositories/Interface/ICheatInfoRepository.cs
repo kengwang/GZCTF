@@ -13,6 +13,14 @@ public interface ICheatInfoRepository : IRepository
         CancellationToken token = default);
 
     /// <summary>
+    /// 添加作弊信息对象
+    /// </summary>
+    /// <param name="info">作弊信息对象</param>
+    /// <param name="token"></param>
+    public Task<CheatInfo> AddCheatInfo(CheatInfo info, CancellationToken token = default);
+
+
+    /// <summary>
     /// 获取作弊信息对象
     /// </summary>
     /// <param name="gameId">比赛Id</param>
