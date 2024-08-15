@@ -287,8 +287,10 @@ public class GameInstanceRepository(
             {
                 var cheatInfo = new CheatInfo()
                 {
+                    Game = submission.Game,
                     GameId = submission.GameId,
                     Submission = submission,
+                    SubmissionId= submission.Id,
                     SubmitTeam = submission.Participation,
                     SourceTeam = submission.Participation
                 };
