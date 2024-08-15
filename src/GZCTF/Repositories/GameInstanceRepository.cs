@@ -287,12 +287,10 @@ public class GameInstanceRepository(
             {
                 var cheatInfo = new CheatInfo()
                 {
-                    Game = submission.Game,
                     GameId = submission.GameId,
-                    Submission = submission,
                     SubmissionId= submission.Id,
-                    SubmitTeam = submission.Participation,
-                    SourceTeam = submission.Participation
+                    SubmitTeamId = submission.ParticipationId,
+                    SourceTeamId = submission.ParticipationId
                 };
                 await cheatInfoRepository.AddCheatInfo(cheatInfo, token);
                 updateSub.Status = AnswerResult.Accepted;
