@@ -227,34 +227,30 @@ public class GameInstanceRepository(
     {
         CheatCheckInfo checkInfo = new();
 
-        GameInstance[] instances = await Context.GameInstances.Where(i => i.ChallengeId == submission.ChallengeId &&
-                                                                          i.ParticipationId !=
-                                                                          submission.ParticipationId)
-            .Include(i => i.FlagContext).Include(i => i.Participation)
-            .ThenInclude(i => i.Team).ToArrayAsync(token);
+        GameInstance? instance = await Context.GameInstances
+            .Include(i => i.Participation)
+            .ThenInclude(i => i.Team)
+            .Include(i => i.FlagContext)
+            .Where(i => i.ChallengeId == submission.ChallengeId &&
+                        i.ParticipationId != submission.ParticipationId &&
+                        i.FlagContext != null && i.FlagContext.Flag == submission.Answer)
+            .FirstOrDefaultAsync(token);
 
-        foreach (GameInstance instance in instances)
-        {
-            if (instance.FlagContext?.Flag != submission.Answer)
-                continue;
-
-            Submission updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
-
-            CheatInfo cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
-
-            checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
-
-            updateSub.Status = AnswerResult.CheatDetected;
-
-            await SaveAsync(token);
-
+        if (instance is null)
             return checkInfo;
-        }
+
+        Submission updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
+
+        CheatInfo cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
+
+        checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
+
+        updateSub.Status = AnswerResult.CheatDetected;
+
+        await SaveAsync(token);
 
         return checkInfo;
     }
-
-    List<string> _fakeFlags = [];
 
     public async Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
@@ -262,13 +258,8 @@ public class GameInstanceRepository(
 
         try
         {
-            if (_fakeFlags is not { Count: > 0 })
-            {
-                _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", token)).Select(t => t.Trim())
-                    .ToList();
-            }
-
-            GameInstance? instance = await Context.GameInstances.IgnoreAutoIncludes().Include(i => i.FlagContext)
+            GameInstance? instance = await Context.GameInstances.IgnoreAutoIncludes()
+                .Include(i => i.FlagContext)
                 .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                                            i.ParticipationId == submission.ParticipationId, token);
 
@@ -283,37 +274,25 @@ public class GameInstanceRepository(
             // submission is from the queue, do not modify it directly
             // we need to fetch the entity again to ensure it is being tracked correctly
             Submission updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
-            var isFake = false;
-            if (_fakeFlags.Contains(submission.Answer))
-            {
-                updateSub.Status = AnswerResult.Accepted;
-                isFake = true;
-            }
+
+            if (instance.FlagContext is null && submission.GameChallenge.Type.IsStatic())
+                updateSub.Status = await Context.FlagContexts.AsNoTracking()
+                    .AnyAsync(
+                        f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
+                        token)
+                    ? AnswerResult.Accepted
+                    : AnswerResult.WrongAnswer;
             else
-            {
-                if (instance.FlagContext is null && submission.GameChallenge.Type.IsStatic())
-                    updateSub.Status = await Context.FlagContexts.AsNoTracking()
-                        .AnyAsync(
-                            f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
-                            token)
-                        ? AnswerResult.Accepted
-                        : AnswerResult.WrongAnswer;
-                else
-                    updateSub.Status = instance.FlagContext?.Flag == submission.Answer
-                        ? AnswerResult.Accepted
-                        : AnswerResult.WrongAnswer;
-            }
+                updateSub.Status = instance.FlagContext?.Flag == submission.Answer
+                    ? AnswerResult.Accepted
+                    : AnswerResult.WrongAnswer;
 
             var firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
             var beforeEnd = submission.Game.EndTimeUtc > submission.SubmitTimeUtc;
 
-            var canSubmit = submission.GameChallenge.CanSubmit;
-
-
             updateSub.GameChallenge.SubmissionCount++;
 
-
-            if (firstTime && beforeEnd && canSubmit)
+            if (firstTime && beforeEnd)
             {
                 instance.IsSolved = true;
                 updateSub.GameChallenge.AcceptedCount++;
@@ -329,9 +308,6 @@ public class GameInstanceRepository(
             {
                 ret = updateSub.Status == AnswerResult.Accepted ? SubmissionType.Normal : SubmissionType.Unaccepted;
             }
-
-            if (!canSubmit && updateSub.Status == AnswerResult.Accepted)
-                updateSub.Status = AnswerResult.Expired;
 
             await SaveAsync(token);
             await trans.CommitAsync(token);

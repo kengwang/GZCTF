@@ -354,7 +354,7 @@
   },
   "label": {
     "games": {
-      "public": "公開",
+      "hide": "隠す",
       "summary": "概要"
     },
     "instances": {
