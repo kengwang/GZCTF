@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Box,
   Group,
   Input,
@@ -24,7 +25,8 @@ import classes from '@Styles/ScoreboardTable.module.css'
 const TableRow: FC<{
   item: ScoreboardItem
   onOpenDetail: () => void
-}> = ({ item, onOpenDetail }) => {
+  selectedOrg: string
+}> = ({ item, onOpenDetail, selectedOrg }) => {
   const theme = useMantineTheme()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
@@ -65,6 +67,11 @@ const TableRow: FC<{
               },
             }}
           />
+          {item?.organization && ['all', 'nopub'].includes(selectedOrg) && item.organization !== '公开赛道' && (
+            <Badge size="sm" variant="outline" miw="4.4rem" maw="4.4rem">
+              {item.organization}
+            </Badge>
+          )}
         </Group>
       </Table.Td>
       <Table.Td className={cx(classes.mono, classes.left)}>
@@ -161,6 +168,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
                         setCurrentItem(item)
                         setItemDetailOpened(true)
                       }}
+                      selectedOrg={organization ?? 'all'}
                     />
                   ))}
               </Table.Tbody>
