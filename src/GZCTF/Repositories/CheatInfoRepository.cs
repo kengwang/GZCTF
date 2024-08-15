@@ -30,7 +30,12 @@ public class CheatInfoRepository(
     
     public async Task<CheatInfo> AddCheatInfo(CheatInfo info, CancellationToken token = default)
     {
-        await Context.AddAsync(info, token);
+        var alreadyInfo =
+            await Context.CheatInfo.FirstOrDefaultAsync(t => t.SubmissionId == info.SubmissionId,
+                cancellationToken: token);
+        if (alreadyInfo is not null)
+            return alreadyInfo;
+        await Context.CheatInfo.AddAsync(info, token);
         return info;
     }
     

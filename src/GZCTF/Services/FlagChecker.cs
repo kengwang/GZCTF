@@ -95,12 +95,26 @@ public class FlagChecker(
                             break;
                         case AnswerResult.Accepted:
                             {
+                                if (_fakeFlags.Contains(item.Answer))
+                                {
+                                    logger.Log(
+                                        Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected),
+                                            item.Team.Name,
+                                            item.GameChallenge.Title,
+                                            item.Answer],
+                                        item.User, TaskStatus.Success, LogLevel.Information);
+
+                                    await eventRepository.AddEvent(
+                                        GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);
+
+                                    break;
+                                }
                                 logger.Log(
                                     Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_AnswerAccepted),
                                         item.Team.Name,
                                         item.GameChallenge.Title,
                                         item.Answer],
-                                    item.User, TaskStatus.Success, LogLevel.Information);
+                                    item.User, TaskStatus.Failed, LogLevel.Information);
 
                                 await eventRepository.AddEvent(
                                     GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);
