@@ -2,6 +2,7 @@ import {
   ActionIcon,
   alpha,
   Avatar,
+  Badge,
   Box,
   Center,
   CloseButton,
@@ -41,7 +42,7 @@ import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 import { mdiMagnify } from '@mdi/js'
 
-const Lefts = [0, 55, 110, 280, 350, 410]
+const Lefts = [0, 55, 110, 350, 420, 480]
 const Widths = Array(5).fill(0)
 Lefts.forEach((val, idx) => {
   Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
@@ -180,6 +181,11 @@ const TableRow: FC<{
             size="sm"
             classNames={{ wrapper: classes.wapper, input: classes.input }}
           />
+          {item?.organization && item.organization !== '公开赛道' && (
+            <Badge size="sm" variant="outline" miw="4.4rem" maw="4.4rem">
+              {item.organization}
+            </Badge>
+          )}
         </Group>
       </Table.Td>
       <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[3] }}>
@@ -291,7 +297,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
             ? 'game.content.custom_scoreboard.enabled'
             : 'game.content.custom_scoreboard.no_result'
       )
-    } catch (error) {
+    } catch {
       setFilterTips('game.content.custom_scoreboard.regex_error')
     }
     setUpdatingBarrier(true)
