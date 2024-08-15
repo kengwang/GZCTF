@@ -26,7 +26,8 @@ public class FlagChecker(
                 TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
-        _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", cancellationToken)).Select(t=>t.Trim()).ToList();
+        _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", cancellationToken))
+            .Select(t => t.Trim()).ToList();
 
         await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
 
@@ -93,6 +94,29 @@ public class FlagChecker(
                     }
                     else if (ans == AnswerResult.Accepted)
                     {
+                        if (_fakeFlags.Contains(item.Answer))
+                        {
+                            logger.Log(
+                                Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected),
+                                    item.Team.Name,
+                                    item.GameChallenge.Title,
+                                    "Fake Flag"],
+                                item.User, TaskStatus.Success, LogLevel.Information);
+
+                            await eventRepository.AddEvent(
+                                new()
+                                {
+                                    Type = EventType.CheatDetected,
+                                    Values =
+                                        [item.GameChallenge.Title, item.Team.Name, "Fake Flag"],
+                                    TeamId = item.TeamId,
+                                    UserId = item.UserId,
+                                    GameId = item.GameId
+                                }, token);
+                            type = SubmissionType.Normal;
+                            ans = AnswerResult.Accepted;
+                        }
+
                         logger.Log(
                             Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_AnswerAccepted),
                                 item.Team.Name,
@@ -141,31 +165,6 @@ public class FlagChecker(
                                     UserId = item.UserId,
                                     GameId = item.GameId
                                 }, token);
-                        }
-                        else
-                        {
-                            if (_fakeFlags.Contains(item.Answer))
-                            {
-                                logger.Log(
-                                    Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected),
-                                        item.Team.Name,
-                                        item.GameChallenge.Title,
-                                        result.SourceTeamName ?? ""],
-                                    item.User, TaskStatus.Success, LogLevel.Information);
-
-                                await eventRepository.AddEvent(
-                                    new()
-                                    {
-                                        Type = EventType.CheatDetected,
-                                        Values =
-                                            [item.GameChallenge.Title, item.Team.Name, result.SourceTeamName ?? ""],
-                                        TeamId = item.TeamId,
-                                        UserId = item.UserId,
-                                        GameId = item.GameId
-                                    }, token);
-                                result.AnswerResult = AnswerResult.Accepted;
-                                ans = AnswerResult.Accepted;
-                            }
                         }
                     }
 
