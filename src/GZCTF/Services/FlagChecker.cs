@@ -14,6 +14,7 @@ public class FlagChecker(
 {
     CancellationTokenSource TokenSource { get; set; } = new();
     const int MaxWorkerCount = 2;
+    List<string> _fakeFlags = [];
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -26,7 +27,10 @@ public class FlagChecker(
         }
 
         await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
-
+        
+        _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", cancellationToken))
+            .Select(t => t.Trim()).ToList();
+        
         var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
         Submission[] flags = await submissionRepository.GetUncheckedFlags(TokenSource.Token);
 
