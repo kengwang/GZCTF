@@ -145,7 +145,8 @@ const TableRow: FC<{
   onOpenDetail: () => void
   iconMap: Map<SubmissionType, PartialIconProps | undefined>
   challenges?: Record<string, ChallengeInfo[]>
-}> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
+  selectedOrg: string
+}> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank, selectedOrg }) => {
   const theme = useMantineTheme()
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
@@ -181,10 +182,16 @@ const TableRow: FC<{
             size="sm"
             classNames={{ wrapper: classes.wapper, input: classes.input }}
           />
-          {item?.organization && item.organization !== '公开赛道' && (
-            <Badge size="sm" variant="outline" miw="4.4rem" maw="4.4rem">
-              {item.organization}
-            </Badge>
+          {item?.organization && ['all', 'nopub'].includes(selectedOrg) && item.organization !== '公开赛道' && (
+            <Tooltip
+              label={item.organization}
+              transitionProps={{ transition: 'pop' }}
+              classNames={tooltipClasses}
+            >
+              <Badge size="sm" variant="outline" miw="4.4rem" maw="4.4rem">
+                {item.organization}
+              </Badge>
+            </Tooltip>
           )}
         </Group>
       </Table.Td>
@@ -423,6 +430,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                         }}
                         challenges={filteredChallenges ?? {}}
                         iconMap={iconMap}
+                        selectedOrg={organization ?? 'all'}
                       />
                     ))}
                 </Table.Tbody>
