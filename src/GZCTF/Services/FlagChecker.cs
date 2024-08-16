@@ -85,6 +85,8 @@ public class FlagChecker(
 
                     switch (ans)
                     {
+                        case AnswerResult.Expired:
+                            break;
                         case AnswerResult.NotFound:
                             logger.Log(
                                 Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_UnknownInstance),
@@ -102,7 +104,7 @@ public class FlagChecker(
                                             item.Team.Name,
                                             item.GameChallenge.Title,
                                             item.Answer],
-                                        item.User, TaskStatus.Success, LogLevel.Information);
+                                        item.User, TaskStatus.Failed, LogLevel.Information);
 
                                     await eventRepository.AddEvent(
                                         GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);
@@ -114,7 +116,7 @@ public class FlagChecker(
                                         item.Team.Name,
                                         item.GameChallenge.Title,
                                         item.Answer],
-                                    item.User, TaskStatus.Failed, LogLevel.Information);
+                                    item.User, TaskStatus.Success, LogLevel.Information);
 
                                 await eventRepository.AddEvent(
                                     GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);

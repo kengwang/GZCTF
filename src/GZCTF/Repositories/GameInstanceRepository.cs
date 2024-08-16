@@ -313,10 +313,10 @@ public class GameInstanceRepository(
 
             var firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
             var beforeEnd = submission.Game.EndTimeUtc > submission.SubmitTimeUtc;
-
+            var canSubmit = submission.GameChallenge.CanSubmit;
             updateSub.GameChallenge.SubmissionCount++;
 
-            if (firstTime && beforeEnd)
+            if (firstTime && beforeEnd && canSubmit)
             {
                 instance.IsSolved = true;
                 updateSub.GameChallenge.AcceptedCount++;
@@ -332,7 +332,10 @@ public class GameInstanceRepository(
             {
                 ret = updateSub.Status == AnswerResult.Accepted ? SubmissionType.Normal : SubmissionType.Unaccepted;
             }
-
+            
+            if (!canSubmit && updateSub.Status == AnswerResult.Accepted)
+                updateSub.Status = AnswerResult.Expired;
+            
             await SaveAsync(token);
             await trans.CommitAsync(token);
 
