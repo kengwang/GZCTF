@@ -188,7 +188,13 @@ const TableRow: FC<{
               transitionProps={{ transition: 'pop' }}
               classNames={tooltipClasses}
             >
-              <Badge size="sm" variant="outline" miw="4.4rem" maw="4.4rem">
+              <Badge
+                size="sm"
+                variant="outline"
+                miw="4.4rem"
+                maw="4.4rem"
+                style={{ display: "flex" }}
+              >
                 {item.organization}
               </Badge>
             </Tooltip>
