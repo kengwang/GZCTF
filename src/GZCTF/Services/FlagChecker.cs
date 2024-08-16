@@ -159,6 +159,7 @@ public class FlagChecker(
                                             GameId = item.GameId
                                         }, token);
                                 }
+
                                 break;
                             }
                     }

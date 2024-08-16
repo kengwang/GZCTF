@@ -155,12 +155,15 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
                 row.CreateCell(colIndex++).SetCellValue(item.Organization);
 
             row.CreateCell(colIndex++).SetCellValue(item.TeamInfo?.Captain?.RealName ?? string.Empty);
+
+            var members = item.TeamInfo?.Members ?? [];
+
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.RealName) ?? []));
+                .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.RealName))));
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.StdNumber) ?? []));
+                .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.StdNumber))));
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.PhoneNumber) ?? []));
+                .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.PhoneNumber))));
 
             row.CreateCell(colIndex++).SetCellValue(item.SolvedCount);
             row.CreateCell(colIndex++).SetCellValue(item.LastSubmissionTime.ToString("u"));
@@ -175,4 +178,9 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             rowIndex++;
         }
     }
+
+    const string Empty = "<empty>";
+    const string Split = " / ";
+
+    static string TakeIfNotEmpty(string? str) => string.IsNullOrWhiteSpace(str) ? Empty : str;
 }
