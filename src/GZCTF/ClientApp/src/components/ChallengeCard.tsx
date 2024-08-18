@@ -30,10 +30,11 @@ interface ChallengeCardProps {
   iconMap: Map<SubmissionType, PartialIconProps | undefined>
   colorMap: Map<SubmissionType, string | undefined>
   teamId?: number
+  hideWeekInTitle?: boolean
 }
 
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
-  const { challenge, solved, onClick, iconMap, teamId, colorMap } = props
+  const { challenge, solved, onClick, iconMap, teamId, colorMap, hideWeekInTitle } = props
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const tagData = challengeTagLabelMap.get(challenge.tag!)
   const theme = useMantineTheme()
@@ -43,7 +44,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
       <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
           <Text fw="bold" truncate fz="lg">
-            {challenge.title}
+            {hideWeekInTitle ? challenge.title?.replace(/\[week\d\]\s*/i, "") : challenge.title}
           </Text>
           <Center miw="1.5em">
             {solved && (

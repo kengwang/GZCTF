@@ -13,6 +13,7 @@ import {
   Paper,
   Select,
   Stack,
+  Switch,
   Table,
   Text,
   TextInput,
@@ -41,6 +42,7 @@ import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Ap
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 import { mdiMagnify } from '@mdi/js'
+import { useLocalStorage } from '@mantine/hooks'
 
 const Lefts = [0, 55, 110, 350, 420, 480]
 const Widths = Array(5).fill(0)
@@ -48,7 +50,10 @@ Lefts.forEach((val, idx) => {
   Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
 })
 
-const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
+const TableHeader: FC<{
+  table: Record<string, ChallengeInfo[]>
+  hideWeekInTitle: boolean
+}> = ({ table, hideWeekInTitle }) => {
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
@@ -106,7 +111,9 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
       <Table.Tr>
         {hiddenCol}
         {Object.keys(table).map((key) =>
-          table[key].map((item) => <Table.Th key={item.id}>{item.title}</Table.Th>)
+          table[key].map((item) => <Table.Th key={item.id}>
+            {hideWeekInTitle ? item.title?.replace(/\[week\d\]\s*/i, "") : item.title}
+          </Table.Th>)
         )}
       </Table.Tr>
       {/* Headers & Score */}
@@ -270,6 +277,12 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
   const challengeTagLabelMap = useChallengeTagLabelMap()
+  
+  const [hideWeekInTitle, setHideWeekInTitle] = useLocalStorage({
+    key: 'hide-week-in-title',
+    defaultValue: false,
+    getInitialValueInEffect: false,
+  })
   const [searchTextBuffer, setSearchTextBuffer] = useState<string | null>('')
   const [searchCloseButtonVisible, setSearchCloseButtonVisible] = useState(false)
   const [filterTips, setFilterTips] = useState('')
@@ -380,6 +393,11 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                   },
                 }}
               />
+              <Switch
+                checked={hideWeekInTitle}
+                onChange={(e) => setHideWeekInTitle(e.target.checked)}
+                label={t('game.button.hide_week_in_title')}
+              />
               <Select
                 placeholder={t('game.label.score_table.tag_all')}
                 clearable
@@ -421,7 +439,10 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
               }}
             >
               <Table className={classes.table}>
-                <TableHeader {...filteredChallenges} />
+                <TableHeader
+                  table={{ ...filteredChallenges }}
+                  hideWeekInTitle={hideWeekInTitle}
+                />
                 <Table.Tbody>
                   {scoreboard &&
                     currentItems?.map((item, idx) => (

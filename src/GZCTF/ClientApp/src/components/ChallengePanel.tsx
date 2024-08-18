@@ -45,6 +45,11 @@ const ChallengePanel: FC = () => {
     defaultValue: false,
     getInitialValueInEffect: false,
   })
+  const [hideWeekInTitle, setHideWeekInTitle] = useLocalStorage({
+    key: 'hide-week-in-title',
+    defaultValue: false,
+    getInitialValueInEffect: false,
+  })
   const [searchText, setSearchText] = useState<string>('')
   const [searchPattern, setSearchPattern] = useState<RegExp | null>(null)
 
@@ -164,6 +169,21 @@ const ChallengePanel: FC = () => {
             </Text>
           }
         />
+        <Switch
+          checked={hideWeekInTitle}
+          onChange={(e) => setHideWeekInTitle(e.target.checked)}
+          w="10rem"
+          styles={{
+            body: {
+              justifyContent: 'space-between',
+            },
+          }}
+          label={
+            <Text fz="md" fw="bold">
+              {t('game.button.hide_week_in_title')}
+            </Text>
+          }
+        />
         <TextInput
           placeholder={t('game.placeholder.challenge_search')}
           value={searchText ?? ''}
@@ -256,6 +276,7 @@ const ChallengePanel: FC = () => {
                 challenge={chal}
                 iconMap={iconMap}
                 colorMap={colorMap}
+                hideWeekInTitle={hideWeekInTitle}
                 onClick={() => {
                   setChallenge(chal)
                   setDetailOpened(true)

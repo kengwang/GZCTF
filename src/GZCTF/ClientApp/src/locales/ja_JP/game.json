@@ -11,6 +11,7 @@
     },
     "finished": "ゲーム終了",
     "hide_solved": "解いたものを非表示にする",
+    "hide_week_in_title": "週を非表示にする",
     "join": "ゲームに参加",
     "leave": "参加申請をキャンセル",
     "login_required": "まずログインしてください",

@@ -11,6 +11,7 @@
     },
     "finished": "Game Ended",
     "hide_solved": "Hide Solved",
+    "hide_week_in_title": "Hide Weeks",
     "join": "Join",
     "leave": "Leave Game",
     "login_required": "Please Login",
