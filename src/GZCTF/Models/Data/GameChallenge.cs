@@ -28,7 +28,7 @@ public class GameChallenge : Challenge
     /// 难度系数
     /// </summary>
     [Required]
-    public double Difficulty { get; set; } = 5;
+    public double Difficulty { get; set; } = 25;
 
     /// <summary>
     /// 当前题目分值

@@ -27,7 +27,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
 
-  const [title, setTitle] = useInputState('')
+  const [title, setTitle] = useInputState('[Week] ')
   const [tag, setTag] = useState<string | null>(null)
   const [type, setType] = useState<string | null>(null)
 

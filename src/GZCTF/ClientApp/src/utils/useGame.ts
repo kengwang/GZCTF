@@ -106,7 +106,7 @@ export const generateCustomScoreboard = (
   // 至此 includeChallengeIds 与 challenges 赋值完成
 
   // 只在数据量（题目数*队伍数）不太大时进行字符串比较
-  const handleLastSubmissionTime = 10000 > includeChallengeIds.length * items.length
+  const handleLastSubmissionTime = 30000 > includeChallengeIds.length * items.length
 
   // 对于 items：
   // 第一步筛选 item.challenges，统计分数，更新 score, solvedCount 和可选的 lastSubmissionTime
