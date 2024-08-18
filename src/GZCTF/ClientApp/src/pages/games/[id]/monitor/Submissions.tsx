@@ -23,6 +23,7 @@ import {
   mdiDownload,
   mdiExclamationThick,
   mdiFlag,
+  mdiTimerOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
@@ -44,6 +45,7 @@ const AnswerResultMap = new Map([
   [AnswerResult.Accepted, 'AC'],
   [AnswerResult.WrongAnswer, 'WA'],
   [AnswerResult.CheatDetected, 'CD'],
+  [AnswerResult.Expired, 'TE'],
   [AnswerResult.NotFound, 'NF'],
 ])
 
@@ -65,6 +67,11 @@ const AnswerResultIconMap = (size: number) => {
       AnswerResult.CheatDetected,
 
       { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] },
+    ],
+    [
+      AnswerResult.Expired,
+
+      { path: mdiTimerOutline, size, color: theme.colors.blue[colorIdx] },
     ],
     [
       AnswerResult.FlagSubmitted,
