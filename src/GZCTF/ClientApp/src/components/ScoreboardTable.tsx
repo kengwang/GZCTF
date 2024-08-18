@@ -286,6 +286,12 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
   const [searchTextBuffer, setSearchTextBuffer] = useState<string | null>('')
   const [searchCloseButtonVisible, setSearchCloseButtonVisible] = useState(false)
   const [filterTips, setFilterTips] = useState('')
+  const onSearch = (searchText: string) => {
+    setTitlePattern(searchText)
+    setSearchTextBuffer(searchText)
+    setSearchCloseButtonVisible(searchText.length > 0)
+    setPage(1)
+  }
 
   const [updatingBarrier, setUpdatingBarrier] = useState(true)
 
@@ -339,13 +345,20 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
             <Select
               defaultValue="all"
               data={[
-                { value: 'all', label: t('game.label.score_table.rank_total') },
-                ...Object.keys(scoreboard.timeLines)
-                  .filter((k) => k !== 'all')
-                  .map((o) => ({
-                    value: o,
-                    label: o === 'nopub' ? t('game.label.score_table.rank_nopub') : o,
-                  })),
+                {
+                  group: 'Fixed', items: [
+                    { value: 'all', label: t('game.label.score_table.rank_total') },
+                    { value: '公开赛道', label: '公开赛道' },
+                    { value: 'nopub', label: t('game.label.score_table.rank_nopub') },
+                  ]
+                },
+                {
+                  group: 'Dynamic', items: [
+                    ...Object.keys(scoreboard.timeLines)
+                      .filter((k) => !['all', 'nopub', '公开赛道'].includes(k))
+                      .map((o) => ({ value: o, label: o }))
+                  ]
+                },
               ]}
               value={organization}
               searchable
@@ -365,33 +378,31 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
               <TextInput
                 placeholder={t('game.placeholder.scoreboard_search')}
                 leftSection={
-                  <ActionIcon variant="transparent" color="dimmed" onClick={() => {
-                    const searchText = searchTextBuffer?.trim() ?? ''
-                    setTitlePattern(searchText)
-                    setSearchTextBuffer(searchText)
-                    setSearchCloseButtonVisible(searchText.length > 0)
-                    setPage(1)
-                  }}>
+                  <ActionIcon
+                    variant="transparent"
+                    color="dimmed"
+                    onClick={() => onSearch(searchTextBuffer?.trim() ?? '')}
+                  >
                     <Icon path={mdiMagnify} size={0.8} />
                   </ActionIcon>
                 }
-                rightSection={searchCloseButtonVisible &&
-                  <CloseButton color="dimmed" size={'sm'} onClick={() => {
-                    setSearchTextBuffer('')
-                    setSearchCloseButtonVisible(false)
-                    setTitlePattern('')
-                    setPage(1)
-                  }} />}
+                rightSection={
+                  searchCloseButtonVisible &&
+                  <CloseButton
+                    color="dimmed"
+                    size={'sm'}
+                    onClick={() => onSearch('')}
+                  />
+                }
+                onKeyDown={(e) =>
+                  updatingBarrier && e.key === 'Enter' && onSearch(searchTextBuffer?.trim() ?? '')
+                }
                 value={searchTextBuffer ?? ''}
                 onChange={(e) => {
                   setSearchTextBuffer(e.currentTarget.value)
                   setSearchCloseButtonVisible(e.currentTarget.value.length > 0)
                 }}
-                styles={{
-                  root: {
-                    width: "36%",
-                  },
-                }}
+                flex={1}
               />
               <Switch
                 checked={hideWeekInTitle}

@@ -148,7 +148,7 @@
     "score_table": {
       "rank_organization": "排名",
       "rank_total": "总排名",
-      "rank_nopub": "非公开赛道",
+      "rank_nopub": "全部校内赛道",
       "score": "得分",
       "score_total": "总分",
       "solved_count": "解题数量",
@@ -232,7 +232,7 @@
   "placeholder": {
     "challenge_search": "正则匹配题目名称",
     "no_solved": "Ouch! 这支队伍还没有解出题目呢……",
-    "scoreboard_search": "正则匹配题目名称，输入后点击放大镜图标"
+    "scoreboard_search": "正则匹配题目名称"
   },
   "tab": {
     "challenge": "比赛题目",
