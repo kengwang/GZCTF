@@ -79,14 +79,14 @@ const formatAnswer = (t: TFunction, res: AnswerResult) => {
   }
 }
 
-const formatEvent = (t: TFunction, event: GameEvent) => {
+const formatEvent = (t: TFunction, event: GameEvent, hideFlag: boolean) => {
   switch (event.type) {
     case EventType.Normal:
       return event.values.at(-1) || ''
     case EventType.FlagSubmit:
       return t('game.event.flag_submit', {
         status: formatAnswer(t, event.values.at(0) as AnswerResult),
-        flag: event.values.at(1),
+        flag: hideFlag ? "******" : event.values.at(1),
         chal: event.values.at(2),
         id: event.values.at(3),
       })
@@ -117,6 +117,12 @@ const Events: FC = () => {
 
   const [hideContainerEvents, setHideContainerEvents] = useLocalStorage({
     key: 'hide-container-events',
+    defaultValue: false,
+    getInitialValueInEffect: false,
+  })
+
+  const [hideFlagInEvents, setHideFlagInEvents] = useLocalStorage({
+    key: 'hide-flag-events',
     defaultValue: false,
     getInitialValueInEffect: false,
   })
@@ -216,6 +222,14 @@ const Events: FC = () => {
           checked={hideContainerEvents}
           onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}
         />
+        <Switch
+          label={SwitchLabel(
+            t('game.content.hide_flag.label'),
+            t('game.content.hide_flag.description')
+          )}
+          checked={hideFlagInEvents}
+          onChange={(e) => setHideFlagInEvents(e.currentTarget.checked)}
+        />
         <Group justify="right">
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
             <Icon path={mdiArrowLeftBold} size={1} />
@@ -248,7 +262,7 @@ const Events: FC = () => {
                 <Stack gap={2} w="100%">
                   <Input
                     variant="unstyled"
-                    value={formatEvent(t, event)}
+                    value={formatEvent(t, event, hideFlagInEvents)}
                     readOnly
                     size="md"
                     classNames={inputClasses}

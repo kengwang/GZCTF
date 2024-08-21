@@ -41,6 +41,10 @@
       "description": "コンテナ開始/破棄イベントを非表示にする",
       "label": "コンテナイベントを非表示にする"
     },
+    "hide_flag": {
+      "description": "イベント中にフラグを表示しない",
+      "label": "フラグを隠す"
+    },
     "join": {
       "confirm": "申請確認",
       "content": [
@@ -146,9 +150,9 @@
     "score": "点数",
     "score_formatter": "{value} 点",
     "score_table": {
+      "rank_nopub": "非公開順位",
       "rank_organization": "順位",
       "rank_total": "総合順位",
-      "rank_nopub": "非公開順位",
       "score": "得点",
       "score_total": "合計得点",
       "solved_count": "解答数",

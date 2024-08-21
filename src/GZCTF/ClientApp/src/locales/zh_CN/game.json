@@ -41,6 +41,10 @@
       "description": "隐藏容器启动/销毁事件",
       "label": "隐藏容器事件"
     },
+    "hide_flag": {
+      "description": "不在事件中显示 Flag",
+      "label": "隐藏 Flag"
+    },
     "join": {
       "confirm": "确认报名",
       "content": [
@@ -146,9 +150,9 @@
     "score": "分数",
     "score_formatter": "{value} 分",
     "score_table": {
+      "rank_nopub": "全部校内赛道",
       "rank_organization": "排名",
       "rank_total": "总排名",
-      "rank_nopub": "全部校内赛道",
       "score": "得分",
       "score_total": "总分",
       "solved_count": "解题数量",

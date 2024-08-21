@@ -41,6 +41,10 @@
       "description": "Hide container creation/destroying events",
       "label": "Hide container events"
     },
+    "hide_flag": {
+      "description": "Don't show Flag in events",
+      "label": "Hide Flag"
+    },
     "join": {
       "confirm": "Confirm Registration",
       "content": [
@@ -146,14 +150,14 @@
     "score": "Score",
     "score_formatter": "{value} pts",
     "score_table": {
+      "rank_nopub": "No Public",
       "rank_organization": "Rank",
       "rank_total": "Overall",
-      "rank_nopub": "No Public",
-      "tag_all": "All",
-      "tag_empty": "Nothing found",
       "score": "Score",
       "score_total": "Score",
       "solved_count": "Solved",
+      "tag_all": "All",
+      "tag_empty": "Nothing found",
       "team": "Team",
       "type": "Type"
     },
