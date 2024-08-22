@@ -261,7 +261,7 @@ export interface ScoreboardProps {
   organization: string | null
   setOrganization: (org: string | null) => void
   titlePattern: string | null
-  setTitlePattern: (pattern: string | null) => void
+  setTitlePattern: (pattern: string | ((prevState: string) => string)) => void
   category: ChallengeTag | null
   setCategory: (tag: ChallengeTag | null) => void
 }
@@ -286,12 +286,6 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
   const [searchTextBuffer, setSearchTextBuffer] = useState<string | null>('')
   const [searchCloseButtonVisible, setSearchCloseButtonVisible] = useState(false)
   const [filterTips, setFilterTips] = useState('')
-  const onSearch = (searchText: string) => {
-    setTitlePattern(searchText)
-    setSearchTextBuffer(searchText)
-    setSearchCloseButtonVisible(searchText.length > 0)
-    setPage(1)
-  }
 
   const [updatingBarrier, setUpdatingBarrier] = useState(true)
 
@@ -313,6 +307,9 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
     }
 
     setUpdatingBarrier(false)
+    setSearchTextBuffer(titlePattern ?? '')
+    setSearchCloseButtonVisible((titlePattern?.length ?? 0) > 0)
+    setPage(1)
     try {
       const customScoreboard = generateCustomScoreboard(
         scoreboard,
@@ -381,7 +378,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                   <ActionIcon
                     variant="transparent"
                     color="dimmed"
-                    onClick={() => onSearch(searchTextBuffer?.trim() ?? '')}
+                    onClick={() => setTitlePattern(searchTextBuffer?.trim() ?? '')}
                   >
                     <Icon path={mdiMagnify} size={0.8} />
                   </ActionIcon>
@@ -391,11 +388,11 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                   <CloseButton
                     color="dimmed"
                     size={'sm'}
-                    onClick={() => onSearch('')}
+                    onClick={() => setTitlePattern('')}
                   />
                 }
                 onKeyDown={(e) =>
-                  updatingBarrier && e.key === 'Enter' && onSearch(searchTextBuffer?.trim() ?? '')
+                  e.key === 'Enter' && updatingBarrier && setTitlePattern(searchTextBuffer?.trim() ?? '')
                 }
                 value={searchTextBuffer ?? ''}
                 onChange={(e) => {

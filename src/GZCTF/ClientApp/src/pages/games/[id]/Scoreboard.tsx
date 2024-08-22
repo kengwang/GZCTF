@@ -10,6 +10,7 @@ import WithNavBar from '@Components/WithNavbar'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useGameTeamInfo } from '@Utils/useGame'
 import { ChallengeTag } from '@Api'
+import { useLocalStorage } from '@mantine/hooks'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()
@@ -17,7 +18,11 @@ const Scoreboard: FC = () => {
   const { teamInfo, error } = useGameTeamInfo(numId)
 
   const [organization, setOrganization] = useState<string | null>('all')
-  const [titlePattern, setTitlePattern] = useState<string | null>(null)
+  const [titlePattern, setTitlePattern] = useLocalStorage({
+    key: 'scoreboard-search-pattern',
+    defaultValue: '',
+    getInitialValueInEffect: false,
+  })
   const [category, setCategory] = useState<ChallengeTag | null>(null)
 
   const scoreboardProps: ScoreboardProps = {

@@ -18,7 +18,7 @@ import { useLocalStorage } from '@mantine/hooks'
 import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ChallengeCard from '@Components/ChallengeCard'
@@ -50,7 +50,11 @@ const ChallengePanel: FC = () => {
     defaultValue: false,
     getInitialValueInEffect: false,
   })
-  const [searchText, setSearchText] = useState<string>('')
+  const [searchText, setSearchText] = useLocalStorage({
+    key: 'challenge-search-pattern',
+    defaultValue: '',
+    getInitialValueInEffect: true,
+  })
   const [searchPattern, setSearchPattern] = useState<RegExp | null>(null)
 
   const allChallenges = Object.values(challenges ?? {}).flat()
@@ -64,8 +68,8 @@ const ChallengePanel: FC = () => {
             SubmissionType.Unaccepted)
       )) ?? []
   const searchedChallenges = unsolvedTaggedChallenges.filter(
-    (chal) => !searchPattern || chal.title && searchPattern.test(chal.title)
-  )
+      (chal) => !searchPattern || chal.title && searchPattern.test(chal.title)
+    )
   const currentChallenges = searchedChallenges.length ? searchedChallenges : unsolvedTaggedChallenges
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
@@ -74,6 +78,14 @@ const ChallengePanel: FC = () => {
   const [writeupSubmitOpened, setWriteupSubmitOpened] = useState(false)
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const { t } = useTranslation()
+
+  useEffect(() => {
+    try {
+      setSearchPattern(searchText.trim() ? new RegExp(searchText.trim(), 'i') : null)
+    } catch {
+      setSearchPattern(null)
+    }
+  }, [searchText])
 
   // skeleton for loading
   if (!challenges) {
@@ -188,14 +200,7 @@ const ChallengePanel: FC = () => {
           placeholder={t('game.placeholder.challenge_search')}
           value={searchText ?? ''}
           error={searchText.trim() !== '' && (!searchPattern || searchedChallenges.length === 0)}
-          onChange={(e) => {
-            setSearchText(e.currentTarget.value)
-            try {
-              setSearchPattern(e.currentTarget.value.trim() ? new RegExp(e.currentTarget.value.trim(), 'i') : null)
-            } catch {
-              setSearchPattern(null)
-            }
-          }}
+          onChange={(e) => setSearchText(e.currentTarget.value)}
           w="10rem"
           styles={{
             body: {
