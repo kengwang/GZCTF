@@ -43,6 +43,7 @@ import {
 } from '@Utils/Shared'
 import { useEditChallenge, useEditChallenges } from '@Utils/useEdit'
 import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel } from '@Api'
+import {DateTimePicker} from "@mantine/dates";
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -323,6 +324,18 @@ const GameChallengeEdit: FC = () => {
                 onChange={(e) => setChallengeInfo({...challengeInfo, canSubmit: e.target.checked})}
                 checked={challengeInfo.canSubmit == true}
               />
+              <DateTimePicker
+                label="开始时间"
+                clearable
+                value={challengeInfo.enableAt == null ? null : new Date(challengeInfo.enableAt)}
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, enableAt: e?.toISOString() })}
+                />
+              <DateTimePicker
+                label="结束时间"
+                clearable
+                value={challengeInfo.endAt == null ? null : new Date(challengeInfo.endAt)}
+                onChange={(e) => setChallengeInfo({...challengeInfo, endAt: e?.toISOString()})}
+                />
               <HintList
                 label={
                   <Group gap="sm">

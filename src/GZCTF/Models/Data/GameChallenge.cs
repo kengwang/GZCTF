@@ -29,6 +29,10 @@ public class GameChallenge : Challenge
     /// </summary>
     [Required]
     public double Difficulty { get; set; } = 25;
+    
+    public DateTimeOffset? EnableAt { get; set; }
+    
+    public DateTimeOffset? EndAt { get; set; }
 
     /// <summary>
     /// 当前题目分值
@@ -59,6 +63,8 @@ public class GameChallenge : Challenge
         MinScoreRate = model.MinScoreRate ?? MinScoreRate;
         Difficulty = model.Difficulty ?? Difficulty;
         FileName = model.FileName ?? FileName;
+        EnableAt = model.EnableAt ?? EnableAt;
+        EndAt = model.EndAt ?? EndAt;
 
         // only set FlagTemplate to null when it pass an empty string (but not null)
         FlagTemplate = model.FlagTemplate is null ? FlagTemplate :

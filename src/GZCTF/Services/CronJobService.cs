@@ -18,7 +18,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
 
     public Task StartAsync(CancellationToken token)
     {
-        _timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(3));
+        _timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Started)], TaskStatus.Success,
             LogLevel.Debug);
         return Task.CompletedTask;
@@ -71,11 +71,56 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         }
     }
 
+    async Task UpdateChallengeStatus(AsyncServiceScope scope)
+    {
+        var gamesRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+        var challengesRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
+        var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
+        var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
+        var games = await gamesRepository.GetGames();
+        foreach (Game game in games)
+        {
+            var challenges = await challengesRepository.GetChallenges(game.Id);
+            foreach (GameChallenge gameChallenge in challenges)
+            {
+                if (gameChallenge.EnableAt is null && gameChallenge.EndAt is null)
+                    continue;
+                
+                if (gameChallenge.EnableAt <= DateTimeOffset.Now &&
+                    gameChallenge.EndAt > DateTimeOffset.Now &&
+                    !gameChallenge.IsEnabled)
+                {
+                    gameChallenge.IsEnabled = true;
+                    await challengesRepository.EnsureInstances(gameChallenge, game);
+                    if (game.IsActive)
+                        await gameNoticeRepository.AddNotice(
+                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] });
+                    await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
+                }
+                
+                if (!gameChallenge.IsEnabled)
+                    continue;
+
+                if (gameChallenge.EndAt <= DateTimeOffset.Now)
+                {
+                    gameChallenge.CanSubmit = false;
+                }
+                
+            }
+        }
+
+        await gamesRepository.SaveAsync();
+    }
+
+    private int _counter = 6;
+    
     async void Execute(object? state)
     {
         await using AsyncServiceScope scope = provider.CreateAsyncScope();
-
+        await UpdateChallengeStatus(scope);
+        if (--_counter > 0) return;
         await ContainerChecker(scope);
         await BootstrapCache(scope);
+        _counter = 6;
     }
 }

@@ -46,6 +46,16 @@ public class ChallengeUpdateModel
     /// 是否可提交
     /// </summary>
     public bool? CanSubmit { get; set; }
+    
+    /// <summary>
+    /// 开启时间
+    /// </summary>
+    public DateTimeOffset? EnableAt { get; set; }
+    
+    /// <summary>
+    /// 结束时间
+    /// </summary>
+    public DateTimeOffset? EndAt { get; set; }
 
     /// <summary>
     /// 统一文件名

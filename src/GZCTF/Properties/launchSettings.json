@@ -6,7 +6,8 @@
       "applicationUrl": "http://localhost:55000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy",
+        "ConnectionStrings__Database": "Host=127.0.0.1:5432;Database=gzctf;Username=postgres;Password=123456"
       }
     }
   }

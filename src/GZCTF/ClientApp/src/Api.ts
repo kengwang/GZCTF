@@ -944,6 +944,16 @@ export interface ChallengeEditDetailModel {
    */
   difficulty: number;
   canSubmit?: boolean;
+  /**
+   * 开始时间
+   * @format date-time
+   */
+  enableAt?: string | null;
+  /**
+   * 结束时间
+   * @format date-time
+   */
+  endAt?: string | null;
 }
 
 export enum ChallengeType {
@@ -1067,6 +1077,16 @@ export interface ChallengeUpdateModel {
   isEnabled?: boolean | null;
   /** 是否可提交 */
   canSubmit?: boolean | null;
+  /**
+   * 开启时间
+   * @format date-time
+   */
+  enableAt?: string | null;
+  /**
+   * 结束时间
+   * @format date-time
+   */
+  endAt?: string | null;
   /** 统一文件名 */
   fileName?: string | null;
   /** 镜像名称与标签 */

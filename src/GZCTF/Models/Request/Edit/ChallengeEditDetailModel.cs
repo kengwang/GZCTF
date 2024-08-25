@@ -139,6 +139,16 @@ public class ChallengeEditDetailModel
     public double Difficulty { get; set; } = 3;
 
     public bool CanSubmit { get; set; } = true;
+    
+    /// <summary>
+    /// 开始时间
+    /// </summary>
+    public DateTimeOffset? EnableAt { get; set; }
+    
+    /// <summary>
+    /// 结束时间
+    /// </summary>
+    public DateTimeOffset? EndAt { get; set; }
 
     internal static ChallengeEditDetailModel FromChallenge(GameChallenge chal) =>
         new()
@@ -164,6 +174,8 @@ public class ChallengeEditDetailModel
             FileName = chal.FileName,
             AcceptedCount = chal.AcceptedCount,
             Attachment = chal.Attachment,
+            EnableAt = chal.EnableAt,
+            EndAt = chal.EndAt,
             TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
             Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToList()
         };
