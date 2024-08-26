@@ -19,6 +19,7 @@
   @mixin smaller-than 900px {
     display: none;
   }
+
 }
 
 .inner {
