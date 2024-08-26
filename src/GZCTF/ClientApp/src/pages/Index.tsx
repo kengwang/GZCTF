@@ -17,6 +17,7 @@ import classes from './Index.module.css'
 const Home: FC = () => {
   const { t } = useTranslation()
 
+
   const { data: posts, mutate } = api.info.useInfoGetLatestPosts({
     refreshInterval: 5 * 60 * 1000,
   })
