@@ -106,7 +106,7 @@ const Home: FC = () => {
   if (recentGames.length != 0) {
     id = recentGames[0].id
   }
-  const numId = parseInt(id ?? '-1')
+  const numId = id ?? parseInt('-1')
 
 
   // const GetAlert = () => {
