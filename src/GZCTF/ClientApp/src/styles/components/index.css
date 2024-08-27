@@ -10,7 +10,7 @@
     top: 2vw;
     width: 70%;
     height: 100%;
-    background: url('../image/yinying.png') no-repeat;
+    background: url('../image/yinying.png') no-repeat top right;
 }
 
 .titleCenter {

@@ -29,7 +29,7 @@ export const App: FC = () => {
   const { theme } = useCustomTheme()
 
   return (
-    <MantineProvider defaultColorScheme="dark" theme={theme} stylesTransform={emotionTransform}>
+    <MantineProvider defaultColorScheme="light" theme={theme} stylesTransform={emotionTransform}>
       <MantineEmotionProvider>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Notifications zIndex={5000} />

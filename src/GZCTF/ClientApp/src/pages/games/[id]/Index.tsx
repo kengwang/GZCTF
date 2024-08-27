@@ -291,7 +291,7 @@ const GameDetail: FC = () => {
           {GetAlert(status, game?.teamName ?? '')}
           {teamRequire && (
             <Alert
-              color="yellow"
+              color="#7B66FF"
               icon={<Icon path={mdiAlertCircle} />}
               title={t('game.participation.alert.team_required.title')}
             >

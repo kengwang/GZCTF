@@ -192,9 +192,9 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
               <Menu.Item onClick={clearLocalCache} leftSection={<Icon path={mdiCached} size={1} />}>
                 {t('common.tab.account.clean_cache')}
               </Menu.Item>
-              <Menu.Item onClick={openColorModal} leftSection={<Icon path={mdiPalette} size={1} />}>
+              {/* <Menu.Item onClick={openColorModal} leftSection={<Icon path={mdiPalette} size={1} />}>
                 {t('common.content.color.title')}
-              </Menu.Item>
+              </Menu.Item> */}
               <MenuDivider />
               {loggedIn ? (
                 <Menu.Item

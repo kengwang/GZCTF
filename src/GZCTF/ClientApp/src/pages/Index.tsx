@@ -101,13 +101,18 @@ const Home: FC = () => {
       confirmProps: { color: theme.primaryColor },
     })
 
-  const { id } = useParams()
+  // const { id } = useParams()
+  let id = null
+  if (recentGames.length != 0) {
+    id = recentGames[0].id
+  }
   const numId = parseInt(id ?? '-1')
 
 
   // const GetAlert = () => {
 
   const { game, error, status } = useGame(numId)
+  console.log(game, error, status);
   const { startTime, endTime, finished, started, progress } = getGameStatus(game)
 
   const { locale } = useLanguage()
@@ -132,6 +137,9 @@ const Home: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
       mutate()
+      // 刷新当前页面
+      window.location.reload();
+
     } catch (err) {
       return showErrorNotification(err, t)
     }
@@ -176,10 +184,10 @@ const Home: FC = () => {
                   <div className='centent-format-centent-detail'>
                     <div>比赛时间：10月10日-10月23日</div>
                     <div>报名时间：09月01日-10月23日（比赛期间可随时报名参赛）</div>
-                    <div>比赛方式：线上个人赛 <span style={{ marginLeft: '20px' }}>比赛方向：Web / Re / Pwn / Crypto / Misc</span></div>
-                    <div>比赛赛道：本次比赛设立两个赛道，内部赛道与公开赛道。两个赛道将采用相同的比赛赛题，并分别设立独立的奖项，以确保各赛道的公平性和竞争性。</div>
-                    <div>内部赛道：面向山东省内高校23、24级学生，高校社团（或校队）负责人可联系主办方申请开通内部赛道，内部赛道报名选手需提供相关信息，审核通过可进行参赛。</div>
-                    <div>公开赛道：面向全国所有院校学生，可直接注册队伍进行参赛。</div>
+                    <div>比赛方式：本次比赛采取线上个人CTF竞赛的方式，在竞赛中选手将以个人形式独立答题，凭借自身对网络安全技术的深入理解和实战经验，解决一系列精心设计的挑战题目。</div>
+                    <div>答题范围：考题范围包括Web漏洞与渗透(Web)，软件逆向(Reverse Engineering)，二进制漏洞挖掘和利用(PWN)，杂项(Misc)与密码学(Crypto)主五大类型。</div>
+                    <div>排名机制：采用动态积分制，按照积分从高到低排名，两队相同积分时以先达到该积分的先后顺序排名。</div>
+                    <div>比赛赛道：本次比赛设立两个赛道(新生赛道与公开赛道)，采用相同的比赛赛题并分别设立奖项。</div>
                   </div>
                 </div>
               </div>
@@ -194,7 +202,7 @@ const Home: FC = () => {
                 </div>
                 <div className='centent-medal-centent'>
                   <div className='centent-medal-centent-detail'>
-                    <span>内部赛道：一等奖2名  /  ​二等奖12名  /  三等奖24名 </span>     <span className='centent-medal-centent-detail-tow'> 公开赛道：一等奖1名  /  二等奖6名  /  三等奖12名</span>
+                    <span>新生赛道:一等奖1名/二等奖9名/三等奖18名</span>     <span className='centent-medal-centent-detail-tow'>公开赛道:一等奖1名/二等奖9名/三等奖18名</span>
                   </div>
                 </div>
               </div>
@@ -210,8 +218,8 @@ const Home: FC = () => {
                 <div className='centent-match-centent'>
                   <div className='centent-match-centent-detail'>
                     <div>1. 禁止所有破坏比赛公平公正的行为，包括但不限于：比赛结束前公开平台发布解题思路、传播flag、对比赛平台参赛选手进行攻击，一经发现将被取消比赛资格。</div>
-                    <div>2. 本次比赛面向全国各大高校，所有获奖选手需提供相关的在校证明材料。若无法提供或证明材料不符合要求，将取消其获奖资格，并将名额顺延至下一位符合条件的选手。</div>
-                    <div>3. 参赛选手需在比赛结束后指定时间内提交比赛的WP，未按要求提交WP者，将视为放弃此次比赛成绩。 </div>
+                    <div>2. 本次比赛面向全国各个高校，获奖选手需提供相关在校证明材料，否则取消其获奖资格，名额顺延。</div>
+                    <div>3. 参赛选手需在比赛结束后指定时间内提交WriteUP，不按照要求提交WriteUP者视为放弃此次成绩。 </div>
                     <div>4. 赛事的最终解释权归山东源鲁信息科技有限公司所有。</div>
                   </div>
                 </div>
@@ -250,7 +258,7 @@ const Home: FC = () => {
               {!isMobile && (
                 // <nav className={classes.wrapper}>
                 <div className='Participate'>
-                  {recentGames.length!=0&&(recentGames[0].poster != '' ? <Image src={recentGames[0].poster} className='Participate-img' alt="poster" /> : <div className='Participate-img'><Icon
+                  {recentGames.length != 0 && (recentGames[0].poster != null ? <Image src={recentGames[0].poster} className='Participate-img' alt="poster" /> : <div className='Participate-img'><Icon
                     path={mdiFlagCheckered}
                     size={1.5}
                     color={theme.colors[theme.primaryColor][4]}
@@ -265,36 +273,35 @@ const Home: FC = () => {
                       />
                       <Title order={3}>{t('common.content.home.recent_games')}</Title>
                     </Group> */}
-                  {finished && <div className='button' onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</div>}
-                  {teamRequire && !finished ? <div className='button' style={{ backgroundColor: '#ccc' }}>立即参赛</div> : <div className='button' onClick={onJoin}>立即参赛</div>}
+                  {status == 'Accepted' && <div className='button' onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</div>}
+                  {status == 'Unsubmitted' && teams?.length == 0 && <div className='button' style={{ backgroundColor: '#ccc' }}>立即参赛</div>}
+                  {status == 'Unsubmitted' && teams?.length != 0 && <div className='button' onClick={onJoin}>立即参赛</div>}
+                  {status == 'Pending' && <div className='button' style={{ backgroundColor: '#ccc' }}>审核中</div>}
+                  {status == 'Rejected' && <div className='button' onClick={onJoin}>立即参赛</div>}
                   <div style={{ marginTop: "5%" }}>
                     {/* </Stack> */}
-                    {teamRequire && (
+                    {status == 'Unsubmitted' && teams?.length == 0 && (
                       <Alert
                         color="#7B66FF"
                         icon={<Icon path={mdiAlertCircle} />}
                         title={t('game.participation.alert.team_required.title')}
                       >
-                        <div style={{ color: '#000',fontSize:'0.75vw'}}>
-                          你没有加入任何队伍，请在
-                          <Anchor style={{fontSize:'0.75vw'}} component={Link} to="/teams">
-                            队伍管理
+                        <Trans i18nKey="game.participation.alert.team_required.content">
+                          _
+                          <Anchor component={Link} to="/teams">
+                            _
                           </Anchor>
-                          页面创建、加入队伍。
-                        </div>
-
+                          _
+                        </Trans>
                       </Alert>
                     )}
-                    {status === ParticipationStatus.Accepted && !started && (
+                    {status === 'Rejected' && (
                       <Alert
-                        color="#F5F5F5"
-                        icon={<Icon path={mdiCheck} />}
-                        title={t('game.participation.alert.not_started.title')}
+                        color="red"
+                        icon={<Icon path={mdiAlertCircle} />}
+                        title={t('game.participation.alert.rejected.title')}
                       >
-                        {t('game.participation.alert.not_started.content', {
-                          team: game?.teamName ?? '',
-                        })}
-                        {isMobile && t('game.participation.alert.not_started.mobile')}
+                        {t('game.participation.alert.rejected.content')}
                       </Alert>
                     )}
                   </div>

@@ -1,5 +1,5 @@
 .background {
-  background: url('../image/bg.svg');
+  background: url('../image/bg.svg') #FFFFFF;
   background-size: cover;
   height: 100vh;
   background-position: center;
@@ -25,7 +25,7 @@
 }
 
 .loginTitle {
-  width: 112px;
+  /* width: 112px; */
   height: 39px;
   font-weight: 700;
   font-size: 28px;
@@ -36,7 +36,7 @@
 }
 
 .loginCentent {
-  width: 254px;
+  /* width: 254px; */
   height: 25px;
   font-weight: 500;
   font-size: 18px;
