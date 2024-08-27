@@ -18,7 +18,7 @@ import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
-import classes from '@Styles/HoverCard.module.css'
+import '../styles/shared/HoverCard.module.css'
 
 export interface RecentGameProps {
   game: BasicGameInfoModel
@@ -39,8 +39,9 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
     status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
 
   return (
-    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={classes}>
-      <Card.Section pos="relative">
+    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} >
+      <div style={{color:'#000'}}>立即参赛</div>
+      {/* <Card.Section pos="relative">
         {poster ? (
           <Image src={poster} h={POSTER_HEIGHT} alt="poster" />
         ) : (
@@ -102,7 +103,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
             {t('game.content.duration', { hours: duration })}
           </Badge>
         </Group>
-      </Stack>
+      </Stack> */}
     </Card>
   )
 }

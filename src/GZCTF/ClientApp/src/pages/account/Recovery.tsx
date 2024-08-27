@@ -10,6 +10,7 @@ import AccountView from '@Components/AccountView'
 import Captcha, { useCaptchaRef } from '@Components/Captcha'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
+import '../../styles/components/login.css'
 
 const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')
@@ -80,10 +81,15 @@ const Recovery: FC = () => {
     <AccountView onSubmit={onRecovery}>
       <TextInput
         required
-        label={t('account.label.email')}
-        placeholder="ctf@example.com"
+        // label={t('account.label.email')}
+        placeholder="请输入邮箱"
         type="email"
         w="100%"
+        classNames={{
+          input: 'custom-input',
+          wrapper: 'custom-wrapper',
+          label: 'custom-label',
+        }}
         value={email}
         disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}
@@ -93,13 +99,16 @@ const Recovery: FC = () => {
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,
           alignSelf: 'end',
+          color: '#7B66FF'
         })}
         component={Link}
         to="/account/login"
       >
         {t('account.anchor.login')}
       </Anchor>
-      <Button disabled={disabled} fullWidth onClick={onRecovery}>
+      <Button disabled={disabled} style={{
+        width: "100%",
+      }} classNames={{ root: 'custom-button-d', inner: 'custom-button-inner-d' }} fullWidth onClick={onRecovery}>
         {t('account.button.recovery')}
       </Button>
     </AccountView>

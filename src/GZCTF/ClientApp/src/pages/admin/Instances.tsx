@@ -205,17 +205,17 @@ const Instances: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="xs" w="100%">
+      <Paper shadow="md" p="xs" w="100%" style={{backgroundColor:'#fff'}}>
         <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 205px)">
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>{t('common.label.team')}</Table.Th>
-                <Table.Th>{t('common.label.challenge')}</Table.Th>
-                <Table.Th>{t('admin.label.instances.life_cycle')}</Table.Th>
-                <Table.Th>{t('admin.label.instances.container_id')}</Table.Th>
-                <Table.Th>{t('admin.label.instances.entry')}</Table.Th>
-                <Table.Th />
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('common.label.team')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('common.label.challenge')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('admin.label.instances.life_cycle')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('admin.label.instances.container_id')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('admin.label.instances.entry')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}} />
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>

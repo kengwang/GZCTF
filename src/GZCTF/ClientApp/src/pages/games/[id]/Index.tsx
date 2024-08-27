@@ -205,11 +205,11 @@ const GameDetail: FC = () => {
             ? t('game.button.login_required')
             : GameActionMap.get(status)}
       </Button>
-      {started && (
+      {/* {started && (
         <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>
           {t('game.button.scoreboard')}
         </Button>
-      )}
+      )} */}
       {(status === ParticipationStatus.Pending || status === ParticipationStatus.Rejected) && (
         <Button color="red" variant="outline" onClick={onLeave}>
           {t('game.button.leave')}

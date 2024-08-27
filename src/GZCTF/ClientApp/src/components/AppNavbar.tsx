@@ -62,6 +62,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
         to={props.link ?? '#'}
         data-active={props.isActive || undefined}
         className={classes.link}
+        style={{color:'#fff'}}
       >
         <Icon path={props.icon} size={1} />
       </ActionIcon>
@@ -81,8 +82,8 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
 
   const items: NavbarItem[] = [
     { icon: mdiHomeVariantOutline, label: 'common.tab.home', link: '/' },
-    { icon: mdiNoteTextOutline, label: 'common.tab.post', link: '/posts' },
-    { icon: mdiFlagOutline, label: 'common.tab.game', link: '/games' },
+    // { icon: mdiNoteTextOutline, label: 'common.tab.post', link: '/posts' },
+    // { icon: mdiFlagOutline, label: 'common.tab.game', link: '/games' },
     { icon: mdiAccountGroupOutline, label: 'common.tab.team', link: '/teams' },
     { icon: mdiInformationOutline, label: 'common.tab.about', link: '/about' },
     { icon: mdiWrenchOutline, label: 'common.tab.admin', link: '/admin/games', admin: true },
@@ -128,7 +129,7 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
       <AppShell.Section className={classes.section} style={{ justifyContent: 'end' }}>
         <Stack w="100%" align="center" justify="center" gap={5}>
           {/* Language */}
-          <Menu position="right-end" offset={24} width={160}>
+          {/* <Menu position="right-end" offset={24} width={160}>
             <Menu.Target>
               <ActionIcon className={classes.link}>
                 <Icon path={mdiTranslate} size={1} />
@@ -142,10 +143,10 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
                 </Menu.Item>
               ))}
             </Menu.Dropdown>
-          </Menu>
+          </Menu> */}
 
           {/* Color Mode */}
-          <Tooltip
+          {/* <Tooltip
             label={t('common.tab.theme.switch_to', {
               theme:
                 colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
@@ -160,7 +161,7 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
                 <Icon path={mdiWeatherNight} size={1} />
               )}
             </ActionIcon>
-          </Tooltip>
+          </Tooltip> */}
 
           {/* User Info */}
           <Menu position="right-end" offset={24}>
@@ -171,7 +172,7 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
                     {user.userName?.slice(0, 1) ?? 'U'}
                   </Avatar>
                 ) : (
-                  <Icon path={mdiAccountCircleOutline} size={1} />
+                  <Icon style={{color:'#fff'}} path={mdiAccountCircleOutline} size={1} />
                 )}
               </ActionIcon>
             </Menu.Target>

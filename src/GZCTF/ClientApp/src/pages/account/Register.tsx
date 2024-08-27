@@ -11,6 +11,7 @@ import Captcha, { useCaptchaRef } from '@Components/Captcha'
 import StrengthPasswordInput from '@Components/StrengthPasswordInput'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { RegisterStatus } from '@Api'
+import '../../styles/components/login.css'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -127,21 +128,31 @@ const Register: FC = () => {
     <AccountView onSubmit={onRegister}>
       <TextInput
         required
-        label={t('account.label.email')}
+        // label={t('account.label.email')}
         type="email"
-        placeholder="ctf@example.com"
+        placeholder="请输入邮箱"
         w="100%"
+        classNames={{
+          input: 'custom-input',
+          wrapper: 'custom-wrapper',
+          label: 'custom-label',
+        }}
         value={email}
         disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}
       />
       <TextInput
         required
-        label={t('account.label.username')}
+        // label={t('account.label.username')}
         type="text"
-        placeholder="ctfer"
+        placeholder="请输入用户名"
         w="100%"
         value={uname}
+        classNames={{
+          input: 'custom-input',
+          wrapper: 'custom-wrapper',
+          label: 'custom-label',
+        }}
         disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
       />
@@ -152,8 +163,14 @@ const Register: FC = () => {
       />
       <PasswordInput
         required
-        label={t('account.label.password_retype')}
+        // label={t('account.label.password_retype')}
+        placeholder="请确认密码"
         value={retypedPwd}
+        classNames={{
+          input: 'custom-input',
+          wrapper: 'custom-wrapper',
+          label: 'custom-label',
+        }}
         onChange={(event) => setRetypedPwd(event.currentTarget.value)}
         disabled={disabled}
         w="100%"
@@ -164,13 +181,16 @@ const Register: FC = () => {
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,
           alignSelf: 'end',
+          color: '#7B66FF'
         })}
         component={Link}
         to="/account/login"
       >
         {t('account.anchor.login')}
       </Anchor>
-      <Button type="submit" fullWidth onClick={onRegister} disabled={disabled}>
+      <Button type="submit" style={{
+        width: "100%",
+      }} classNames={{ root: 'custom-button-d', inner: 'custom-button-inner-d' }} fullWidth onClick={onRegister} disabled={disabled}>
         {t('account.button.register')}
       </Button>
     </AccountView>

@@ -201,7 +201,7 @@ const Teams: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="md" w="100%">
+      <Paper shadow="md" p="md" w="100%" style={{backgroundColor:'#fff'}}>
         <ScrollArea
           viewportRef={viewport}
           offsetScrollbars
@@ -211,12 +211,12 @@ const Teams: FC = () => {
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ width: '35vw', minWidth: '400px' }}>
+                <Table.Th style={{ width: '35vw', minWidth: '400px',backgroundColor:'#e3e5e9' }}>
                   {t('common.label.team')}
                 </Table.Th>
-                <Table.Th>{t('admin.label.teams.members')}</Table.Th>
-                <Table.Th>{t('admin.label.teams.bio')}</Table.Th>
-                <Table.Th />
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('admin.label.teams.members')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('admin.label.teams.bio')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}} />
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>

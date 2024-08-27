@@ -241,7 +241,7 @@ const Users: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="xs" w="100%">
+      <Paper shadow="md" p="xs" w="100%" style={{backgroundColor:'#fff'}}>
         <ScrollArea
           viewportRef={viewport}
           offsetScrollbars
@@ -251,13 +251,13 @@ const Users: FC = () => {
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.users.active')}</Table.Th>
-                <Table.Th>{t('common.label.user')}</Table.Th>
-                <Table.Th>{t('account.label.email')}</Table.Th>
-                <Table.Th>{t('common.label.ip')}</Table.Th>
-                <Table.Th>{t('account.label.real_name')}</Table.Th>
-                <Table.Th>{t('account.label.student_id')}</Table.Th>
-                <Table.Th />
+                <Table.Th style={{ minWidth: '1.8rem',backgroundColor:'#e3e5e9' }}>{t('admin.label.users.active')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('common.label.user')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('account.label.email')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('common.label.ip')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('account.label.real_name')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('account.label.student_id')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}} />
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>

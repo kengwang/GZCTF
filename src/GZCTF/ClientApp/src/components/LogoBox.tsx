@@ -12,11 +12,11 @@ export const LogoBox = forwardRef<HTMLDivElement, LogoProps>((props, ref) => {
 
   return (
     <Box {...others} ref={ref} w={size} h={size}>
-      {custom ? (
+      {/* {custom ? (
         <Image src={custom} w={size} h="auto" maw={size} mah={size} />
       ) : (
         <MainIcon ignoreTheme={ignoreTheme} size={em(size)} />
-      )}
+      )} */}
     </Box>
   )
 })

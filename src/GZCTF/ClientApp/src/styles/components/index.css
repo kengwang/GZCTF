@@ -1,0 +1,314 @@
+/* .home{
+    width: 100vw;
+    height: 100vh;
+    background: url('../image/yinying.png') no-repeat;
+} */
+
+.centent {
+    position: absolute;
+    left: 3vw;
+    top: 2vw;
+    width: 70%;
+    height: 100%;
+    background: url('../image/yinying.png') no-repeat;
+}
+
+.titleCenter {
+    /* width: 120px;
+    height: 42px; */
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 800;
+    font-size: 1.55vw;
+    color: #000000;
+    line-height: 35px;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    position: relative;
+}
+
+.titleBg {
+    width: 6vw;
+    height: 0.7vw;
+    position: absolute;
+    bottom: 1px;
+    background: linear-gradient(90deg, rgba(106, 82, 255, 0.8) 0%, rgba(106, 82, 255, 0) 100%);
+    border-radius: 0px 0px 0px 0px;
+    z-index: -1;
+}
+
+.centent-introduce {
+    width: 100%;
+    color: #000;
+}
+
+.centent-introduce-top {
+    display: flex;
+}
+
+.centent-introduce-icon {
+    width: 28px;
+    height: 28px;
+    background: #7B66FF;
+    box-shadow: 1px 4px 8px 0px rgba(95, 69, 255, 0.25);
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.centent-introduce-icon-img {
+    width: 16px;
+    height: 16px;
+    background: url('../image/ctf1.png');
+}
+
+.centent-introduce-name {
+    width: 8vw;
+    height: 1.6vw;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: bold;
+    font-size: 1.2vw;
+    color: #000000;
+    line-height: 26px;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    margin-left: 20px;
+}
+
+.centent-introduce-centent {
+    width: 90%;
+    height: 4vw;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 400;
+    font-size: 0.75vw;
+    color: #1D2129;
+    line-height: 1.2vw;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    border-left: 1px dashed #C7C7C7;
+    margin-left: 14px;
+    margin-top: 14px;
+}
+
+.centent-introduce-centent-detail {
+    margin-left: 34px;
+}
+
+.centent-format-icon-img {
+    width: 16px;
+    height: 16px;
+    background: url('../image/ctf2.png');
+}
+
+.centent-format-centent {
+    width: 90%;
+    height: 9vw;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 400;
+    font-size: 0.75vw;
+    color: #1D2129;
+    line-height: 1.3vw;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    border-left: 1px dashed #C7C7C7;
+    margin-left: 14px;
+    margin-top: 12px;
+}
+
+.centent-format-centent-detail {
+    margin-left: 34px;
+}
+
+.centent-medal-icon-img {
+    width: 16px;
+    height: 16px;
+    background: url('../image/ctf3.png');
+}
+
+.centent-medal-centent {
+    width: 90%;
+    height: 3vw;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 400;
+    font-size: 0.75vw;
+    color: #1D2129;
+    line-height: 1.3vw;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    border-left: 1px dashed #C7C7C7;
+    margin-left: 14px;
+    margin-top: 12px;
+}
+
+.centent-medal-centent-detail {
+    margin-left: 34px;
+}
+
+.centent-medal-centent-detail-tow {
+    margin-left: 20px;
+}
+
+.centent-match-icon-img {
+    width: 16px;
+    height: 16px;
+    background: url('../image/ctf1.png');
+}
+
+.centent-match-centent {
+    width: 90%;
+    height: 8vw;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 400;
+    font-size: 0.75vw;
+    color: #1D2129;
+    line-height: 1.3vw;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    border-left: 1px dashed #C7C7C7;
+    margin-left: 14px;
+    margin-top: 12px;
+}
+
+.centent-match-centent-detail {
+    margin-left: 34px;
+}
+
+.centent-company-icon-img {
+    width: 16px;
+    height: 16px;
+    background: url('../image/ctf4.png');
+}
+
+.centent-company-centent {
+    width: 90%;
+    height: 4vw;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 400;
+    font-size: 0.75vw;
+    color: #1D2129;
+    line-height: 1.3vw;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    margin-left: 14px;
+    margin-top: 12px;
+}
+
+.centent-company-centent-detail {
+    margin-left: 34px;
+}
+
+.Participate {
+    width: 25%;
+    height: 90vh;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.06);
+    border-radius: 8px 8px 8px 8px;
+    position: absolute;
+    left: 73%;
+    top: 5vh;
+}
+
+.Participate-img {
+    width: 86%;
+    height: 30%;
+    background: #E1E1E1;
+    border-radius: 4px 4px 4px 4px;
+    margin-left: 7%;
+    margin-top: 7%;
+}
+
+.Participate-text {
+    width: 50%;
+    height: 28px;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: bold;
+    font-size: 0.9vw;
+    color: #4E5969;
+    line-height: 1.3vw;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    text-align: center;
+    margin-left: 25%;
+    margin-top: 7%;
+}
+
+.downTimer {
+    width: 70%;
+    display: flex;
+    justify-content: space-around;
+    font-weight: 500;
+    font-size: 1.5vw;
+    color: #3D3D3D;
+    margin-left: 15%;
+    margin-top: 7%;
+}
+
+.downTimer-time {
+    background: #EEEEEE;
+    border-radius: 8px 8px 8px 8px;
+    padding: 7px;
+}
+
+.button {
+    width: 86%;
+    height: 6%;
+    background: #7B66FF;
+    box-shadow: 0px 8px 16px 0px rgba(95, 69, 255, 0.25);
+    border-radius: 8px 8px 8px 8px;
+    font-size: 1vw;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-left: 7%;
+    margin-top: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.communication {
+    width: 86%;
+    margin-top: 20%;
+    margin-left: 7%;
+    font-weight: 500;
+    font-size: 0.75vw;
+    color: #000000;
+    line-height: 1.3vw;
+}
+
+.communication-centent {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5%;
+}
+
+.communication-centent-img1 {
+    width: 32px;
+    height: 32px;
+    background: url('../image/qq.png') no-repeat;
+    background-size: 100% 100%;
+    margin-right: .5vw;
+}
+
+.communication-centent-img2 {
+    width: 32px;
+    height: 32px;
+    background: url('../image/frame.png') no-repeat;
+    background-size: 100% 100%;
+    margin-right: .5vw;
+}
+
+.communication-centent-text {
+    font-weight: 400;
+    font-size: 0.6vw;
+    color: #1D2129;
+    line-height: 1.1vw;
+}

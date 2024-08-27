@@ -25,12 +25,12 @@ const IconHeader: FC<StickyHeaderProps> = ({ sticky, px }) => {
       className={classes.group}
     >
       <LogoHeader />
-      <Title className={classes.subtitle} order={3}>
+      {/* <Title className={classes.subtitle} order={3}>
         &gt; {config?.slogan ?? 'Hack for fun not for profit'}
         <Text span className={classes.blink}>
           _
         </Text>
-      </Title>
+      </Title> */}
     </Group>
   )
 }

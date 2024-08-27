@@ -127,7 +127,7 @@ const Teams: FC = () => {
               <Title
                 order={2}
                 style={{
-                  color: theme.colors[theme.primaryColor][colorScheme === 'dark' ? 2 : 6],
+                  // color: theme.colors[theme.primaryColor][colorScheme === 'dark' ? 2 : 6],
                   fontSize: '6rem',
                   fontWeight: 'bold',
                   opacity: 0.15,
@@ -160,7 +160,7 @@ const Teams: FC = () => {
           )}
         </Stack>
 
-        <Modal
+        {/* <Modal
           opened={joinOpened}
           title={t('team.button.join')}
           onClose={() => setJoinOpened(false)}
@@ -179,7 +179,7 @@ const Teams: FC = () => {
               {t('team.button.join')}
             </Button>
           </Stack>
-        </Modal>
+        </Modal> */}
 
         <TeamCreateModal
           opened={createOpened}

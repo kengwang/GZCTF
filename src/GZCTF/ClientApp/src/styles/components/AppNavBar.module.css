@@ -1,7 +1,7 @@
 .link {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--mantine-radius-md);
+  width: 37px;
+  height: 37px;
+  border-radius: 10px 10px 10px 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,12 +9,11 @@
   cursor: pointer;
 
   &:hover {
-    background-color: alpha(var(--mantine-color-gray-6), 0.5);
+    color: var(--mantine-color-gray-1);
   }
 
   &[data-active] {
-    background-color: alpha(var(--mantine-primary-color-7), 0.25);
-    color: var(--mantine-primary-color-4);
+    background: rgba(255,255,255,0.15);
   }
 }
 
@@ -32,12 +31,12 @@
   margin-left: 20px;
   font-weight: 500;
   color: var(--mantine-color-light-0);
-  background-color: var(--mantine-primary-color-6);
+  background-color: #5F45FF;
 
-  @mixin dark {
+  /* @mixin dark {
     background-color: darken(var(--mantine-primary-color-8), 0.45);
     color: var(--mantine-primary-color-4);
-  }
+  } */
 }
 
 .section {

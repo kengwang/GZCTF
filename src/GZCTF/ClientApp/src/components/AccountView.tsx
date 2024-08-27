@@ -3,6 +3,7 @@ import { FC } from 'react'
 import { PropsWithChildren } from 'react'
 import { useNavigate } from 'react-router-dom'
 import LogoHeader from '@Components/LogoHeader'
+import '../styles/components/login.css'
 
 interface AccountViewProps extends PropsWithChildren {
   onSubmit?: (event: React.FormEvent) => Promise<void>
@@ -12,14 +13,22 @@ const AccountView: FC<AccountViewProps> = ({ onSubmit, children }) => {
   const navigate = useNavigate()
 
   return (
-    <Center h="100vh">
-      <Stack align="center" justify="center">
-        <LogoHeader onClick={() => navigate('/')} />
+    <Center h="100vh" className="background">
+      <div className="title"></div>
+      <Stack className="loginCentr" align="center" justify="center">
+        {/* <LogoHeader onClick={() => navigate('/')} /> */}
+        <div className="loginTitle">
+         欢迎登录
+        </div>
+        <div className="loginCentent">
+        “源鲁杯”高校网络安全技能大赛
+        </div>
         <form
           style={{
-            width: '300px',
-            minWidth: '300px',
-            maxWidth: '300px',
+            width: '375px',
+            minWidth: '375px',
+            maxWidth: '375px',
+            marginTop:'48px',
           }}
           onSubmit={onSubmit}
         >

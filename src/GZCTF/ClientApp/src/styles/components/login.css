@@ -1,0 +1,97 @@
+.background {
+  background: url('../image/bg.svg');
+  background-size: cover;
+  height: 100vh;
+  background-position: center;
+}
+
+.title {
+  width: 20%;
+  height: 5%;
+  background: url('../image/title.png') no-repeat;
+  background-size: contain;
+  position: absolute;
+  top: 40px;
+  left: 50px;
+}
+
+.loginCentr {
+  width: 490px;
+  height: 530px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 32px 0px rgba(226, 224, 236, 0.58);
+  border-radius: 12px 12px 12px 12px;
+  position: relative;
+}
+
+.loginTitle {
+  width: 112px;
+  height: 39px;
+  font-weight: 700;
+  font-size: 28px;
+  color: #191919;
+  position: absolute;
+  left: 58px;
+  top: 49px;
+}
+
+.loginCentent {
+  width: 254px;
+  height: 25px;
+  font-weight: 500;
+  font-size: 18px;
+  color: #2C3542;
+  line-height: 21px;
+  position: absolute;
+  left: 58px;
+  top: 96px;
+}
+
+.custom-input {
+  height: 48px;
+  background-color: #FFFFFF !important;
+  border-color: #E1E4E8;
+  color: #000;
+}
+
+.userIcon {
+  width: 22px;
+  height: 22px;
+  background: url('../image/user.png');
+}
+
+.passIcon {
+  width: 22px;
+  height: 22px;
+  background: url('../image/password.png');
+}
+
+.custom-button {
+  width: 177px;
+  height: 50px;
+  border-radius: 3px 3px 3px 3px;
+  border: 1px solid #7B66FF;
+}
+
+.custom-button:hover {
+  background: transparent;
+}
+
+.custom-button-inner {
+  color: #7B66FF;
+}
+
+.custom-button-d {
+  width: 177px;
+  height: 50px;
+  background: #7B66FF;
+  border-radius: 3px 3px 3px 3px;
+}
+
+.custom-button-d:hover {
+  background: #7B66FF;
+}
+
+.custom-button-inner-d {
+  color: #FFFFFF;
+}

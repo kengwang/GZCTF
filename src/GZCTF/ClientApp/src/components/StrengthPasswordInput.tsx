@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react'
 import React, { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@Utils/ThemeOverride'
+import '../styles/components/login.css'
 
 const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, label }) => {
   return (
@@ -85,9 +86,14 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
       <Popover.Target>
         <PasswordInput
           required
-          label={props.label ?? t('account.label.password')}
-          placeholder="P4ssW@rd"
+          // label={props.label ?? t('account.label.password')}
+          placeholder="请输入密码"
           value={props.value}
+          classNames={{
+            input: 'custom-input',
+            wrapper: 'custom-wrapper',
+            label: 'custom-label',
+          }}
           onFocusCapture={open}
           onBlurCapture={close}
           disabled={props.disabled}

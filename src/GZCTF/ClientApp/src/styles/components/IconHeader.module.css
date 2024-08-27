@@ -7,7 +7,7 @@
   align-items: flex-end;
   padding: 0 var(--header-px) var(--mantine-spacing-sm) var(--header-px);
   position: relative;
-  background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-gray-7));
+  background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-gray-10));
 
   &[data-sticky] {
     position: sticky;
@@ -20,7 +20,7 @@
     right: 0;
     left: 0;
     padding-top: 16px;
-    background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-gray-7));
+    background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-gray-10));
   }
 }
 

@@ -118,16 +118,16 @@ const Games: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="md" w="100%">
+      <Paper shadow="md" p="md" w="100%" style={{backgroundColor:'#fff'}}>
         <ScrollArea offsetScrollbars h="calc(100vh - 190px)">
-          <Table className={tableClasses.table}>
+          <Table className={tableClasses.table} >
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.games.hide')}</Table.Th>
-                <Table.Th>{t('common.label.game')}</Table.Th>
-                <Table.Th>{t('common.label.time')}</Table.Th>
-                <Table.Th>{t('admin.label.games.summary')}</Table.Th>
-                <Table.Th />
+                <Table.Th style={{ minWidth: '1.8rem',backgroundColor:'#e3e5e9' }}>{t('admin.label.games.hide')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('common.label.game')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('common.label.time')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('admin.label.games.summary')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}} />
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>

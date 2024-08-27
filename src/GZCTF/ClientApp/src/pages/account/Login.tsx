@@ -1,7 +1,7 @@
 import { Anchor, Button, Grid, PasswordInput, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCheck, mdiClose ,mdiAccount ,mdiLock  } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +11,7 @@ import Captcha, { useCaptchaRef } from '@Components/Captcha'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api from '@Api'
+import '../../styles/components/login.css'
 
 const Login: FC = () => {
   const params = useSearchParams()[0]
@@ -111,20 +112,38 @@ const Login: FC = () => {
     <AccountView onSubmit={onLogin}>
       <TextInput
         required
-        label={t('account.label.username_or_email')}
-        placeholder="ctfer"
+        // label={t('account.label.username_or_email')}
+        placeholder="请输入账号信息"
+        leftSection={<div className="userIcon"></div>}
         type="text"
         w="100%"
+        classNames={{
+          input: 'custom-input',
+          wrapper: 'custom-wrapper',
+          label: 'custom-label',
+        }}
+        style={{
+          marginBottom: "36px",
+        }}
         value={uname}
         disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
       />
       <PasswordInput
         required
-        label={t('account.label.password')}
+        // label={t('account.label.password')}
+        leftSection={<div className="passIcon"></div>}
         id="your-password"
-        placeholder="P4ssW@rd"
+        placeholder="请输入密码"
+        style={{
+          marginBottom: "24px",
+        }}
         w="100%"
+        classNames={{
+          input: 'custom-input',
+          wrapper: 'custom-wrapper',
+          label: 'custom-label',
+        }}
         value={pwd}
         disabled={disabled}
         onChange={(event) => setPwd(event.currentTarget.value)}
@@ -134,6 +153,7 @@ const Login: FC = () => {
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,
           alignSelf: 'end',
+          color:'#7B66FF'
         })}
         component={Link}
         to="/account/recovery"
@@ -142,12 +162,12 @@ const Login: FC = () => {
       </Anchor>
       <Grid grow w="100%">
         <Grid.Col span={2}>
-          <Button fullWidth variant="outline" component={Link} to="/account/register">
+          <Button fullWidth variant="outline" classNames={{ root: 'custom-button',inner:'custom-button-inner' }} component={Link} to="/account/register">
             {t('account.button.register')}
           </Button>
         </Grid.Col>
         <Grid.Col span={2}>
-          <Button fullWidth disabled={disabled} onClick={onLogin}>
+          <Button fullWidth disabled={disabled} classNames={{ root: 'custom-button-d',inner:'custom-button-inner-d' }} onClick={onLogin}>
             {t('account.button.login')}
           </Button>
         </Grid.Col>

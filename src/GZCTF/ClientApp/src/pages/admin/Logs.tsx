@@ -200,7 +200,7 @@ const Logs: FC = () => {
         </>
       }
     >
-      <Paper shadow="md" p="md" w="100%">
+      <Paper shadow="md" p="md" w="100%" style={{backgroundColor:'#fff'}}>
         <ScrollArea
           viewportRef={viewport}
           offsetScrollbars
@@ -210,11 +210,11 @@ const Logs: FC = () => {
           <Table className={cx(tableClasses.table, tableClasses.nopadding)}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ width: '7rem' }}>{t('common.label.time')}</Table.Th>
-                <Table.Th style={{ width: '12%' }}>{t('common.label.ip')}</Table.Th>
-                <Table.Th style={{ width: '6rem' }}>{t('common.label.user')}</Table.Th>
-                <Table.Th>{t('admin.label.logs.message')}</Table.Th>
-                <Table.Th style={{ width: '5rem' }}>{t('admin.label.logs.status')}</Table.Th>
+                <Table.Th style={{ width: '7rem',backgroundColor:'#e3e5e9' }}>{t('common.label.time')}</Table.Th>
+                <Table.Th style={{ width: '12%',backgroundColor:'#e3e5e9' }}>{t('common.label.ip')}</Table.Th>
+                <Table.Th style={{ width: '6rem',backgroundColor:'#e3e5e9' }}>{t('common.label.user')}</Table.Th>
+                <Table.Th style={{backgroundColor:'#e3e5e9'}}>{t('admin.label.logs.message')}</Table.Th>
+                <Table.Th style={{ width: '5rem',backgroundColor:'#e3e5e9' }}>{t('admin.label.logs.status')}</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
