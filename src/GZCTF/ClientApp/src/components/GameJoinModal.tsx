@@ -8,14 +8,37 @@ import { useParams } from 'react-router-dom'
 import { useGame } from '@Utils/useGame'
 import { useTeams } from '@Utils/useUser'
 import { GameJoinModel } from '@Api'
+import api, { PostInfoModel, ParticipationStatus } from '@Api'
 
 interface GameJoinModalProps extends ModalProps {
   onSubmitJoin: (info: GameJoinModel) => Promise<void>
 }
 
 const GameJoinModal: FC<GameJoinModalProps> = (props) => {
+  const { data: allGames } = api.game.useGameGamesAll({
+    refreshInterval: 5 * 60 * 1000,
+  })
+
+  allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
+
+
+  const now = new Date()
+  const recentGames = [
+    ...(allGames?.filter((g) => now < new Date(g.end ?? '')) ?? []),
+    ...(allGames?.filter((g) => now >= new Date(g.end ?? '')).reverse() ?? []),
+  ].slice(0, 3)
+
   const { id } = useParams()
-  const numId = parseInt(id ?? '-1')
+  let ids = null
+  if (recentGames.length != 0) {
+    ids = recentGames[0].id
+  }
+  let numId = null
+  if(id === undefined){
+    numId = ids
+  }else{
+    numId = parseInt(id ?? '-1')
+  }
   const { onSubmitJoin, ...modalProps } = props
   const { teams } = useTeams()
   const { game } = useGame(numId)

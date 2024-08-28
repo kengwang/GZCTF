@@ -10,6 +10,7 @@
 
   &:hover {
     color: var(--mantine-color-gray-1);
+    background: rgba(255,255,255,0.15);
   }
 
   &[data-active] {
@@ -31,7 +32,7 @@
   margin-left: 20px;
   font-weight: 500;
   color: var(--mantine-color-light-0);
-  background-color: #5F45FF;
+  background-color: #0066ff;
 
   /* @mixin dark {
     background-color: darken(var(--mantine-primary-color-8), 0.45);

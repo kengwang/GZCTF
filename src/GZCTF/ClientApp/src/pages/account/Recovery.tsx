@@ -99,7 +99,7 @@ const Recovery: FC = () => {
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,
           alignSelf: 'end',
-          color: '#7B66FF'
+          color: '#0066ff'
         })}
         component={Link}
         to="/account/login"

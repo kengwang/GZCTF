@@ -82,47 +82,64 @@ const Home: FC = () => {
 
   usePageTitle()
   const modals = useModals()
-
-  const onJoin = () =>
-    modals.openConfirmModal({
-      title: t('game.content.join.confirm'),
-      children: (
-        <Stack gap="xs">
-          <Text size="sm">{t('game.content.join.content.0')}</Text>
-          <Text size="sm">
-            <Trans i18nKey="game.content.join.content.1" />
-          </Text>
-          <Text size="sm">
-            <Trans i18nKey="game.content.join.content.2" />
-          </Text>
-        </Stack>
-      ),
-      onConfirm: () => setJoinModalOpen(true),
-      confirmProps: { color: theme.primaryColor },
-    })
+  const { user } = useUser()
+  const onJoin = () => {
+    if (user == undefined) {
+      // 刷新当前页面
+      navigate('/account/login');
+    } else {
+      modals.openConfirmModal({
+        title: t('game.content.join.confirm'),
+        children: (
+          <Stack gap="xs">
+            <Text size="sm">{t('game.content.join.content.0')}</Text>
+            <Text size="sm">
+              <Trans i18nKey="game.content.join.content.1" />
+            </Text>
+            <Text size="sm">
+              <Trans i18nKey="game.content.join.content.2" />
+            </Text>
+          </Stack>
+        ),
+        onConfirm: () => setJoinModalOpen(true),
+        confirmProps: { color: theme.primaryColor },
+      })
+    }
+  }
 
   // const { id } = useParams()
   let id = null
+  let isAfter = null;
+  let isAfterStart = null;
   if (recentGames.length != 0) {
     id = recentGames[0].id
+    let nowNew = new Date();
+    let end = new Date(recentGames[0].end??'')
+    let start = new Date(recentGames[0].start??'')
+    isAfter = nowNew > end
+    isAfterStart = nowNew > start
   }
   const numId = id ?? parseInt('-1')
-
+  // const numId = parseInt(id ?? '-1')
 
   // const GetAlert = () => {
 
   const { game, error, status } = useGame(numId)
-  console.log(game, error, status);
   const { startTime, endTime, finished, started, progress } = getGameStatus(game)
 
   const { locale } = useLanguage()
-
-  const { user } = useUser()
   const { teams } = useTeams()
-  // console.log(finished, user, teams, ParticipationStatus, status);
+  console.log(finished, user, teams, ParticipationStatus, status);
   const teamRequire =
     user && status === ParticipationStatus.Unsubmitted && !finished && teams && teams.length === 0
   // }
+
+  const canSubmit =
+    (status === ParticipationStatus.Unsubmitted || status === ParticipationStatus.Rejected) &&
+    !finished &&
+    user &&
+    teams &&
+    teams.length > 0
 
   // GetAlert()
 
@@ -146,7 +163,7 @@ const Home: FC = () => {
   }
 
   return (
-    <WithNavBar minWidth={0} withFooter withHeader stickyHeader>
+    <WithNavBar withFooter withHeader stickyHeader>
       <Stack justify="flex-start">
         {isMobile && recentGames && recentGames.length > 0 && (
           <RecentGameCarousel games={recentGames} />
@@ -202,7 +219,7 @@ const Home: FC = () => {
                 </div>
                 <div className='centent-medal-centent'>
                   <div className='centent-medal-centent-detail'>
-                    <span>新生赛道:一等奖1名/二等奖9名/三等奖18名</span>     <span className='centent-medal-centent-detail-tow'>公开赛道:一等奖1名/二等奖9名/三等奖18名</span>
+                    <span>新生赛道：一等奖1名/二等奖9名/三等奖18名</span>     <span className='centent-medal-centent-detail-tow'>公开赛道：一等奖1名/二等奖9名/三等奖18名</span>
                   </div>
                 </div>
               </div>
@@ -273,16 +290,19 @@ const Home: FC = () => {
                       />
                       <Title order={3}>{t('common.content.home.recent_games')}</Title>
                     </Group> */}
-                  {status == 'Accepted' && <div className='button' onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</div>}
-                  {status == 'Unsubmitted' && teams?.length == 0 && <div className='button' style={{ backgroundColor: '#ccc' }}>立即参赛</div>}
-                  {status == 'Unsubmitted' && teams?.length != 0 && <div className='button' onClick={onJoin}>立即参赛</div>}
-                  {status == 'Pending' && <div className='button' style={{ backgroundColor: '#ccc' }}>审核中</div>}
-                  {status == 'Rejected' && <div className='button' onClick={onJoin}>立即参赛</div>}
+                  {isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>比赛结束</div>}
+                  {status == 'Accepted' && !isAfter && isAfterStart && <div className='button' onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</div>}
+                  {status == 'Accepted' && !isAfter && !isAfterStart && <div className='button' style={{ backgroundColor: '#ccc' }}>比赛未开始</div>}
+                  {status == 'Unsubmitted' && teams?.length == 0 && !isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>立即参赛</div>}
+                  {status == 'Unsubmitted' && teams?.length != 0 && !isAfter && <div className='button' onClick={onJoin}>立即参赛</div>}
+                  {status == 'Pending' && !isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>审核中</div>}
+                  {status == 'Rejected' && !isAfter && <div className='button' onClick={onJoin}>立即参赛</div>}
+                  {status == 'Suspended' && !isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>禁赛中</div>}
                   <div style={{ marginTop: "5%" }}>
                     {/* </Stack> */}
                     {status == 'Unsubmitted' && teams?.length == 0 && (
                       <Alert
-                        color="#7B66FF"
+                        color="#0066ff"
                         icon={<Icon path={mdiAlertCircle} />}
                         title={t('game.participation.alert.team_required.title')}
                       >

@@ -164,7 +164,6 @@ const GameDetail: FC = () => {
 
   const teamRequire =
     user && status === ParticipationStatus.Unsubmitted && !finished && teams && teams.length === 0
-
   const onJoin = () =>
     modals.openConfirmModal({
       title: t('game.content.join.confirm'),
@@ -291,7 +290,7 @@ const GameDetail: FC = () => {
           {GetAlert(status, game?.teamName ?? '')}
           {teamRequire && (
             <Alert
-              color="#7B66FF"
+              color="#0066ff"
               icon={<Icon path={mdiAlertCircle} />}
               title={t('game.participation.alert.team_required.title')}
             >

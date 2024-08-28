@@ -137,6 +137,9 @@ const Register: FC = () => {
           wrapper: 'custom-wrapper',
           label: 'custom-label',
         }}
+        style={{
+          marginBottom: "15px",
+        }}
         value={email}
         disabled={disabled}
         onChange={(event) => setEmail(event.currentTarget.value)}
@@ -148,6 +151,9 @@ const Register: FC = () => {
         placeholder="请输入用户名"
         w="100%"
         value={uname}
+        style={{
+          marginBottom: "15px",
+        }}
         classNames={{
           input: 'custom-input',
           wrapper: 'custom-wrapper',
@@ -171,6 +177,9 @@ const Register: FC = () => {
           wrapper: 'custom-wrapper',
           label: 'custom-label',
         }}
+        style={{
+          marginBottom: "15px",
+        }}
         onChange={(event) => setRetypedPwd(event.currentTarget.value)}
         disabled={disabled}
         w="100%"
@@ -181,7 +190,7 @@ const Register: FC = () => {
         sx={(theme) => ({
           fontSize: theme.fontSizes.xs,
           alignSelf: 'end',
-          color: '#7B66FF'
+          color: '#0066ff'
         })}
         component={Link}
         to="/account/login"

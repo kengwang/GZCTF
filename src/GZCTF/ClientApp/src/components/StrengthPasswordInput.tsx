@@ -89,6 +89,9 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
           // label={props.label ?? t('account.label.password')}
           placeholder="请输入密码"
           value={props.value}
+          style={{
+            marginBottom: "15px",
+          }}
           classNames={{
             input: 'custom-input',
             wrapper: 'custom-wrapper',

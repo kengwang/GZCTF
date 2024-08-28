@@ -160,7 +160,7 @@ const Teams: FC = () => {
           )}
         </Stack>
 
-        {/* <Modal
+        <Modal
           opened={joinOpened}
           title={t('team.button.join')}
           onClose={() => setJoinOpened(false)}
@@ -179,7 +179,7 @@ const Teams: FC = () => {
               {t('team.button.join')}
             </Button>
           </Stack>
-        </Modal> */}
+        </Modal>
 
         <TeamCreateModal
           opened={createOpened}
