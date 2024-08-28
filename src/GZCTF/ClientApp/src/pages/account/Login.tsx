@@ -184,7 +184,7 @@ const Login: FC = () => {
       <TextInput
         required
         // label={t('account.label.username_or_email')}
-        placeholder="请输入账号信息"
+        placeholder="请输入账号"
         leftSection={<div className="userIcon"></div>}
         type="text"
         w="100%"
