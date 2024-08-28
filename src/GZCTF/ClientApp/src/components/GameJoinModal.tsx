@@ -33,9 +33,9 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   if (recentGames.length != 0) {
     ids = recentGames[0].id
   }
-  let numId = null
+  let numId = undefined
   if(id === undefined){
-    numId = ids
+    numId = ids ?? 1
   }else{
     numId = parseInt(id ?? '-1')
   }
