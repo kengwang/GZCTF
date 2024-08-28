@@ -260,7 +260,7 @@
 .button {
     width: 86%;
     height: 5vh;
-    background: #0066ff;
+    background: var(--mantine-color-gray-8);
     box-shadow: 0px 8px 16px 0px rgba(13, 69, 255, 0.25);
     border-radius: 8px 8px 8px 8px;
     font-size: 1vw;
