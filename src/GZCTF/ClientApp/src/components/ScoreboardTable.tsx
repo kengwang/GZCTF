@@ -401,11 +401,11 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                 }}
                 flex={1}
               />
-              <Switch
+              {/* <Switch
                 checked={hideWeekInTitle}
                 onChange={(e) => setHideWeekInTitle(e.target.checked)}
                 label={t('game.button.hide_week_in_title')}
-              />
+              /> */}
               <Select
                 placeholder={t('game.label.score_table.tag_all')}
                 clearable

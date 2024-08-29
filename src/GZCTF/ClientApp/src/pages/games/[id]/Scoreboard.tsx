@@ -51,7 +51,7 @@ const Scoreboard: FC = () => {
       ) : (
         <WithGameTab>
           <Stack pb="2rem">
-            <TimeLine organization={organization ?? 'all'} />
+            {/* <TimeLine organization={organization ?? 'all'} /> */}
             <ScoreboardTable {...scoreboardProps} />
           </Stack>
         </WithGameTab>

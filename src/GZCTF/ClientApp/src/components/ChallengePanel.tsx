@@ -181,7 +181,7 @@ const ChallengePanel: FC = () => {
             </Text>
           }
         />
-        <Switch
+        {/* <Switch
           checked={hideWeekInTitle}
           onChange={(e) => setHideWeekInTitle(e.target.checked)}
           w="10rem"
@@ -195,7 +195,7 @@ const ChallengePanel: FC = () => {
               {t('game.button.hide_week_in_title')}
             </Text>
           }
-        />
+        /> */}
         <TextInput
           placeholder={t('game.placeholder.challenge_search')}
           value={searchText ?? ''}
