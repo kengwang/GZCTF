@@ -161,6 +161,7 @@ public class GameRepository(
 
     Task<Data[]> FetchData(Game game, CancellationToken token = default) =>
         Context.GameInstances
+            .Where(t=>t.IsSolved)
             .Include(i => i.Challenge)
             .Where(i => i.Challenge.Game == game
                         && i.Challenge.IsEnabled
