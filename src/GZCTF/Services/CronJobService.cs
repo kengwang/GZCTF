@@ -94,25 +94,21 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                     await challengesRepository.EnsureInstances(gameChallenge, game);
                     if (game.IsActive)
                         await gameNoticeRepository.AddNotice(
-                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] });
-                    await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
+                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] }); 
                 }
                 
                 if (!gameChallenge.IsEnabled)
-                    continue;
-
-                if (gameChallenge.EndAt <= DateTimeOffset.Now)
                 {
                     gameChallenge.CanSubmit = false;
                 }
                 
             }
+            await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
         }
-
         await gamesRepository.SaveAsync();
     }
 
-    private int _counter = 6;
+    int _counter;
     
     async void Execute(object? state)
     {
