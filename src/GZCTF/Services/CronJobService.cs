@@ -116,12 +116,24 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         if (!_isFinished)
             return;
         _isFinished = false;
-        await using AsyncServiceScope scope = provider.CreateAsyncScope();
-        await UpdateChallengeStatus(scope);
-        _isFinished = true;
-        if (--_counter > 0) return;
-        await ContainerChecker(scope);
-        await BootstrapCache(scope);
-        _counter = 6;
+        try
+        {
+            await using AsyncServiceScope scope = provider.CreateAsyncScope();
+            await UpdateChallengeStatus(scope);
+            _isFinished = true;
+            if (--_counter > 0) return;
+            await ContainerChecker(scope);
+            await BootstrapCache(scope);
+            _counter = 6;
+        }
+        catch
+        {
+            // ignore
+        }
+        finally
+        {
+            _isFinished = true;
+        }
+
     }
 }
