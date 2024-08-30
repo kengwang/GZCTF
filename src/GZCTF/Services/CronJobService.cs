@@ -9,6 +9,7 @@ namespace GZCTF.Services;
 public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger) : IHostedService, IDisposable
 {
     Timer? _timer;
+    bool _isFinished = true;
 
     public void Dispose()
     {
@@ -112,8 +113,12 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
     
     async void Execute(object? state)
     {
+        if (!_isFinished)
+            return;
+        _isFinished = false;
         await using AsyncServiceScope scope = provider.CreateAsyncScope();
         await UpdateChallengeStatus(scope);
+        _isFinished = true;
         if (--_counter > 0) return;
         await ContainerChecker(scope);
         await BootstrapCache(scope);
