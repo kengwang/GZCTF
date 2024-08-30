@@ -168,7 +168,7 @@ public class GameRepository(
             .Include(i => i.Participation)
             .ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
-                Context.Submissions.Where(s => s.Status == AnswerResult.Accepted
+                Context.Submissions.Where(s => s.Status == AnswerResult.Accepted || s.Status == AnswerResult.Expired
                                                && s.SubmitTimeUtc < game.EndTimeUtc),
                 i => new { i.ChallengeId, i.ParticipationId },
                 s => new { s.ChallengeId, s.ParticipationId },
