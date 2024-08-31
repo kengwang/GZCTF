@@ -267,15 +267,7 @@ const ChallengePanel: FC = () => {
           },
         }}
       >
-        {/* if rank is 0, means scoreboard not ready yet */}
-        {!teamInfo?.rank?.rank ? (
-          <Center h="calc(100vh - 10rem)">
-            <Stack gap={0}>
-              <Title order={2}>{t('game.content.scoreboard_not_ready.title')}</Title>
-              <Text>{t('game.content.scoreboard_not_ready.comment')}</Text>
-            </Stack>
-          </Center>
-        ) : currentChallenges && currentChallenges.length ? (
+        {currentChallenges && currentChallenges.length ? (
           <SimpleGrid
             p="xs"
             w="100%"
