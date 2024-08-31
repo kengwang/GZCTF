@@ -618,7 +618,6 @@ public class GameController(
             : new()
             {
                 Avatar = context.Participation!.Team.AvatarUrl,
-                SolvedCount = 0,
                 Rank = 0,
                 Name = context.Participation!.Team.Name,
                 Id = context.Participation!.TeamId
@@ -629,6 +628,7 @@ public class GameController(
             ScoreboardItem = boardItem,
             TeamToken = context.Participation!.Token,
             Challenges = scoreboard.Challenges,
+            ChallengeCount = scoreboard.ChallengeCount,
             WriteupRequired = context.Game!.WriteupRequired,
             WriteupDeadline = context.Game!.WriteupDeadline
         });
