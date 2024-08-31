@@ -292,7 +292,10 @@ public class GameRepository(
         // 6. update rank and organization rank
         var ranks = new Dictionary<string, int>();
         var currentRank = 1;
-        Dictionary<string, HashSet<int>> orgTeams = new() { ["all"] = [] };
+        Dictionary<string, HashSet<int>> orgTeams = new() {
+            ["all"] = [],
+            ["nopub"] = [],
+        };
         foreach (var item in items.Values)
         {
             item.Rank = currentRank++;
@@ -315,6 +318,9 @@ public class GameRepository(
                 ranks[item.Organization] = 1;
                 orgTeams[item.Organization] = [item.Id];
             }
+
+            if (orgTeams["nopub"].Count < 10 && item.Organization != "公开赛道")
+                orgTeams["nopub"].Add(item.Id);
         }
 
         // 7. generate top timelines by solved challenges
