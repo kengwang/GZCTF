@@ -99,6 +99,9 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                 }
                 
                 if (!gameChallenge.IsEnabled)
+                    continue;
+
+                if (gameChallenge.EndAt <= DateTimeOffset.Now)
                 {
                     gameChallenge.CanSubmit = false;
                 }
