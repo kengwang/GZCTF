@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { GameStatus } from '@Components/GameCard'
 import { OnceSWRConfig } from '@Utils/useConfig'
-import api, { ChallengeInfo, ChallengeTag, DetailedGameInfoModel, ParticipationStatus, ScoreboardItem, ScoreboardModel, SubmissionType } from '@Api'
+import api, { ChallengeInfo, ChallengeTag, DetailedGameInfoModel, ParticipationStatus, ScoreboardItem, ScoreboardModel } from '@Api'
 
 export const getGameStatus = (game?: DetailedGameInfoModel) => {
   const startTime = dayjs(game?.start)
@@ -73,15 +73,15 @@ export const generateCustomScoreboard = (
 ) => {
   if (!scoreboard || !scoreboard.items || !scoreboard.challenges)
     return { items: null, challenges: null }
-  let items = scoreboard.items
+
   // 先筛选组织，以减少统计分数的计算量
-  if (organization === 'nopub'){
+  let items = scoreboard.items
+  if (organization === 'nopub') {
     items = scoreboard.items.filter((s) => s.organization !== '公开赛道')
-  }else{
+  } else {
     items = organization === 'all'
       ? scoreboard.items
       : scoreboard.items.filter((s) => s.organization === organization)
-
   }
 
   const pattern = titlePattern !== '' ? new RegExp(titlePattern, 'i') : null
@@ -112,20 +112,18 @@ export const generateCustomScoreboard = (
   // 第一步筛选 item.challenges，统计分数，更新 score, solvedCount 和可选的 lastSubmissionTime
   const copiedItems: ScoreboardItem[] = []
   items.forEach((item) => {
-    const newItem = {
+    const newItem: ScoreboardItem = {
       ...item,
-      challenges: item.challenges?.filter((c) => c.id && includeChallengeIds.includes(c.id)) ?? [],
+      solvedChallenges: item.solvedChallenges?.filter((c) => c.id && includeChallengeIds.includes(c.id)) ?? [],
       score: 0,
       solvedCount: 0,
       lastSubmissionTime: handleLastSubmissionTime ? '' : item.lastSubmissionTime,
     }
-    newItem.challenges.forEach((c) => {
-      if (c.type && c.type !== SubmissionType.Unaccepted) {
-        newItem.score! += (c.score ?? 0)
-        newItem.solvedCount! ++
-        if (handleLastSubmissionTime && c.time && c.time > newItem.lastSubmissionTime!)
-          newItem.lastSubmissionTime = c.time
-      }
+    newItem.solvedChallenges?.forEach((c) => {
+      newItem.score! += (c.score ?? 0)
+      newItem.solvedCount! ++
+      if (handleLastSubmissionTime && c.time && c.time > newItem.lastSubmissionTime!)
+        newItem.lastSubmissionTime = c.time
     })
     copiedItems.push(newItem)
   })
