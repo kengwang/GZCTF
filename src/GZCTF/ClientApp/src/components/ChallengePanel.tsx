@@ -64,7 +64,7 @@ const ChallengePanel: FC = () => {
         (chal) =>
           !hideSolved ||
           (teamInfo &&
-            teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type ===
+            (teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type ?? SubmissionType.Unaccepted) ===
             SubmissionType.Unaccepted)
       )) ?? []
   const searchedChallenges = unsolvedTaggedChallenges.filter(
