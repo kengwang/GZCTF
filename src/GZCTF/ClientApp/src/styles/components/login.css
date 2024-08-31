@@ -6,9 +6,9 @@
 }
 
 .title {
-  width: 20%;
-  height: 5%;
-  background: url('../image/title.png') no-repeat;
+  width: 25%;
+  height: 7%;
+  background: url('../image/title.svg') no-repeat;
   background-size: contain;
   position: absolute;
   top: 40px;
