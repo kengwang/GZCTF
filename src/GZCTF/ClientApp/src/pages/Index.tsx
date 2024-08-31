@@ -185,7 +185,7 @@ const Home: FC = () => {
                   </div>
                 </div>
                 <div className='centent-introduce-centent'>
-                  <div className='centent-introduce-centent-detail'>“源鲁杯”高校网络安全技能大赛是由山东源鲁信息科技有限公司举办的网络安全公开赛事，采用线上CTF解题赛的形式进行。大赛旨在为高校学生提供展示才华和交流学习的平台，重点考核参赛选手的实战能力，致力于发现和培养网络安全领域的高、精、尖人才。</div>
+                  <div className='centent-introduce-centent-detail'>2024“源鲁杯”高校网络安全技能大赛是由山东源鲁信息科技有限公司举办的网络安全公开赛事，采用线上CTF解题赛的形式进行。大赛旨在为高校学生提供展示才华和交流学习的平台，重点考核参赛选手的实战能力，致力于发现和培养网络安全领域的高、精、尖人才。</div>
                 </div>
               </div>
               <div className='centent-introduce'>
@@ -203,7 +203,7 @@ const Home: FC = () => {
                     <div>报名时间：09月01日-10月23日（比赛期间可随时报名参赛）</div>
                     <div>比赛方式：线上个人赛</div>
                     <div>比赛方向：Web/Re/Pwn/Crypto/Misc</div>
-                    <div>比赛赛道：本次比赛设立两个赛道(新生赛道与公开赛道)，采用相同的比赛赛题并分别设立奖项。</div>
+                    <div>比赛赛道：本次比赛设立新生赛道与公开赛道，采用相同的比赛题目，并分别设立奖项。</div>
                     <div>排名机制：采用动态积分制，按照积分从高到低排名，两队相同积分时以先达到该积分的先后顺序排名。</div>
                   </div>
                 </div>
@@ -292,9 +292,9 @@ const Home: FC = () => {
                     </Group> */}
                   {isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>比赛结束</div>}
                   {status == 'Accepted' && !isAfter && isAfterStart && <div className='button' onClick={() => navigate(`/games/${numId}/challenges`)}>进入比赛</div>}
-                  {status == 'Accepted' && !isAfter && !isAfterStart && <div className='button' style={{ backgroundColor: '#ccc' }}>比赛未开始</div>}
-                  {status == 'Unsubmitted' && teams?.length == 0 && !isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>立即参赛</div>}
-                  {status == 'Unsubmitted' && teams?.length != 0 && !isAfter && <div className='button' onClick={onJoin}>立即参赛</div>}
+                  {status == 'Accepted' && !isAfter && !isAfterStart && <div className='button' style={{ backgroundColor: '#ccc' }}>即将开赛</div>}
+                  {status == 'Unsubmitted' && teams?.length == 0 && !isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>立即报名</div>}
+                  {status == 'Unsubmitted' && teams?.length != 0 && !isAfter && <div className='button' onClick={onJoin}>立即报名</div>}
                   {status == 'Pending' && !isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>审核中</div>}
                   {status == 'Rejected' && !isAfter && <div className='button' onClick={onJoin}>立即参赛</div>}
                   {status == 'Suspended' && !isAfter && <div className='button' style={{ backgroundColor: '#ccc' }}>禁赛中</div>}
