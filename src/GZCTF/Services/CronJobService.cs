@@ -9,6 +9,7 @@ namespace GZCTF.Services;
 public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger) : IHostedService, IDisposable
 {
     Timer? _timer;
+    bool _isFinished = true;
 
     public void Dispose()
     {
@@ -94,8 +95,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                     await challengesRepository.EnsureInstances(gameChallenge, game);
                     if (game.IsActive)
                         await gameNoticeRepository.AddNotice(
-                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] });
-                    await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
+                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] }); 
                 }
                 
                 if (!gameChallenge.IsEnabled)
@@ -107,20 +107,36 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                 }
                 
             }
+            await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
         }
-
         await gamesRepository.SaveAsync();
     }
 
-    private int _counter = 6;
+    int _counter;
     
     async void Execute(object? state)
     {
-        await using AsyncServiceScope scope = provider.CreateAsyncScope();
-        await UpdateChallengeStatus(scope);
-        if (--_counter > 0) return;
-        await ContainerChecker(scope);
-        await BootstrapCache(scope);
-        _counter = 6;
+        if (!_isFinished)
+            return;
+        _isFinished = false;
+        try
+        {
+            await using AsyncServiceScope scope = provider.CreateAsyncScope();
+            await UpdateChallengeStatus(scope);
+            _isFinished = true;
+            if (--_counter > 0) return;
+            await ContainerChecker(scope);
+            await BootstrapCache(scope);
+            _counter = 6;
+        }
+        catch
+        {
+            // ignore
+        }
+        finally
+        {
+            _isFinished = true;
+        }
+
     }
 }
