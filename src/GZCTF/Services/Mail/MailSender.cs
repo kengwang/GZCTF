@@ -31,7 +31,7 @@ public sealed class MailSender : IMailSender, IDisposable
         _cancellationToken = _cancellationTokenSource.Token;
 
         if (string.IsNullOrWhiteSpace(_options.SendMailAddress) ||
-            string.IsNullOrWhiteSpace(_options.Smtp?.Host) || _options.Smtp.Port is not null)
+            string.IsNullOrWhiteSpace(_options.Smtp?.Host) || _options.Smtp.Port is null)
             return;
 
         _smtpClient = new();
