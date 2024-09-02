@@ -18,7 +18,7 @@ import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Trans } from 'react-i18next'
-import { BloodsTypes, PartialIconProps, useChallengeTagLabelMap } from '@Utils/Shared'
+import { BloodsTypes, PartialIconProps, SolveMarkIconMap, useChallengeTagLabelMap } from '@Utils/Shared'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengeCard.module.css'
 import hoverClasses from '@Styles/HoverCard.module.css'
@@ -32,13 +32,27 @@ interface ChallengeCardProps {
   colorMap: Map<SubmissionType, string | undefined>
   teamId?: number
   hideWeekInTitle?: boolean
+  solveMark?: string
 }
 
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
-  const { challenge, solved, onClick, iconMap, teamId, colorMap, hideWeekInTitle } = props
+  const { challenge, solved, onClick, iconMap, teamId, colorMap, hideWeekInTitle, solveMark } = props
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const tagData = challengeTagLabelMap.get(challenge.tag!)
   const theme = useMantineTheme()
+
+  // was solved || undefined
+  const darkenCard = solveMark ? (SolveMarkIconMap[solveMark]?.regardAsSolved || undefined) : solved || undefined
+  
+  // was solved
+  const showMark = solveMark ? solveMark !== "(空白)" : solved
+
+  // was <Icon size={1} path={mdiFlag} />
+  const markIcon = solveMark === undefined
+    ? <Icon size={0.9} path={mdiFlag} />
+    : Object.keys(SolveMarkIconMap).includes(solveMark)
+      ? <Icon size={0.9} path={SolveMarkIconMap[solveMark].icon} />
+      : solveMark
 
   return (
     <Card
@@ -46,7 +60,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
       radius="md"
       shadow="sm"
       className={cx(hoverClasses.root, classes.root)}
-      data-solved={solved || undefined}
+      data-solved={darkenCard}
     >
       <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
@@ -122,9 +136,9 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
           className={classes.icon}
         />
       )}
-      {solved && (
+      {showMark && (
         <Center className={classes.flag}>
-          <Icon size={1} path={mdiFlag} />
+          {markIcon}
         </Center>
       )}
     </Card>

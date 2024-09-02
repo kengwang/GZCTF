@@ -12,6 +12,7 @@ import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
   mdiCached,
+  mdiEraser,
   mdiFlagOutline,
   mdiHomeVariantOutline,
   mdiInformationOutline,
@@ -35,6 +36,7 @@ import { clearLocalCache } from '@Utils/useConfig'
 import { useLogOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
 import classes from '@Styles/AppNavBar.module.css'
+import { useLocalStorage } from '@mantine/hooks'
 
 interface NavbarItem {
   icon: string
@@ -112,6 +114,12 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
     .map((link) => <NavbarLink key={link.label} {...link} isActive={link.label === active} />)
 
   const loggedIn = user && !error
+
+  const [, setChallengeMarks] = useLocalStorage<Record<string, string | undefined>>({
+    key: 'BaseCTF-challenge-marks',
+    defaultValue: {},
+    getInitialValueInEffect: false,
+  })
 
   return (
     <AppShell.Navbar className={classes.navbar}>
@@ -193,6 +201,9 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
               </Menu.Item>
               <Menu.Item onClick={openColorModal} leftSection={<Icon path={mdiPalette} size={1} />}>
                 {t('common.content.color.title')}
+              </Menu.Item>
+              <Menu.Item onClick={() => setChallengeMarks({})} leftSection={<Icon path={mdiEraser} size={1} />}>
+                重置题目标记
               </Menu.Item>
               <MenuDivider />
               {loggedIn ? (

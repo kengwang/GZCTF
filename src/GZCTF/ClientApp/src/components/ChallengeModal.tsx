@@ -11,6 +11,7 @@ import {
   useMantineTheme,
   ScrollAreaAutosize,
   Skeleton,
+  Select,
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
@@ -18,9 +19,10 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InstanceEntry from '@Components/InstanceEntry'
 import Markdown, { InlineMarkdown } from '@Components/MarkdownRenderer'
-import { ChallengeTagItemProps } from '@Utils/Shared'
+import { ChallengeTagItemProps, defaultEmojis, SolveMarkIconItem, SolveMarkIconMap } from '@Utils/Shared'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
+import { useLocalStorage } from '@mantine/hooks'
 
 export interface ChallengeModalProps extends ModalProps {
   challenge?: ChallengeDetailModel
@@ -59,6 +61,19 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   }) as string[]
 
   const [placeholder, setPlaceholder] = useState('')
+
+  const [challengeMarks, setChallengeMarks] = useLocalStorage<Record<string, string | undefined>>({
+    key: 'BaseCTF-challenge-marks',
+    defaultValue: {},
+    getInitialValueInEffect: false,
+  })
+  const solveMark = challengeMarks[challenge?.id?.toString() ?? ""]
+  const setSolveMark = (value: string) => {
+    setChallengeMarks({
+      ...challengeMarks,
+      [challenge?.id?.toString() ?? ""]: value === "(默认)" ? undefined : value,
+    })
+  }
 
   useEffect(() => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
@@ -175,11 +190,26 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
         }}
       >
         <Group justify="space-between" gap="sm" align="flex-end">
+          <Select
+            placeholder={solveMark ?? "(默认)"}
+            data={Object.keys(SolveMarkIconMap)}
+            renderOption={SolveMarkIconItem}
+            value=""
+            onChange={(value) => value && setSolveMark(value !== "(自定义Emoji)" ? value : defaultEmojis[Math.floor(Math.random() * defaultEmojis.length)])}
+            onSearchChange={(value) => setSolveMark((value?.match(/\p{Extended_Pictographic}/u) ?? [solveMark ?? "(默认)"])[0])}
+            searchable
+            nothingFoundMessage="点击外面空白处以选择图标"
+            miw="20%"
+            maw="20%"
+            comboboxProps={{width: "20%"}}
+            flex={1}
+          />
           <TextInput
             placeholder={placeholder}
             value={solved ? t('challenge.content.already_solved') : flag}
             disabled={disabled || solved}
             onChange={setFlag}
+            data-autofocus
             style={{ flexGrow: 1 }}
             styles={{
               input: {

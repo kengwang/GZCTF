@@ -25,7 +25,7 @@ import ChallengeCard from '@Components/ChallengeCard'
 import Empty from '@Components/Empty'
 import GameChallengeModal from '@Components/GameChallengeModal'
 import WriteupSubmitModal from '@Components/WriteupSubmitModal'
-import { useChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
+import { useChallengeTagLabelMap, SubmissionTypeIconMap, SolveMarkIconMap } from '@Utils/Shared'
 import { useGame, useGameTeamInfo } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengePanel.module.css'
@@ -51,6 +51,11 @@ const ChallengePanel: FC = () => {
     defaultValue: false,
     getInitialValueInEffect: false,
   })
+  const [challengeMarks] = useLocalStorage<Record<string, string>>({
+    key: 'BaseCTF-challenge-marks',
+    defaultValue: {},
+    getInitialValueInEffect: false,
+  })
   const [searchText, setSearchText] = useLocalStorage({
     key: 'challenge-search-pattern',
     defaultValue: '',
@@ -64,7 +69,9 @@ const ChallengePanel: FC = () => {
       (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
         (chal) =>
           !hideSolved ||
-          (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined
+          (challengeMarks[chal.id!.toString()] !== undefined
+            ? !SolveMarkIconMap[challengeMarks[chal.id!.toString()]]?.regardAsSolved ?? true
+            : (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined)
       )) ?? []
   const searchedChallenges = unsolvedTaggedChallenges.filter(
       (chal) => !searchPattern || chal.title && searchPattern.test(chal.title)
@@ -282,6 +289,7 @@ const ChallengePanel: FC = () => {
                   iconMap={iconMap}
                   colorMap={colorMap}
                   hideWeekInTitle={hideWeekInTitle}
+                  solveMark={challengeMarks[chal.id!.toString()]}
                   onClick={() => {
                     setChallenge(chal)
                     setDetailOpened(true)
