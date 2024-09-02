@@ -158,6 +158,9 @@ public class Challenge
         if (FlagTemplate.StartsWith("[LEET]"))
             flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
 
+        if (FlagTemplate.StartsWith("[CLEET]"))
+            flag = Codec.Leet.LeetFlag(FlagTemplate[7..], true);
+
         //   Using the signature private key of the game to generate a hash for the
         // team is not a wise and sufficiently secure choice. Moreover, this private
         // key should not exist outside any backend systems, even if it is encrypted
@@ -192,6 +195,9 @@ public class Challenge
         if (FlagTemplate.StartsWith("[LEET]"))
             flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
 
+        if (FlagTemplate.StartsWith("[CLEET]"))
+            flag = Codec.Leet.LeetFlag(FlagTemplate[7..], true);
+
         return flag.Replace("[TEAM_HASH]", guid.ToString("N")[..12]);
     }
 
@@ -203,6 +209,12 @@ public class Challenge
         if (FlagTemplate.Contains("[GUID]"))
             return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
 
-        return Codec.Leet.LeetFlag(FlagTemplate.StartsWith("[LEET]") ? FlagTemplate[6..] : FlagTemplate);
+        if (FlagTemplate.StartsWith("[LEET]"))
+            return Codec.Leet.LeetFlag(FlagTemplate[6..]);
+
+        if (FlagTemplate.StartsWith("[CLEET]"))
+            return Codec.Leet.LeetFlag(FlagTemplate[7..], true);
+
+        return Codec.Leet.LeetFlag(FlagTemplate);
     }
 }
