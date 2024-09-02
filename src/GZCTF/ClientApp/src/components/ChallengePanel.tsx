@@ -193,7 +193,7 @@ const ChallengePanel: FC = () => {
         />
         <TextInput
           placeholder={t('game.placeholder.challenge_search')}
-          value={searchText ?? ''}
+          value={searchText}
           error={searchText.trim() !== '' && (!searchPattern || searchedChallenges.length === 0)}
           onChange={(e) => setSearchText(e.currentTarget.value)}
           w="10rem"
