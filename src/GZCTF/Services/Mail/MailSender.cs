@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Net.Security;
 using System.Text;
 using GZCTF.Models.Internal;
@@ -23,7 +23,7 @@ public sealed class MailSender : IMailSender, IDisposable
     bool _disposed;
 
     public MailSender(
-        IOptionsSnapshot<AccountPolicy> accountPolicy,
+        IOptions<AccountPolicy> accountPolicy,
         IOptions<EmailConfig> options,
         ILogger<MailSender> logger)
     {
@@ -126,7 +126,7 @@ public sealed class MailSender : IMailSender, IDisposable
 
         var title = $"{content.Title} - {content.Platform}";
 
-        var sender = string.IsNullOrWhiteSpace(_options!.SenderName) ? _options.SenderName : content.Platform;
+        var sender = string.IsNullOrWhiteSpace(_options!.SenderName) ? content.Platform : _options.SenderName;
         var from = new MailboxAddress(sender, _options.SenderAddress);
 
         var to = new MailboxAddress(content.UserName, content.Email);
