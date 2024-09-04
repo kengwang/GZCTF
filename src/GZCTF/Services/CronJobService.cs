@@ -79,6 +79,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
         var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
         var games = await gamesRepository.GetGames();
+        bool hasChanged = false;
         foreach (Game game in games)
         {
             var challenges = await challengesRepository.GetChallenges(game.Id);
@@ -93,6 +94,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                 {
                     gameChallenge.IsEnabled = true;
                     await challengesRepository.EnsureInstances(gameChallenge, game);
+                    hasChanged = true;
                     if (game.IsActive)
                         await gameNoticeRepository.AddNotice(
                             new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] }); 
@@ -107,7 +109,8 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                 }
                 
             }
-            await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
+            if (hasChanged)
+                await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
         }
         await gamesRepository.SaveAsync();
     }
