@@ -1,5 +1,5 @@
 import { ModalProps } from '@mantine/core'
-import { useInputState } from '@mantine/hooks'
+import { useInputState, useLocalStorage } from '@mantine/hooks'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import {mdiCheck, mdiClose, mdiLoading, mdiTimerAlertOutline} from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -28,6 +28,12 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   })
 
   const { t } = useTranslation()
+
+  const [challengeMarks, setChallengeMarks] = useLocalStorage<Record<string, string | undefined>>({
+    key: 'BaseCTF-challenge-marks',
+    defaultValue: {},
+    getInitialValueInEffect: false,
+  })
 
   const wrong_flag_hints = t('challenge.content.wrong_flag_hints', {
     returnObjects: true,
@@ -173,6 +179,10 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
 
   const checkDataFlag = (id: number, data: string) => {
     if (data === AnswerResult.Accepted) {
+      setChallengeMarks({
+        ...challengeMarks,
+        [challengeId.toString()]: undefined,
+      })
       updateNotification({
         id: 'flag-submitted',
         color: 'teal',
@@ -190,6 +200,10 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     }
     else if (data === AnswerResult.Expired)
     {
+      setChallengeMarks({
+        ...challengeMarks,
+        [challengeId.toString()]: "时钟",
+      })
       updateNotification({
         id: 'flag-submitted',
         color: 'teal',

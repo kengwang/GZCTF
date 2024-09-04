@@ -66,12 +66,14 @@ import { Callout } from "nextra-theme-docs";
     }
   },
   "EmailConfig": {
-    "SendMailAddress": "a@a.com",
+    "SenderAddress": "",
+    "SenderName": "",
     "UserName": "",
     "Password": "",
     "Smtp": {
       "Host": "localhost",
-      "Port": 587
+      "Port": 587,
+      "BypassCertVerify": false
     }
   },
   "XorKey": "<Random Key Str>",
@@ -218,10 +220,12 @@ GZCTF はメトリクスと分散トレーシングをサポートしていま�
 
 ここではメール送信に関する情報を設定します。メールでの登録やその他のメール機能を使用する場合、この項目は必須です。
 
-- **SendMailAddress:** 送信者のメールアドレス
+- **SenderAddress:** 送信者のメールアドレス
+- **SenderName:** 送信者の名前
 - **UserName:** SMTP サーバーのユーザー名
 - **Password:** SMTP サーバーのパスワード
 - **Smtp:** SMTP サーバーのアドレスとポート
+- **BypassCertVerify:** 証明書の検証をバイパスするかどうか
 
 <Callout type="info">
 

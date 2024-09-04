@@ -42,7 +42,7 @@ import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Ap
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 import { mdiMagnify } from '@mdi/js'
-import { useLocalStorage } from '@mantine/hooks'
+import { useInputState, useLocalStorage } from '@mantine/hooks'
 
 const Lefts = [0, 55, 110, 350, 420, 480]
 const Widths = Array(5).fill(0)
@@ -283,7 +283,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
     defaultValue: false,
     getInitialValueInEffect: false,
   })
-  const [searchTextBuffer, setSearchTextBuffer] = useState<string | null>('')
+  const [searchTextBuffer, setSearchTextBuffer] = useInputState<string>('')
   const [searchCloseButtonVisible, setSearchCloseButtonVisible] = useState(false)
   const [filterTips, setFilterTips] = useState('')
 
@@ -378,7 +378,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                   <ActionIcon
                     variant="transparent"
                     color="dimmed"
-                    onClick={() => setTitlePattern(searchTextBuffer?.trim() ?? '')}
+                    onClick={() => setTitlePattern(searchTextBuffer.trim())}
                   >
                     <Icon path={mdiMagnify} size={0.8} />
                   </ActionIcon>
@@ -392,9 +392,9 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                   />
                 }
                 onKeyDown={(e) =>
-                  e.key === 'Enter' && updatingBarrier && setTitlePattern(searchTextBuffer?.trim() ?? '')
+                  e.key === 'Enter' && updatingBarrier && setTitlePattern(searchTextBuffer.trim() ?? '')
                 }
-                value={searchTextBuffer ?? ''}
+                value={searchTextBuffer}
                 onChange={(e) => {
                   setSearchTextBuffer(e.currentTarget.value)
                   setSearchCloseButtonVisible(e.currentTarget.value.length > 0)

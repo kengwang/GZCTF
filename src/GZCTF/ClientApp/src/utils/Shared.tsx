@@ -10,31 +10,46 @@ import {
   ComboboxItem,
   MantineColorsTuple,
   OverlayProps,
+  Center,
 } from '@mantine/core'
 import {
+  mdiAlertCircle,
   mdiBomb,
+  mdiBorderNoneVariant,
   mdiBullhornOutline,
   mdiCancel,
   mdiCellphoneCog,
   mdiCheck,
+  mdiCheckCircle,
   mdiChevronTripleLeft,
   mdiChip,
   mdiClose,
+  mdiCloseCircle,
   mdiConsole,
+  mdiDotsHorizontalCircle,
+  mdiEmoticon,
+  mdiEraser,
   mdiEthereum,
   mdiFingerprint,
   mdiFlag,
+  mdiFlagCheckered,
+  mdiFlagOutline,
+  mdiFlagPlus,
+  mdiFlagRemove,
   mdiGamepadVariantOutline,
+  mdiHelpCircle,
   mdiHelpCircleOutline,
   mdiHexagonSlice2,
   mdiHexagonSlice4,
   mdiHexagonSlice6,
   mdiLanPending,
   mdiLightbulbOnOutline,
+  mdiLightningBoltCircle,
   mdiMatrix,
   mdiPlus,
   mdiRobotLoveOutline,
   mdiSearchWeb,
+  mdiTimer,
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -103,6 +118,8 @@ export const ChallengeTypeItem: SelectProps['renderOption'] = ({ option }) => {
   )
 }
 
+export const ChallengeTagList = Object.values(ChallengeTag)
+
 export const useChallengeTagLabelMap = () => {
   const { t } = useTranslation()
   const theme = useMantineTheme()
@@ -118,16 +135,6 @@ export const useChallengeTagLabelMap = () => {
         name: ChallengeTag.Misc,
         color: 'teal',
         colors: theme.colors['teal'],
-      },
-    ],
-    [
-      ChallengeTag.Crypto,
-      {
-        desrc: t('challenge.tag.crypto'),
-        icon: mdiMatrix,
-        name: ChallengeTag.Crypto,
-        color: 'violet',
-        colors: theme.colors['violet'],
       },
     ],
     [
@@ -161,6 +168,16 @@ export const useChallengeTagLabelMap = () => {
       },
     ],
     [
+      ChallengeTag.Crypto,
+      {
+        desrc: t('challenge.tag.crypto'),
+        icon: mdiMatrix,
+        name: ChallengeTag.Crypto,
+        color: 'violet',
+        colors: theme.colors['violet'],
+      },
+    ],
+    [
       ChallengeTag.Blockchain,
       {
         desrc: t('challenge.tag.blockchain'),
@@ -186,8 +203,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.hardware'),
         icon: mdiChip,
         name: ChallengeTag.Hardware,
-        color: 'grape',
-        colors: theme.colors['grape'],
+        color: revert,
+        colors: theme.colors[revert],
       },
     ],
     [
@@ -206,8 +223,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.ppc'),
         icon: mdiConsole,
         name: ChallengeTag.PPC,
-        color: revert,
-        colors: theme.colors[revert],
+        color: 'cyan',
+        colors: theme.colors['cyan'],
       },
     ],
     [
@@ -236,8 +253,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.pentest'),
         icon: mdiLanPending,
         name: ChallengeTag.Pentest,
-        color: 'cyan',
-        colors: theme.colors['cyan'],
+        color: 'grape',
+        colors: theme.colors['grape'],
       },
     ],
   ])
@@ -258,7 +275,7 @@ export const ChallengeTagItem: SelectProps['renderOption'] = ({ option }) => {
 
   return (
     <Group wrap="nowrap">
-      <Icon color={colors[4]} path={icon} size={1.2} />
+      <Icon color={colors[5]} path={icon} size={1.2} />
       <Stack gap={0}>
         <Text size="sm" fw="bold">
           {name}
@@ -268,6 +285,116 @@ export const ChallengeTagItem: SelectProps['renderOption'] = ({ option }) => {
     </Group>
   )
 }
+
+export const defaultEmojis = ["😎", "😋", "🤔", "😆", "😸", "👏", "🥳", "🎈", "🎉", "✨", "🎯", "🔨", "💡", "📌", "🚀", "💖"];
+
+export const SolveMarkIconMap: Record<string,
+  { describe: string, regardAsSolved: boolean, icon: string, value: string }> = {
+  "(默认)": {
+    describe: "根据后台记录，显示旗帜或空白",
+    regardAsSolved: true,
+    icon: mdiEraser,
+    value: "Default",
+  },
+  "经典旗帜": {
+    describe: "【视为已解出】请慎用，用于未得分的题目可能让你误认为已得分。可考虑改用「轮廓旗帜」",
+    regardAsSolved: true,
+    icon: mdiFlag,
+    value: "Flag",
+  },
+  "(空白)": {
+    describe: "不显示任何图标",
+    regardAsSolved: false,
+    icon: mdiBorderNoneVariant,
+    value: "Empty",
+  },
+  "时钟": {
+    describe: "【视为已解出】",
+    regardAsSolved: true,
+    icon: mdiTimer,
+    value: "Timer",
+  },
+  "(自定义Emoji)": {
+    describe: "可在输入框输入单个emoji",
+    regardAsSolved: false,
+    icon: mdiEmoticon,
+    value: "Emoji",
+  },
+  "方格旗帜": {
+    describe: "",
+    regardAsSolved: false,
+    icon: mdiFlagCheckered,
+    value: "FlagCheckered",
+  },
+  "轮廓旗帜": {
+    describe: "【视为已解出】",
+    regardAsSolved: true,
+    icon: mdiFlagOutline,
+    value: "FlagOutline",
+  },
+  "旗帜+": {
+    describe: "",
+    regardAsSolved: false,
+    icon: mdiFlagPlus,
+    value: "FlagPlus",
+  },
+  "旗帜×": {
+    describe: "",
+    regardAsSolved: false,
+    icon: mdiFlagRemove,
+    value: "FlagRemove",
+  },
+  "勾": {
+    describe: "【视为已解出】",
+    regardAsSolved: true,
+    icon: mdiCheckCircle,
+    value: "Check",
+  },
+  "叉": {
+    describe: "",
+    regardAsSolved: false,
+    icon: mdiCloseCircle,
+    value: "Close",
+  },
+  "警告": {
+    describe: "",
+    regardAsSolved: false,
+    icon: mdiAlertCircle,
+    value: "Alert",
+  },
+  "问号": {
+    describe: "",
+    regardAsSolved: false,
+    icon: mdiHelpCircle,
+    value: "Help",
+  },
+  "三个点": {
+    describe: "",
+    regardAsSolved: false,
+    icon: mdiDotsHorizontalCircle,
+    value: "Dots",
+  },
+  "闪电": {
+    describe: "",
+    regardAsSolved: false,
+    icon: mdiLightningBoltCircle,
+    value: "Lightning",
+  },
+}
+
+export const SolveMarkIconItem: SelectProps['renderOption'] = ({ option }) => (
+  <Group wrap="nowrap">
+    <Center miw="2em" maw="2em">
+      <Icon path={SolveMarkIconMap[option.value].icon}/>
+    </Center>
+    <Stack gap={0}>
+      <Text size="sm" fw="bold">
+        {option.value}
+      </Text>
+      <Text size="xs">{SolveMarkIconMap[option.value].describe}</Text>
+    </Stack>
+  </Group>
+)
 
 export const BloodsTypes = [
   SubmissionType.FirstBlood,

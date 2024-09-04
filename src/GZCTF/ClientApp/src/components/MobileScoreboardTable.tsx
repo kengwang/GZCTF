@@ -134,54 +134,52 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             }}
           />
         )}
-        <Box pos="relative">
-          <Box
-            maw="100%"
-            sx={{
-              overflow: 'scroll',
-              '::-webkit-scrollbar': {
-                height: 0,
-              },
-            }}
-          >
-            <Table className={classes.table}>
-              <Table.Thead className={classes.thead}>
-                <Table.Tr>
-                  {[
-                    t('game.label.score_table.rank_total'),
-                    t('game.label.score_table.team'),
-                    t('game.label.score_table.score_total'),
-                  ].map((header, idx) => (
-                    <Table.Th key={idx} className={cx(classes.left, classes.theadHeader)}>
-                      {header}
-                    </Table.Th>
-                  ))}
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {scoreboard &&
-                  currentItems?.map((item, idx) => (
-                    <TableRow
-                      key={base + idx}
-                      item={item}
-                      onOpenDetail={() => {
-                        setCurrentItem(item)
-                        setItemDetailOpened(true)
-                      }}
-                      selectedOrg={organization ?? 'all'}
-                    />
-                  ))}
-              </Table.Tbody>
-            </Table>
-          </Box>
+        <Box
+          pos="relative"
+          maw="100%"
+          style={{
+            overflow: 'scroll',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+          }}
+        >
+          <Table className={classes.table}>
+            <Table.Thead className={classes.thead}>
+              <Table.Tr>
+                {[
+                  t('game.label.score_table.rank_total'),
+                  t('game.label.score_table.team'),
+                  t('game.label.score_table.score_total'),
+                ].map((header, idx) => (
+                  <Table.Th key={idx} className={cx(classes.left, classes.theadHeader)}>
+                    {header}
+                  </Table.Th>
+                ))}
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {scoreboard &&
+                currentItems?.map((item, idx) => (
+                  <TableRow
+                    key={base + idx}
+                    item={item}
+                    onOpenDetail={() => {
+                      setCurrentItem(item)
+                      setItemDetailOpened(true)
+                    }}
+                    selectedOrg={organization ?? 'all'}
+                  />
+                ))}
+            </Table.Tbody>
+          </Table>
         </Box>
-        <Group justify="center">
+        <Group justify="center" wrap="nowrap">
           <Pagination
-            size="md"
+            size="sm"
             value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
-            boundaries={1}
           />
         </Group>
       </Stack>

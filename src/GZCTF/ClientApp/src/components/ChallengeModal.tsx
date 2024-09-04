@@ -11,6 +11,7 @@ import {
   useMantineTheme,
   ScrollAreaAutosize,
   Skeleton,
+  Select,
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
@@ -18,9 +19,10 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InstanceEntry from '@Components/InstanceEntry'
 import Markdown, { InlineMarkdown } from '@Components/MarkdownRenderer'
-import { ChallengeTagItemProps } from '@Utils/Shared'
+import { ChallengeTagItemProps, defaultEmojis, SolveMarkIconItem, SolveMarkIconMap } from '@Utils/Shared'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
+import { useLocalStorage } from '@mantine/hooks'
 
 export interface ChallengeModalProps extends ModalProps {
   challenge?: ChallengeDetailModel
@@ -60,6 +62,19 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   const [placeholder, setPlaceholder] = useState('')
 
+  const [challengeMarks, setChallengeMarks] = useLocalStorage<Record<string, string | undefined>>({
+    key: 'BaseCTF-challenge-marks',
+    defaultValue: {},
+    getInitialValueInEffect: false,
+  })
+  const solveMark = challengeMarks[challenge?.id?.toString() ?? ""]
+  const setSolveMark = (value: string) => {
+    setChallengeMarks({
+      ...challengeMarks,
+      [challenge?.id?.toString() ?? ""]: value === "(默认)" ? undefined : value,
+    })
+  }
+
   useEffect(() => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
@@ -72,7 +87,9 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     <Stack gap="xs">
       <Group wrap="nowrap" w="100%" justify="space-between" gap="sm">
         <Group wrap="nowrap" gap="sm">
-          {tagData && <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />}
+          {tagData && (
+            <Icon path={tagData.icon} size={1.2} color={theme.colors[tagData?.color][5]} />
+          )}
           <Title w="calc(100% - 1.5rem)" order={4} lineClamp={1}>
             {challenge?.title ?? ''}
           </Title>
@@ -81,7 +98,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           {challenge?.score ?? 0} pts
         </Text>
       </Group>
-      <Divider />
+      <Divider size="md" color={tagData?.color} />
     </Stack>
   )
 
@@ -166,36 +183,45 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
       {attachment}
       {instance}
       <Divider />
-      {solved ? (
-        <Text ta="center" fw="bold">
-          {t('challenge.content.already_solved')}
-        </Text>
-      ) : (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            onSubmitFlag()
-          }}
-        >
-          <Group justify="space-between" gap="sm" align="flex-end">
-            <TextInput
-              placeholder={placeholder}
-              value={flag}
-              disabled={disabled}
-              onChange={setFlag}
-              style={{ flexGrow: 1 }}
-              styles={{
-                input: {
-                  fontFamily: theme.fontFamilyMonospace,
-                },
-              }}
-            />
-            <Button miw="6rem" type="submit" disabled={disabled}>
-              {t('challenge.button.submit_flag')}
-            </Button>
-          </Group>
-        </form>
-      )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (!solved) onSubmitFlag()
+        }}
+      >
+        <Group justify="space-between" gap="sm" align="flex-end">
+          <Select
+            placeholder={solveMark ?? "(默认)"}
+            data={Object.keys(SolveMarkIconMap)}
+            renderOption={SolveMarkIconItem}
+            value=""
+            onChange={(value) => value && setSolveMark(value !== "(自定义Emoji)" ? value : defaultEmojis[Math.floor(Math.random() * defaultEmojis.length)])}
+            onSearchChange={(value) => setSolveMark((value?.match(/\p{Extended_Pictographic}/u) ?? [solveMark ?? "(默认)"])[0])}
+            searchable
+            nothingFoundMessage="点击外面空白处以选择图标"
+            miw="20%"
+            maw="20%"
+            comboboxProps={{width: "20%"}}
+            flex={1}
+          />
+          <TextInput
+            placeholder={placeholder}
+            value={solved ? t('challenge.content.already_solved') : flag}
+            disabled={disabled || solved}
+            onChange={setFlag}
+            data-autofocus
+            style={{ flexGrow: 1 }}
+            styles={{
+              input: {
+                fontFamily: 'var(--mantine-font-family-monospace)',
+              },
+            }}
+          />
+          <Button miw="6rem" type="submit" disabled={disabled || solved}>
+            {t('challenge.button.submit_flag')}
+          </Button>
+        </Group>
+      </form>
     </Stack>
   )
 

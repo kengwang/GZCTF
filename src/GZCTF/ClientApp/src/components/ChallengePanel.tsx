@@ -25,9 +25,10 @@ import ChallengeCard from '@Components/ChallengeCard'
 import Empty from '@Components/Empty'
 import GameChallengeModal from '@Components/GameChallengeModal'
 import WriteupSubmitModal from '@Components/WriteupSubmitModal'
-import { useChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
+import { useChallengeTagLabelMap, SubmissionTypeIconMap, SolveMarkIconMap } from '@Utils/Shared'
 import { useGame, useGameTeamInfo } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
+import classes from '@Styles/ChallengePanel.module.css'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()
@@ -50,6 +51,11 @@ const ChallengePanel: FC = () => {
     defaultValue: false,
     getInitialValueInEffect: false,
   })
+  const [challengeMarks] = useLocalStorage<Record<string, string>>({
+    key: 'BaseCTF-challenge-marks',
+    defaultValue: {},
+    getInitialValueInEffect: false,
+  })
   const [searchText, setSearchText] = useLocalStorage({
     key: 'challenge-search-pattern',
     defaultValue: '',
@@ -63,7 +69,9 @@ const ChallengePanel: FC = () => {
       (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
         (chal) =>
           !hideSolved ||
-          (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined
+          (challengeMarks[chal.id!.toString()] !== undefined
+            ? !SolveMarkIconMap[challengeMarks[chal.id!.toString()]]?.regardAsSolved ?? true
+            : (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined)
       )) ?? []
   const searchedChallenges = unsolvedTaggedChallenges.filter(
       (chal) => !searchPattern || chal.title && searchPattern.test(chal.title)
@@ -165,14 +173,10 @@ const ChallengePanel: FC = () => {
           </>
         )}
         <Switch
+          w="10rem"
           checked={hideSolved}
           onChange={(e) => setHideSolved(e.target.checked)}
-          w="10rem"
-          styles={{
-            body: {
-              justifyContent: 'space-between',
-            },
-          }}
+          classNames={{ body: classes.switch }}
           label={
             <Text fz="md" fw="bold">
               {t('game.button.hide_solved')}
@@ -196,7 +200,7 @@ const ChallengePanel: FC = () => {
         /> */}
         <TextInput
           placeholder={t('game.placeholder.challenge_search')}
-          value={searchText ?? ''}
+          value={searchText}
           error={searchText.trim() !== '' && (!searchPattern || searchedChallenges.length === 0)}
           onChange={(e) => setSearchText(e.currentTarget.value)}
           w="10rem"
@@ -211,13 +215,10 @@ const ChallengePanel: FC = () => {
           variant="pills"
           value={activeTab}
           onChange={(value) => setActiveTab(value as ChallengeTag)}
-          styles={{
-            list: {
-              minWidth: '10rem',
-            },
-            tabLabel: {
-              width: '100%',
-            },
+          classNames={{
+            list: classes.tabList,
+            tabLabel: classes.tabLabel,
+            tab: classes.tab,
           }}
         >
           <Tabs.List>
@@ -259,11 +260,7 @@ const ChallengePanel: FC = () => {
         pos="relative"
         offsetScrollbars
         scrollbarSize={4}
-        styles={{
-          root: {
-            flexGrow: 1,
-          },
-        }}
+        classNames={{ root: classes.scrollArea }}
       >
         {/* if rank is 0, means scoreboard not ready yet */}
         {!teamInfo?.rank?.rank ? (
@@ -292,6 +289,7 @@ const ChallengePanel: FC = () => {
                   iconMap={iconMap}
                   colorMap={colorMap}
                   hideWeekInTitle={hideWeekInTitle}
+                  solveMark={challengeMarks[chal.id!.toString()]}
                   onClick={() => {
                     setChallenge(chal)
                     setDetailOpened(true)

@@ -3,6 +3,48 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.24.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.23.0..v0.24.0) - 2024-09-02
+
+### ⛰️ Features
+
+- **(cache)** de-bounced the slow cache update request - ([0383fe](https://github.com/GZTimeWalker/GZCTF/commit/0383fe)) by **GZTime**
+- **(challenge)** add complex leet table - ([520025](https://github.com/GZTimeWalker/GZCTF/commit/520025)) by **GZTime**
+- **(mail)** only exit when `EmailConfirmationRequired` enabled - ([d4a525](https://github.com/GZTimeWalker/GZCTF/commit/d4a525)) by **GZTime**
+- add `SenderName` option - ([f6ce31](https://github.com/GZTimeWalker/GZCTF/commit/f6ce31)) by **GZTime**
+- empty strings can disable SMTP - ([ae9e26](https://github.com/GZTimeWalker/GZCTF/commit/ae9e26)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(challenge)** incorrect z-index - ([61e8b1](https://github.com/GZTimeWalker/GZCTF/commit/61e8b1)) by **GZTime**
+- **(mail)** wrong validation condition - ([0b084b](https://github.com/GZTimeWalker/GZCTF/commit/0b084b)) by **GZTime**
+
+### 🎨 Styling
+
+- **(challenge)** update solved style - ([9f17d4](https://github.com/GZTimeWalker/GZCTF/commit/9f17d4)) by **GZTime**
+- **(challenge)** update challenge items - ([c9931b](https://github.com/GZTimeWalker/GZCTF/commit/c9931b)) by **GZTime**
+- **(color)** adjust placeholder pages - ([331e9e](https://github.com/GZTimeWalker/GZCTF/commit/331e9e)) by **GZTime**
+- **(scoreboard)** update item modal - ([1d2c24](https://github.com/GZTimeWalker/GZCTF/commit/1d2c24)) by **GZTime**
+- remove all sx - ([23fd9c](https://github.com/GZTimeWalker/GZCTF/commit/23fd9c)) by **GZTime**
+
+---
+## [0.23.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.22.0..v0.23.0) - 2024-09-01
+
+### ⛰️ Features
+
+- add OSINT and Pentest tags - ([1d991f](https://github.com/GZTimeWalker/GZCTF/commit/1d991f)) by **GZTime**
+- allow bypassing certificate verification for SMTP - ([1d49ed](https://github.com/GZTimeWalker/GZCTF/commit/1d49ed)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- **(backend)** The challenges are not sorted correctly - ([b782ed](https://github.com/GZTimeWalker/GZCTF/commit/b782ed)) by **GZTime**
+- **(frontend)** pagination calculation (#323) - ([6191f4](https://github.com/GZTimeWalker/GZCTF/commit/6191f4)) by **LilRan**
+- incorrect scoreboard - ([84b510](https://github.com/GZTimeWalker/GZCTF/commit/84b510)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(scoreboard)** split queries (#325) - ([609de5](https://github.com/GZTimeWalker/GZCTF/commit/609de5)) by **GZTime**
+
+---
 ## [0.22.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.3-patch.1..v0.22.0) - 2024-08-23
 
 ### 💥 BREAK CHANGES
@@ -497,6 +539,10 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - std number - ([1e25cb](https://github.com/GZTimeWalker/GZCTF/commit/1e25cb)) by **GZTime**
 - disabled button when create team (#192) - ([95fb32](https://github.com/GZTimeWalker/GZCTF/commit/95fb32)) by **GZTime**
 
+### 🔨 Refactor
+
+- i18n for account pages - ([a575f9](https://github.com/GZTimeWalker/GZCTF/commit/a575f9)) by **GZTime**
+
 ### 📦 Other Changes
 
 - **(feat)** database sink - ([22cf84](https://github.com/GZTimeWalker/GZCTF/commit/22cf84)) by **GZTime**
@@ -510,7 +556,6 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - add i18n support for theme config - ([c002d0](https://github.com/GZTimeWalker/GZCTF/commit/c002d0)) by **Steven He**
 - adding ja to locales config - ([561be8](https://github.com/GZTimeWalker/GZCTF/commit/561be8)) by **Steven He**
 - adding Japanese docs - ([643855](https://github.com/GZTimeWalker/GZCTF/commit/643855)) by **Steven He**
-- i18n for account pages - ([a575f9](https://github.com/GZTimeWalker/GZCTF/commit/a575f9)) by **GZTime**
 - make some type error - ([0eedda](https://github.com/GZTimeWalker/GZCTF/commit/0eedda)) by **Aether Chen**
 - add more useTranslation() - ([4d0670](https://github.com/GZTimeWalker/GZCTF/commit/4d0670)) by **Aether Chen**
 - add i18n.config.js - ([f4f5ba](https://github.com/GZTimeWalker/GZCTF/commit/f4f5ba)) by **Aether Chen**
@@ -1305,9 +1350,12 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - typo - ([9525d1](https://github.com/GZTimeWalker/GZCTF/commit/9525d1)) by **GZTimeWalker**
 - query warning - ([a06afe](https://github.com/GZTimeWalker/GZCTF/commit/a06afe)) by **GZTime**
 
-### 📦 Other Changes
+### 🧪 Tests
 
 - add integration tests (#35) - ([9062a8](https://github.com/GZTimeWalker/GZCTF/commit/9062a8)) by **Steve**
+
+### 📦 Other Changes
+
 - use local fonts - ([01c8c2](https://github.com/GZTimeWalker/GZCTF/commit/01c8c2)) by **GZTime**
 
 ---

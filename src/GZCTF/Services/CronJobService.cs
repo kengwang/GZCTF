@@ -79,20 +79,25 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
         var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
         var games = await gamesRepository.GetGames();
+        
+        var currentTime = DateTimeOffset.UtcNow;
+        
         foreach (Game game in games)
         {
+            bool hasChanged = false;
             var challenges = await challengesRepository.GetChallenges(game.Id);
             foreach (GameChallenge gameChallenge in challenges)
             {
                 if (gameChallenge.EnableAt is null && gameChallenge.EndAt is null)
                     continue;
                 
-                if (gameChallenge.EnableAt <= DateTimeOffset.Now &&
-                    gameChallenge.EndAt > DateTimeOffset.Now &&
+                if (gameChallenge.EnableAt <= currentTime &&
+                    gameChallenge.EndAt > currentTime &&
                     !gameChallenge.IsEnabled)
                 {
                     gameChallenge.IsEnabled = true;
                     await challengesRepository.EnsureInstances(gameChallenge, game);
+                    hasChanged = true;
                     if (game.IsActive)
                         await gameNoticeRepository.AddNotice(
                             new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] }); 
@@ -101,13 +106,14 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                 if (!gameChallenge.IsEnabled)
                     continue;
 
-                if (gameChallenge.EndAt <= DateTimeOffset.Now)
+                if (gameChallenge.EndAt <= currentTime)
                 {
                     gameChallenge.CanSubmit = false;
                 }
                 
             }
-            await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
+            if (hasChanged)
+                await cacheHelper.FlushScoreboardCache(game.Id, CancellationToken.None);
         }
         await gamesRepository.SaveAsync();
     }

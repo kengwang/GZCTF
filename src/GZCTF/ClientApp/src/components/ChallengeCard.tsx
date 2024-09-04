@@ -14,10 +14,11 @@ import {
 } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Trans } from 'react-i18next'
-import { BloodsTypes, PartialIconProps, useChallengeTagLabelMap } from '@Utils/Shared'
+import { BloodsTypes, PartialIconProps, SolveMarkIconMap, useChallengeTagLabelMap } from '@Utils/Shared'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengeCard.module.css'
 import hoverClasses from '@Styles/HoverCard.module.css'
@@ -31,32 +32,43 @@ interface ChallengeCardProps {
   colorMap: Map<SubmissionType, string | undefined>
   teamId?: number
   hideWeekInTitle?: boolean
+  solveMark?: string
 }
 
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
-  const { challenge, solved, onClick, iconMap, teamId, colorMap, hideWeekInTitle } = props
+  const { challenge, solved, onClick, iconMap, teamId, colorMap, hideWeekInTitle, solveMark } = props
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const tagData = challengeTagLabelMap.get(challenge.tag!)
   const theme = useMantineTheme()
 
+  // was solved || undefined
+  const darkenCard = solveMark ? (SolveMarkIconMap[solveMark]?.regardAsSolved || undefined) : solved || undefined
+  
+  // was solved
+  const showMark = solveMark ? solveMark !== "(空白)" : solved
+
+  // was <Icon size={1} path={mdiFlag} />
+  const markIcon = solveMark === undefined
+    ? <Icon size={0.9} path={mdiFlag} />
+    : Object.keys(SolveMarkIconMap).includes(solveMark)
+      ? <Icon size={0.9} path={SolveMarkIconMap[solveMark].icon} />
+      : solveMark
+
   return (
-    <Card onClick={onClick} radius="md" shadow="sm" className={hoverClasses.root}>
-      <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
+    <Card
+      onClick={onClick}
+      radius="md"
+      shadow="sm"
+      className={cx(hoverClasses.root, classes.root)}
+      data-solved={darkenCard}
+    >
+      <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
           <Text fw="bold" truncate fz="lg">
             {hideWeekInTitle ? challenge.title?.replace(/\[week\d\]\s*/i, "") : challenge.title}
           </Text>
-          <Center miw="1.5em">
-            {solved && (
-              <Icon
-                size={1}
-                path={mdiFlag}
-                color={theme.colors[tagData?.color ?? theme.primaryColor][5]}
-              />
-            )}
-          </Center>
         </Group>
-        <Divider />
+        <Divider size="sm" color={tagData?.color} />
         <Group wrap="nowrap" justify="space-between" align="center" gap={2}>
           <Text ta="center" fw="bold" fz="lg" ff="monospace">
             {challenge.score}&nbsp;pts
@@ -121,14 +133,13 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
           size={4}
           path={tagData.icon}
           color={alpha(theme.colors[tagData?.color][7], 0.3)}
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            transform: 'translateY(35%)',
-            zIndex: 90,
-          }}
+          className={classes.icon}
         />
+      )}
+      {showMark && (
+        <Center className={classes.flag}>
+          {markIcon}
+        </Center>
       )}
     </Card>
   )

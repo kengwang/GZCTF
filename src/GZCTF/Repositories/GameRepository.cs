@@ -140,7 +140,7 @@ public class GameRepository(
         Context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
 
     public void FlushGameInfoCache() => cache.Remove(CacheKey.BasicGameInfo);
-    
+
     // By xfoxfu & GZTimeWalker @ 2022/04/03
     // Refactored by GZTimeWalker @ 2024/08/31
     public async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
@@ -178,6 +178,8 @@ public class GameRepository(
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
                 .Where(c => c.GameId == game.Id && c.IsEnabled)
+                .OrderBy(c => c.Tag)
+                .ThenBy(c => c.Title)
                 .Select(c => new ChallengeInfo
                 {
                     Id = c.Id,
@@ -233,7 +235,7 @@ public class GameRepository(
             game.BloodBonus.SecondBloodFactor,
             game.BloodBonus.ThirdBloodFactor
         ];
-        
+
         foreach (var item in submissions.OrderBy(s => s.SubmitTimeUtc))
         {
             var challenge = challenges[item.Id];
