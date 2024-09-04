@@ -79,17 +79,18 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
         var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
         var games = await gamesRepository.GetGames();
-        bool hasChanged = false;
+        
         foreach (Game game in games)
         {
+            bool hasChanged = false;
             var challenges = await challengesRepository.GetChallenges(game.Id);
             foreach (GameChallenge gameChallenge in challenges)
             {
                 if (gameChallenge.EnableAt is null && gameChallenge.EndAt is null)
                     continue;
                 
-                if (gameChallenge.EnableAt <= DateTimeOffset.Now &&
-                    gameChallenge.EndAt > DateTimeOffset.Now &&
+                if (gameChallenge.EnableAt <= DateTimeOffset.UtcNow &&
+                    gameChallenge.EndAt > DateTimeOffset.UtcNow &&
                     !gameChallenge.IsEnabled)
                 {
                     gameChallenge.IsEnabled = true;
@@ -103,7 +104,7 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                 if (!gameChallenge.IsEnabled)
                     continue;
 
-                if (gameChallenge.EndAt <= DateTimeOffset.Now)
+                if (gameChallenge.EndAt <= DateTimeOffset.UtcNow)
                 {
                     gameChallenge.CanSubmit = false;
                 }
