@@ -91,13 +91,13 @@ const Teams: FC = () => {
 
   const btns = (
     <>
-      <Button
+      {/* <Button
         leftSection={<Icon path={mdiHumanGreetingVariant} size={1} />}
         variant={colorScheme === 'dark' ? 'outline' : 'filled'}
         onClick={() => setJoinOpened(true)}
       >
         {t('team.button.join')}
-      </Button>
+      </Button> */}
       <Button
         leftSection={<Icon path={mdiAccountMultiplePlus} size={1} />}
         variant={colorScheme === 'dark' ? 'outline' : 'filled'}
