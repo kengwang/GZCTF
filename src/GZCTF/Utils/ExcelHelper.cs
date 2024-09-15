@@ -144,6 +144,16 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         var rowIndex = 1;
         var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
 
+        string ParseMemberName(UserInfo? info)
+        {
+            return (info?.UserName ?? Empty) + info?.RealName switch
+            {
+                null => "",
+                "" => "",
+                _ => $"({info.RealName})"
+            };
+        }
+        
         foreach (ScoreboardItem item in scoreboard.Items.Values)
         {
             var colIndex = 0;
@@ -154,12 +164,12 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             if (withOrg)
                 row.CreateCell(colIndex++).SetCellValue(item.Organization);
 
-            row.CreateCell(colIndex++).SetCellValue(item.TeamInfo?.Captain?.RealName ?? string.Empty);
+            row.CreateCell(colIndex++).SetCellValue(ParseMemberName(item.TeamInfo?.Captain));
 
             var members = item.TeamInfo?.Members ?? [];
 
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.RealName))));
+                .SetCellValue(string.Join(Split, members.Select(ParseMemberName)));
             row.CreateCell(colIndex++)
                 .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.StdNumber))));
             row.CreateCell(colIndex++)
