@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { GameStatus } from '@Components/GameCard'
 import { OnceSWRConfig } from '@Utils/useConfig'
-import api, { ChallengeInfo, ChallengeTag, DetailedGameInfoModel, ParticipationStatus, ScoreboardItem, ScoreboardModel } from '@Api'
+import api, { ChallengeInfo, ChallengeCategory, DetailedGameInfoModel, ParticipationStatus, ScoreboardItem, ScoreboardModel } from '@Api'
 
 export const getGameStatus = (game?: DetailedGameInfoModel) => {
   const startTime = dayjs(game?.start)
@@ -69,7 +69,7 @@ export const generateCustomScoreboard = (
   scoreboard: ScoreboardModel | undefined,
   organization: string = 'all',
   titlePattern: string = '',
-  category: ChallengeTag | null = null,
+  category: ChallengeCategory | null = null,
 ) => {
   if (!scoreboard || !scoreboard.items || !scoreboard.challenges)
     return { items: null, challenges: null }
@@ -94,7 +94,7 @@ export const generateCustomScoreboard = (
   const includeChallengeIds: number[] = []
   const challenges: Record<string, ChallengeInfo[]> = {}
   for (const [tag, challs] of Object.entries(scoreboard.challenges)) {
-    if (category !== null && category !== tag as ChallengeTag) continue
+    if (category !== null && category !== tag as ChallengeCategory) continue
     const filteredChalls = challs.filter((c) => {
       if (!c.title || !c.id || pattern !== null && !pattern.test(c.title)) return false
       includeChallengeIds.push(c.id)

@@ -9,7 +9,7 @@ import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useGameTeamInfo } from '@Utils/useGame'
-import { ChallengeTag } from '@Api'
+import { ChallengeCategory } from '@Api'
 import { useLocalStorage } from '@mantine/hooks'
 
 const Scoreboard: FC = () => {
@@ -23,7 +23,7 @@ const Scoreboard: FC = () => {
     defaultValue: '',
     getInitialValueInEffect: false,
   })
-  const [category, setCategory] = useState<ChallengeTag | null>(null)
+  const [category, setCategory] = useState<ChallengeCategory | null>(null)
 
   const scoreboardProps: ScoreboardProps = {
     organization: organization ?? 'all',
