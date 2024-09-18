@@ -50,7 +50,7 @@ public class GameChallenge : Challenge
     {
         Title = model.Title ?? Title;
         Content = model.Content ?? Content;
-        Tag = model.Tag ?? Tag;
+        Category = model.Category ?? Category;
         Hints = model.Hints ?? Hints;
         IsEnabled = model.IsEnabled ?? IsEnabled;
         CanSubmit = model.CanSubmit ?? CanSubmit;

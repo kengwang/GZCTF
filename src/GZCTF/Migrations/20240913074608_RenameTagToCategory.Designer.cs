@@ -3,6 +3,7 @@ using System;
 using GZCTF.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240913074608_RenameTagToCategory")]
+    partial class RenameTagToCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,9 +165,6 @@ namespace GZCTF.Migrations
 
                     b.Property<byte>("Category")
                         .HasColumnType("smallint");
-
-                    b.Property<bool>("CanSubmit")
-                        .HasColumnType("boolean");
 
                     b.Property<Guid>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -423,9 +423,6 @@ namespace GZCTF.Migrations
                     b.Property<int?>("CPUCount")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("CanSubmit")
-                        .HasColumnType("boolean");
-
                     b.Property<byte>("Category")
                         .HasColumnType("smallint");
 
@@ -446,14 +443,8 @@ namespace GZCTF.Migrations
                     b.Property<double>("Difficulty")
                         .HasColumnType("double precision");
 
-                    b.Property<DateTimeOffset?>("EnableAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<bool>("EnableTrafficCapture")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("EndAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FileName")
                         .HasColumnType("text");

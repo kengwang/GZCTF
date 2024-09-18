@@ -42,14 +42,23 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
             PublicEntry = options.Value.PublicEntry
         };
 
-        if (!File.Exists(_kubernetesMetadata.Config.KubeConfig))
+        KubernetesClientConfiguration config;
+
+        if (File.Exists(_kubernetesMetadata.Config.KubeConfig))
+        {
+            config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_kubernetesMetadata.Config.KubeConfig);
+        }
+        else if (KubernetesClientConfiguration.IsInCluster())
+        {
+            // use ServiceAccount token if running in cluster and no kube-config is provided
+            config = KubernetesClientConfiguration.InClusterConfig();
+        }
+        else
         {
             logger.SystemLog(StaticLocalizer[nameof(Resources.Program.ContainerProvider_KubernetesConfigLoadFailed),
                 _kubernetesMetadata.Config.KubeConfig]);
             throw new FileNotFoundException(_kubernetesMetadata.Config.KubeConfig);
         }
-
-        var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_kubernetesMetadata.Config.KubeConfig);
 
         _kubernetesMetadata.HostIp = new Uri(config.Host).Host;
 

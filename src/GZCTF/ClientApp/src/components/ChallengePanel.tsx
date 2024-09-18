@@ -25,9 +25,9 @@ import ChallengeCard from '@Components/ChallengeCard'
 import Empty from '@Components/Empty'
 import GameChallengeModal from '@Components/GameChallengeModal'
 import WriteupSubmitModal from '@Components/WriteupSubmitModal'
-import { useChallengeTagLabelMap, SubmissionTypeIconMap, SolveMarkIconMap } from '@Utils/Shared'
+import { useChallengeCategoryLabelMap, SubmissionTypeIconMap, SolveMarkIconMap } from '@Utils/Shared'
 import { useGame, useGameTeamInfo } from '@Utils/useGame'
-import { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
+import { ChallengeInfo, ChallengeCategory, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengePanel.module.css'
 
 const ChallengePanel: FC = () => {
@@ -39,8 +39,8 @@ const ChallengePanel: FC = () => {
 
   const { game } = useGame(numId)
 
-  const tags = Object.keys(challenges ?? {})
-  const [activeTab, setActiveTab] = useState<ChallengeTag | 'All'>('All')
+  const categories = Object.keys(challenges ?? {})
+  const [activeTab, setActiveTab] = useState<ChallengeCategory | 'All'>('All')
   const [hideSolved, setHideSolved] = useLocalStorage({
     key: 'hide-solved',
     defaultValue: false,
@@ -82,7 +82,7 @@ const ChallengePanel: FC = () => {
   const [detailOpened, setDetailOpened] = useState(false)
   const { iconMap, colorMap } = SubmissionTypeIconMap(0.8)
   const [writeupSubmitOpened, setWriteupSubmitOpened] = useState(false)
-  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -163,7 +163,7 @@ const ChallengePanel: FC = () => {
         {game?.writeupRequired && (
           <>
             <Button
-              px="sm"
+              px="xs"
               leftSection={<Icon path={mdiFileUploadOutline} size={1} />}
               onClick={() => setWriteupSubmitOpened(true)}
             >
@@ -214,7 +214,7 @@ const ChallengePanel: FC = () => {
           orientation="vertical"
           variant="pills"
           value={activeTab}
-          onChange={(value) => setActiveTab(value as ChallengeTag)}
+          onChange={(value) => setActiveTab(value as ChallengeCategory)}
           classNames={{
             list: classes.tabList,
             tabLabel: classes.tabLabel,
@@ -232,8 +232,8 @@ const ChallengePanel: FC = () => {
                 </Text>
               </Group>
             </Tabs.Tab>
-            {tags.map((tab) => {
-              const data = challengeTagLabelMap.get(tab as ChallengeTag)!
+            {categories.map((tab) => {
+              const data = challengeCategoryLabelMap.get(tab as ChallengeCategory)!
               return (
                 <Tabs.Tab
                   key={tab}
@@ -327,7 +327,11 @@ const ChallengePanel: FC = () => {
           onClose={() => setDetailOpened(false)}
           gameEnded={dayjs(game?.end) < dayjs()}
           status={teamInfo?.rank?.solvedChallenges?.find((c) => c.id === challenge?.id)?.type}
-          tagData={challengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
+          cateData={
+            challengeCategoryLabelMap.get(
+              (challenge?.category as ChallengeCategory) ?? ChallengeCategory.Misc
+            )!
+          }
           title={challenge?.title ?? ''}
           score={challenge?.score ?? 0}
           challengeId={challenge.id}

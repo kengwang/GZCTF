@@ -18,7 +18,7 @@ import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Trans } from 'react-i18next'
-import { BloodsTypes, PartialIconProps, SolveMarkIconMap, useChallengeTagLabelMap } from '@Utils/Shared'
+import { BloodsTypes, PartialIconProps, useChallengeCategoryLabelMap, SolveMarkIconMap } from '@Utils/Shared'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengeCard.module.css'
 import hoverClasses from '@Styles/HoverCard.module.css'
@@ -37,13 +37,13 @@ interface ChallengeCardProps {
 
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { challenge, solved, onClick, iconMap, teamId, colorMap, hideWeekInTitle, solveMark } = props
-  const challengeTagLabelMap = useChallengeTagLabelMap()
-  const tagData = challengeTagLabelMap.get(challenge.tag!)
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
+  const cateData = challengeCategoryLabelMap.get(challenge.category!)
   const theme = useMantineTheme()
 
   // was solved || undefined
   const darkenCard = solveMark ? (SolveMarkIconMap[solveMark]?.regardAsSolved || undefined) : solved || undefined
-  
+
   // was solved
   const showMark = solveMark ? solveMark !== "(空白)" : solved
 
@@ -68,7 +68,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
             {hideWeekInTitle ? challenge.title?.replace(/\[week\d\]\s*/i, "") : challenge.title}
           </Text>
         </Group>
-        <Divider size="sm" color={tagData?.color} />
+        <Divider size="sm" color={cateData?.color} />
         <Group wrap="nowrap" justify="space-between" align="center" gap={2}>
           <Text ta="center" fw="bold" fz="lg" ff="monospace">
             {challenge.score}&nbsp;pts
@@ -128,11 +128,11 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
           </Stack>
         </Group>
       </Stack>
-      {tagData && (
+      {cateData && (
         <Icon
           size={4}
-          path={tagData.icon}
-          color={alpha(theme.colors[tagData?.color][7], 0.3)}
+          path={cateData.icon}
+          color={alpha(theme.colors[cateData?.color][7], 0.3)}
           className={classes.icon}
         />
       )}

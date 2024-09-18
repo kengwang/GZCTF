@@ -45,8 +45,8 @@ public class FlagChecker(
         }
 
         await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
-        
-        _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", cancellationToken))
+        if (File.Exists("/app/files/fake_flags.txt"))
+            _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", cancellationToken))
             .Select(t => t.Trim()).ToList();
         
         var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();

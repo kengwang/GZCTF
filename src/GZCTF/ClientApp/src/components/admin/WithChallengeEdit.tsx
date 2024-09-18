@@ -4,9 +4,9 @@ import Icon from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import { useChallengeTagLabelMap } from '@Utils/Shared'
+import { useChallengeCategoryLabelMap } from '@Utils/Shared'
 import { useEditChallenges } from '@Utils/useEdit'
-import { ChallengeInfoModel, ChallengeTag } from '@Api'
+import { ChallengeInfoModel, ChallengeCategory } from '@Api'
 import WithGameEditTab, { GameEditTabProps } from './WithGameEditTab'
 
 const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
@@ -31,12 +31,13 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
   const { previous, current, next } = challenges
     ? getBeforeNext(challenges, numCId)
     : { previous: null, current: null, next: null }
-  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
 
   const color = (chal: ChallengeInfoModel | null) => {
     const c = !chal
       ? theme.primaryColor
-      : (challengeTagLabelMap.get(chal.tag as ChallengeTag)?.color ?? theme.primaryColor)
+      : (challengeCategoryLabelMap.get(chal.category as ChallengeCategory)?.color ??
+        theme.primaryColor)
 
     return c
   }
@@ -48,7 +49,7 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
     <WithGameEditTab isLoading={isLoading} {...rest}>
       <Stack mih="calc(100vh - 12rem)" justify="space-between">
         {children}
-        <Group justify="space-between" w="100%">
+        <Group justify="space-between" w="100%" wrap="nowrap">
           <Button
             justify="space-between"
             disabled={isLoading || !previous}
@@ -58,12 +59,16 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
             {t('admin.button.challenges.previous')}
           </Button>
 
-          <Group justify="space-between" gap="xs">
-            <Text c="dimmed">{previous?.title ?? ''}</Text>
-            <Text fw="bold" c={color(current)}>
+          <Group justify="space-between" gap="xs" wrap="nowrap" maw="calc(100% - 16rem)">
+            <Text c="dimmed" truncate>
+              {previous?.title ?? ''}
+            </Text>
+            <Text fw="bold" c={color(current)} truncate>
               {current?.title ?? ''}
             </Text>
-            <Text c="dimmed">{next?.title ?? ''}</Text>
+            <Text c="dimmed" truncate>
+              {next?.title ?? ''}
+            </Text>
           </Group>
 
           <Button

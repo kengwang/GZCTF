@@ -31,14 +31,14 @@ import ScoreboardItemModal from '@Components/ScoreboardItemModal'
 import {
   BloodBonus,
   BloodsTypes,
-  ChallengeTagItem,
-  useChallengeTagLabelMap,
+  useChallengeCategoryLabelMap,
   SubmissionTypeIconMap,
   useBonusLabels,
+  ChallengeCategoryItem,
   PartialIconProps,
 } from '@Utils/Shared'
 import { useGameScoreboard, generateCustomScoreboard } from '@Utils/useGame'
-import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
+import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType } from '@Api'
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 import { mdiMagnify } from '@mdi/js'
@@ -57,7 +57,7 @@ const TableHeader: FC<{
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
-  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
 
   const hiddenCol = [...Array(5).keys()].map((i) => (
     <Table.Th
@@ -76,11 +76,10 @@ const TableHeader: FC<{
 
   return (
     <Table.Thead className={classes.thead}>
-      {/* Challenge Tag */}
       <Table.Tr style={{ border: 'none' }}>
         {hiddenCol}
         {Object.keys(table).map((key) => {
-          const tag = challengeTagLabelMap.get(key as ChallengeTag)!
+          const cate = challengeCategoryLabelMap.get(key as ChallengeCategory)!
           return (
             <Table.Th
               key={key}
@@ -88,18 +87,18 @@ const TableHeader: FC<{
               h="3rem"
               style={{
                 backgroundColor: alpha(
-                  theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6],
+                  theme.colors[cate.color][colorScheme === 'dark' ? 8 : 6],
                   colorScheme === 'dark' ? 0.15 : 0.2
                 ),
               }}
             >
               <Group gap={4} wrap="nowrap" justify="center" w="100%">
                 <Icon
-                  path={tag.icon}
+                  path={cate.icon}
                   size={1}
-                  color={theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6]}
+                  color={theme.colors[cate.color][colorScheme === 'dark' ? 8 : 6]}
                 />
-                <Text c={tag.color} className={classes.text} ff="text" fz="sm">
+                <Text c={cate.color} className={classes.text} ff="text" fz="sm">
                   {key}
                 </Text>
               </Group>
@@ -155,7 +154,7 @@ const TableRow: FC<{
   selectedOrg: string
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank, selectedOrg }) => {
   const theme = useMantineTheme()
-  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const solved = item.solvedChallenges
 
   return (
@@ -222,7 +221,7 @@ const TableRow: FC<{
 
             if (!icon) return <Table.Td key={item.id} className={classes.mono} />
 
-            const tag = challengeTagLabelMap.get(item.tag as ChallengeTag)!
+            const cate = challengeCategoryLabelMap.get(item.category as ChallengeCategory)!
 
             return (
               <Table.Td key={item.id} className={classes.mono}>
@@ -234,7 +233,7 @@ const TableRow: FC<{
                       <Text lineClamp={3} fz="xs" className={classes.text}>
                         {item.title}
                       </Text>
-                      <Text c={tag.color} fz="xs" className={classes.text}>
+                      <Text c={cate.color} fz="xs" className={classes.text}>
                         + {chal?.score} pts
                       </Text>
                       <Text c="dimmed" fz="xs" className={classes.text}>
@@ -262,8 +261,8 @@ export interface ScoreboardProps {
   setOrganization: (org: string | null) => void
   titlePattern: string | null
   setTitlePattern: (pattern: string | ((prevState: string) => string)) => void
-  category: ChallengeTag | null
-  setCategory: (tag: ChallengeTag | null) => void
+  category: ChallengeCategory | null
+  setCategory: (tag: ChallengeCategory | null) => void
 }
 
 const ScoreboardTable: FC<ScoreboardProps> = ({
@@ -276,8 +275,8 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
   const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
-  const challengeTagLabelMap = useChallengeTagLabelMap()
-  
+  const challengeTagLabelMap = useChallengeCategoryLabelMap()
+
   const [hideWeekInTitle, setHideWeekInTitle] = useLocalStorage({
     key: 'hide-week-in-title',
     defaultValue: false,
@@ -413,11 +412,11 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
                 value={category}
                 nothingFoundMessage={t('game.label.score_table.tag_empty')}
                 onChange={(value) => {
-                  setCategory(value as ChallengeTag | null)
+                  setCategory(value as ChallengeCategory | null)
                   setPage(1)
                 }}
-                renderOption={ChallengeTagItem}
-                data={Object.entries(ChallengeTag).filter((tag) =>
+                renderOption={ChallengeCategoryItem}
+                data={Object.entries(ChallengeCategory).filter((tag) =>
                   (scoreboard?.challenges ?? {})[tag[1]]?.length ?? 0 > 0
                 ).map((tag) => {
                   const data = challengeTagLabelMap.get(tag[1])

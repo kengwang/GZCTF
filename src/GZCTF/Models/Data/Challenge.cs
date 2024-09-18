@@ -26,11 +26,11 @@ public class Challenge
     public string Content { get; set; } = "**出题:** \n**难度:** \n \n---\n \n";
 
     /// <summary>
-    /// 题目标签
+    /// 题目类别
     /// </summary>
     [Required]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
+    public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
     /// 题目类型，创建后不可更改
