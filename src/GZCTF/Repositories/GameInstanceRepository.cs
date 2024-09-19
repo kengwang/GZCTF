@@ -18,6 +18,7 @@ public class GameInstanceRepository(
     ILogger<GameInstanceRepository> logger,
     IStringLocalizer<Program> localizer) : RepositoryBase(context), IGameInstanceRepository
 {
+
     public async Task<GameInstance?> GetInstance(Participation part, int challengeId, CancellationToken token = default)
     {
         await using IDbContextTransaction transaction = await Context.Database.BeginTransactionAsync(token);
@@ -252,7 +253,7 @@ public class GameInstanceRepository(
         return checkInfo;
     }
 
-    List<string> _fakeFlags = [];
+    List<string>? _fakeFlags = null;
     
     public async Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
@@ -260,13 +261,14 @@ public class GameInstanceRepository(
 
         try
         {
-
-            if (_fakeFlags is not { Count: > 0 })
-            {
-                _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", token))
-                    .Select(t => t.Trim()).ToList();
+            if (_fakeFlags is null){
+                if (!File.Exists("/app/files/fake_flags.txt"))
+                    _fakeFlags = [];
+                else
+                    _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", token))
+                        .Select(t => t.Trim()).ToList();
             }
-            
+
             GameInstance? instance = await Context.GameInstances.IgnoreAutoIncludes()
                 .Include(i => i.FlagContext)
                 .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
