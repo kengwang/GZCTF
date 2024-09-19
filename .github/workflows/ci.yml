@@ -51,7 +51,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
         
-      - name: Login to BaseCTF Private Registry
+      - name: Login to Aliyun Registry
         uses: docker/login-action@v3
         with:
           registry: registry.cn-hangzhou.aliyuncs.com
@@ -82,7 +82,7 @@ jobs:
         with:
           images: |
             ghcr.io/${{ github.repository }}/gzctf
-            registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf/gzctf
+            registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf
           flavor: |
             latest=${{ env.RELEASE }}
           tags: |
