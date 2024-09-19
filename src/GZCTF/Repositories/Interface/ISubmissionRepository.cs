@@ -70,4 +70,14 @@ public interface ISubmissionRepository : IRepository
     /// <returns></returns>
     public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
         CancellationToken token = default);
+
+    /// <summary>
+    /// 重算所有提交
+    /// </summary>
+    /// <param name="gameId">比赛Id</param>
+    /// <param name="challengeId">题目Id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task RecalculateChallenge(int gameId, int challengeId,
+        CancellationToken token = default);
 }

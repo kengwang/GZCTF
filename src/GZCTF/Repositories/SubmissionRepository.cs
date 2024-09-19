@@ -1,4 +1,5 @@
-﻿using GZCTF.Extensions;
+﻿using System.Threading.Channels;
+using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
 using GZCTF.Repositories.Interface;
@@ -9,6 +10,7 @@ namespace GZCTF.Repositories;
 
 public class SubmissionRepository(
     IHubContext<MonitorHub, IMonitorClient> hub,
+    ChannelWriter<Submission> channelWriter,
     AppDbContext context) : RepositoryBase(context), ISubmissionRepository
 {
     public async Task<Submission> AddSubmission(Submission submission, CancellationToken token = default)
@@ -24,6 +26,25 @@ public class SubmissionRepository(
         => Context.Submissions.Where(s =>
                 s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
             .SingleOrDefaultAsync(token);
+
+    public async Task RecalculateChallenge(int gameId, int challengeId, CancellationToken token = default)
+    {
+       
+        await Context.Submissions
+            .Where(s => s.GameId == gameId && s.ChallengeId == challengeId)
+            .ExecuteUpdateAsync(s => s.SetProperty(submission => submission.Status, AnswerResult.FlagSubmitted),
+                cancellationToken: token);
+        
+        var allSubmissions = await Context.Submissions
+            .Where(s => s.GameId == gameId && s.ChallengeId == challengeId)
+            .ToArrayAsync(token);
+        
+        foreach (var submission in allSubmissions)
+        {
+            await channelWriter.WriteAsync(submission, token);
+        }
+        
+    }
 
     public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default) =>
         Context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)

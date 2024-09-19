@@ -29,6 +29,9 @@
       "next": "次のチャレンジ",
       "preview": "チャレンジをプレビュー",
       "previous": "前のチャレンジ",
+      "submissions": {
+        "recalculate": "コミットを再計算する"
+      },
       "test_container": {
         "create": "テストコンテナを作成",
         "destroy": "テストコンテナを破棄"
@@ -228,9 +231,9 @@
           "joined": "参加申請済み",
           "not_joined": "参加未申請",
           "organization": {
+            "cancel": "キャンセル",
             "edit": "組織の編集",
-            "save": "保存",
-            "cancel": "キャンセル"
+            "save": "保存"
           },
           "stats": "{{count}}/{{total}} 参加申請済み",
           "update": "{{status}}に設定してもよろしいですか?"
@@ -397,6 +400,9 @@
         "preview": {
           "attachment_downloaded": "アタッチメントがダウンロードされたふりをしています！",
           "flag_submitted": "フラッグは正しく提出されたようです。"
+        },
+        "submissions": {
+          "recalculated": "提出物が再計算されました"
         },
         "updated": "チャレンジを更新しました"
       },

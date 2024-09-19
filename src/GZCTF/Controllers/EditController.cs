@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using System.Threading.Channels;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Request.Edit;
@@ -34,6 +35,7 @@ public class EditController(
     IGameNoticeRepository gameNoticeRepository,
     IGameRepository gameRepository,
     IContainerManager containerService,
+    ISubmissionRepository submissionRepository,
     IFileRepository fileService,
     IStringLocalizer<Program> localizer) : Controller
 {
@@ -854,5 +856,36 @@ public class EditController(
                 StatusCodes.Status404NotFound));
 
         return Ok(await challengeRepository.RemoveFlag(challenge, fId, token));
+    }
+
+    /// <summary>
+    /// 重算本题提交
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    [HttpPut("Games/{id:int}/Challenges/{cId:int}/RecalculateSubmissions")]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RecalculateSubmissions([FromRoute] int id, [FromRoute] int cId,
+        CancellationToken token)
+    {
+        Game? game = await gameRepository.GetGameById(id, token);
+        
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+
+        if (challenge is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        // 防止错误报血
+        challenge.AcceptedCount = 3;
+        await submissionRepository.RecalculateChallenge(game.Id, challenge.Id, token);
+        await challengeRepository.RecalculateAcceptedCount(game, token);
+        return Ok();
     }
 }

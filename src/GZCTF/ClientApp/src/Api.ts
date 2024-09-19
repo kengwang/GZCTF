@@ -3418,6 +3418,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfGameInfoModel>([`/api/edit/games`, query], data, options),
 
     /**
+     * No description
+     *
+     * @tags Edit
+     * @name EditRecalculateSubmissions
+     * @request PUT:/api/edit/games/{id}/challenges/{cId}/recalculatesubmissions
+     */
+    editRecalculateSubmissions: (id: number, cId: number, params: RequestParams = {}) =>
+      this.request<any, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/recalculatesubmissions`,
+        method: "PUT",
+        ...params,
+      }),
+
+    /**
      * @description 删除比赛题目 Flag，需要管理员权限
      *
      * @tags Edit

@@ -88,6 +88,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       })
   }
 
+
   const theme = useMantineTheme()
   const [progress, setProgress] = useState(0)
   const [flagCreateModalOpen, setFlagCreateModalOpen] = useState(false)
@@ -188,6 +189,23 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       })
   }
 
+  const recalculateSubmissions = () => {
+    setDisabled(true)
+    api.edit
+      .editRecalculateSubmissions(numId, numCId)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: t('admin.notification.games.challenges.submissions.recalculated'),
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      })
+      .catch((err) => showErrorNotification(err, t))
+      .finally(() => {
+        setDisabled(false)
+    })
+  }
+
   const will_generate =
     ' ' + t('admin.content.games.challenges.flag.instructions.will_generate') + ' '
 
@@ -285,15 +303,20 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       </Group>
       <Group justify="space-between" mt={20}>
         <Title order={2}>{t('admin.content.games.challenges.flag.title')}</Title>
-        {challenge?.type === ChallengeType.DynamicContainer ? (
-          <Button disabled={disabled} onClick={onChangeFlagTemplate}>
-            {t('admin.button.challenges.flag.save')}
+        <Group justify="right">
+          <Button disabled={disabled} onClick={() => recalculateSubmissions()}>
+            {t('admin.button.challenges.submissions.recalculate')}
           </Button>
-        ) : (
-          <Button disabled={disabled} w="122px" onClick={() => setFlagCreateModalOpen(true)}>
-            {t('admin.button.challenges.flag.add.normal')}
-          </Button>
-        )}
+          {challenge?.type === ChallengeType.DynamicContainer ? (
+            <Button disabled={disabled} onClick={onChangeFlagTemplate}>
+              {t('admin.button.challenges.flag.save')}
+            </Button>
+          ) : (
+            <Button disabled={disabled} w="122px" onClick={() => setFlagCreateModalOpen(true)}>
+              {t('admin.button.challenges.flag.add.normal')}
+            </Button>
+            )}
+        </Group>
       </Group>
       <Divider />
       {challenge?.type === ChallengeType.DynamicContainer ? (
@@ -412,12 +435,33 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
 
   const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
+  const [disabled, setDisabled] = useState(false)
+
+  const recalculateSubmissions = () => {
+    setDisabled(true)
+    api.edit
+      .editRecalculateSubmissions(numId, numCId)
+      .then(() => {
+        showNotification({
+          color: 'teal',
+          message: t('admin.notification.games.challenges.submissions.recalculated'),
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      })
+      .catch((err) => showErrorNotification(err, t))
+      .finally(() => {
+        setDisabled(false)
+      })
+  }
 
   return (
     <Stack>
       <Group justify="space-between" mt={20}>
         <Title order={2}>{t('admin.content.games.challenges.flag.title')}</Title>
         <Group justify="right">
+          <Button disabled={disabled} onClick={() => recalculateSubmissions()}>
+            {t('admin.button.challenges.submissions.recalculate')}
+          </Button>
           <Button onClick={() => setRemoteAttachmentModalOpened(true)}>
             {t('admin.button.challenges.flag.add.remote')}
           </Button>

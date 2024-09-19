@@ -29,6 +29,9 @@
       "next": "Next",
       "preview": "Preview",
       "previous": "Previous",
+      "submissions": {
+        "recalculate": "Recalculate Submissions"
+      },
       "test_container": {
         "create": "Create",
         "destroy": "Destroy"
@@ -228,9 +231,9 @@
           "joined": "Joined",
           "not_joined": "Not Registered",
           "organization": {
+            "cancel": "Cancel",
             "edit": "Edit Team Division",
-            "save": "Save",
-            "cancel": "Cancel"
+            "save": "Save"
           },
           "stats": "{{count}}/{{total}} joined",
           "update": "Set this team's status to: \"{{status}}\"?"
@@ -398,6 +401,9 @@
         "preview": {
           "attachment_downloaded": "Pretend the attachment has been downloaded!",
           "flag_submitted": "Flag submitted!"
+        },
+        "submissions": {
+          "recalculated": "Submission has been recalculated"
         },
         "updated": "Challenge updated"
       },
