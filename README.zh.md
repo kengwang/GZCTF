@@ -5,9 +5,10 @@
 
 # GZ::CTF
 
-[![publish](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml/badge.svg)](https://github.com/GZTimeWalker/GZCTF/actions/workflows/ci.yml)
-![version](https://img.shields.io/github/v/release/GZTimeWalker/GZCTF?include_prereleases&label=version)
-![license](https://img.shields.io/github/license/GZTimeWalker/GZCTF?color=FF5531)
+
+[![publish](https://github.com/kengwang/GZCTF/actions/workflows/ci.yml/badge.svg)](https://github.com/kengwang/GZCTF/actions/workflows/ci.yml)
+![version](https://img.shields.io/github/v/release/kengwang/GZCTF?include_prereleases&label=version)
+![license](https://img.shields.io/github/license/kengwang/GZCTF?color=FF5531)
 [![Crowdin](https://badges.crowdin.net/gzctf/localized.svg)](https://crowdin.com/project/gzctf)
 
 [![Telegram Group](https://img.shields.io/endpoint?color=blue&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fgzctf)](https://telegram.dog/gzctf)
@@ -15,6 +16,43 @@
 [![Discord](https://img.shields.io/discord/1239476909033656320?label=Discord)](https://discord.gg/dV9A6ZjVhC)
 
 [English](./README.md), [简体中文](./README.zh.md), [日本語](./README.ja.md)
+
+---
+
+修改自 [GZCTF](https://github.com/GZTimeWalker/GZCTF)
+
+提供了以下新功能：
+
+* 允许题目赛时提交不计分
+* 允许多组织通过邀请码加入
+* 优化排行榜显示 (竖屏, 所属组织)
+* 允许管理员修改队伍组织
+* 题目页面搜索题目 (正则)
+* 排行榜筛选非公开赛道
+* 监控页面隐藏 Flag (方便直播动态)
+* 题目定时上下线 (起不来专属)
+* Fake Flag (主办方设置指定 Flag, 参赛者提交显示正确, 但计入作弊)
+* 给题目解题情况用户自定义显示图标
+* 排行榜导出
+
+我们对修改意见持开放态度，欢迎提 Issue 或 PR。
+
+如何迁移到 `kengwang/GZCTF`:
+
+替换 `compose.yml` 中的 `image` 为:
+
+```
+registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf/gzctf
+```
+
+> [!WARNING]  
+> 请注意，由于数据库结构变更，如果你之前已经使用过原版 GZCTF，迁移后需要运行以下 SQL 命令：
+
+```sql
+UPDATE "Games" SET "Organizations" = '{}';
+```
+
+---
 
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 

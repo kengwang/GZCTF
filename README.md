@@ -16,6 +16,44 @@
 
 [English](./README.md), [简体中文](./README.zh.md), [日本語](./README.ja.md)
 
+---
+
+Modified from [GZCTF](https://github.com/GZTimeWalker/GZCTF)
+
+The following new features have been added:
+
+* Allows submissions during the competition that do not count towards scoring
+* Allows multiple organizations to join via (or without) invitation code
+* Optimized scoreboard display (portrait mode, show affiliated organizations)
+* Allows administrators to modify organization of specific team
+* Search for challenges on the challenges page (regex)
+* Scoreboard filters out non-public.
+* Monitoring page hides Flag (for live streaming)
+* Scheduled challenge availability
+* Fake Flags (organizers set specified Flags, participants can submit them with correct message but counted as cheating in backend)
+* Custom icons for problem-solving status
+* Scoreboard export with username
+
+We are open to modification suggestions and welcome Issues or PRs.
+
+How to migrate to `kengwang/GZCTF`:
+
+Replace the `image` in `compose.yml` with:
+
+```
+registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf/gzctf
+```
+
+> [!WARNING]  
+> Please note that due to changes in the database structure, if you have previously used the original GZCTF, you will need to run the following SQL command after migration:
+
+```sql
+UPDATE "Games" SET "Organizations" = '{}';
+```
+
+---
+
+
 GZ::CTF is an open source CTF platform based on ASP.NET Core.
 
 > [!IMPORTANT]
