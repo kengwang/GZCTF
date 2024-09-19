@@ -70,7 +70,7 @@ const ChallengePanel: FC = () => {
         (chal) =>
           !hideSolved ||
           (challengeMarks[chal.id!.toString()] !== undefined
-            ? !(SolveMarkIconMap[challengeMarks[chal.id!.toString()]]?.regardAsSolved ?? true)
+            ? !SolveMarkIconMap[challengeMarks[chal.id!.toString()]]?.regardAsSolved
             : (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined)
       )) ?? []
   const searchedChallenges = unsolvedTaggedChallenges.filter(
