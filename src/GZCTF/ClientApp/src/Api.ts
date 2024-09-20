@@ -263,6 +263,8 @@ export interface GlobalConfig {
   logoHash?: string | null;
   /** 平台 favicon 哈希 */
   faviconHash?: string | null;
+  /** 默认 Flag 模板 */
+  defaultFlagTemplate?: string | null;
 }
 
 /** 容器策略 */
@@ -3422,6 +3424,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Edit
      * @name EditRecalculateSubmissions
+     * @summary 重算本题提交
      * @request PUT:/api/edit/games/{id}/challenges/{cId}/recalculatesubmissions
      */
     editRecalculateSubmissions: (id: number, cId: number, params: RequestParams = {}) =>

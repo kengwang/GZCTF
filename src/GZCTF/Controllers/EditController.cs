@@ -2,6 +2,7 @@
 using System.Threading.Channels;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
+using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Models.Request.Info;
@@ -11,6 +12,7 @@ using GZCTF.Services.Container.Manager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using NSwag.Annotations;
 
 namespace GZCTF.Controllers;
@@ -37,6 +39,7 @@ public class EditController(
     IContainerManager containerService,
     ISubmissionRepository submissionRepository,
     IFileRepository fileService,
+    IOptionsSnapshot<GlobalConfig> globalConfig,
     IStringLocalizer<Program> localizer) : Controller
 {
     /// <summary>
@@ -465,7 +468,7 @@ public class EditController(
                 StatusCodes.Status404NotFound));
 
         GameChallenge res = await challengeRepository.CreateChallenge(game,
-            new GameChallenge { Title = model.Title, Type = model.Type, Category = model.Category }, token);
+            new GameChallenge { Title = model.Title, Type = model.Type, Category = model.Category, FlagTemplate = globalConfig.Value.DefaultFlagTemplate}, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }

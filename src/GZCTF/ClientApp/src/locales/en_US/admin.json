@@ -312,6 +312,11 @@
           "description": "Site description provided for SEO",
           "label": "Site Description"
         },
+        "flag_template": {
+          "description": "For unset dynamic questions, this Flag template will be used, and the format is the same as the Flag management page.",
+          "label": "Default Flag template",
+          "placeholder": "flag{[GUID]}"
+        },
         "footer": {
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"

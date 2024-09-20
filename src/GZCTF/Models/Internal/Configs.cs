@@ -159,6 +159,11 @@ public class GlobalConfig
     /// </summary>
     [JsonIgnore]
     public string Platform => Title.IsNullOrEmpty() ? "GZ::CTF" : $"{Title}::CTF";
+
+    /// <summary>
+    /// 默认 Flag 模板
+    /// </summary>
+    public string? DefaultFlagTemplate { get; set; } = "flag{[GUID]}";
 }
 
 /// <summary>

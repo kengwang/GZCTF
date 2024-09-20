@@ -312,6 +312,11 @@
           "description": "向搜索引擎和爬虫程序提供的平台摘要",
           "label": "平台摘要"
         },
+        "flag_template": {
+          "description": "对于未设置的动态题目将使用此 Flag 模板, 格式与 Flag 管理页面相同",
+          "label": "默认 Flag 模板",
+          "placeholder": "flag{[GUID]}"
+        },
         "footer": {
           "description": "显示在网页底部的附加信息，支持 Markdown 语法, <mbr/> 会在移动设备中替换为 <br/>",
           "label": "页脚附加信息"

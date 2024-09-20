@@ -23,7 +23,7 @@ public class Challenge
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_ContentRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    public string Content { get; set; } = "**出题:** \n**难度:** \n \n---\n \n";
+    public string Content { get; set; } = "**出题:** name  \n**难度:** \n \n---\n \n";
 
     /// <summary>
     /// 题目类别
@@ -102,7 +102,7 @@ public class Challenge
     /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
     /// </summary>
     [MaxLength(Limits.MaxFlagTemplateLength)]
-    public string? FlagTemplate { get; set; } = "BaseCTF{[GUID]}";
+    public string? FlagTemplate { get; set; }
 
     /// <summary>
     /// 是否可以提交得分

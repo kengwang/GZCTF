@@ -230,7 +230,7 @@ const Configs: FC = () => {
                 }}
               />
             </Grid.Col>
-            <Grid.Col span={4}>
+            <Grid.Col span={2}>
               <TextInput
                 label={t('admin.content.settings.platform.footer.label')}
                 description={t('admin.content.settings.platform.footer.description')}
@@ -239,6 +239,18 @@ const Configs: FC = () => {
                 value={globalConfig?.footerInfo ?? ''}
                 onChange={(e) => {
                   setGlobalConfig({ ...globalConfig, footerInfo: e.currentTarget.value })
+                }}
+              />
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <TextInput
+                label={t('admin.content.settings.platform.flag_template.label')}
+                description={t('admin.content.settings.platform.flag_template.description')}
+                placeholder={t('admin.content.settings.platform.flag_template.placeholder')}
+                disabled={disabled}
+                value={globalConfig?.defaultFlagTemplate ?? ''}
+                onChange={(e) => {
+                  setGlobalConfig({ ...globalConfig, defaultFlagTemplate: e.currentTarget.value })
                 }}
               />
             </Grid.Col>
