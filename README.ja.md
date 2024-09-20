@@ -41,15 +41,11 @@
 `compose.yml`の`image`を以下に置き換えてください：
 
 ```
-registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf/gzctf
+registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf:develop
 ```
 
 > [!WARNING]  
-> データベース構造の変更により、以前にオリジナルのGZCTFを使用していた場合、移行後に以下のSQLコマンドを実行する必要があります：
-
-```sql
-UPDATE "Games" SET "Organizations" = '{}';
-```
+> データベース構造の変更に伴い、元のGZCTFデータを引き続き使用したい場合は、[移行ガイド](Migration/README.md)を参照してください。
 
 ---
 

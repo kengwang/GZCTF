@@ -43,15 +43,11 @@
 替换 `compose.yml` 中的 `image` 为:
 
 ```
-registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf/gzctf
+registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf:develop
 ```
 
 > [!WARNING]  
-> 请注意，由于数据库结构变更，如果你之前已经使用过原版 GZCTF，迁移后需要运行以下 SQL 命令：
-
-```sql
-UPDATE "Games" SET "Organizations" = '{}';
-```
+> 请注意，由于数据库结构变更，如果你想继续使用原版 GZCTF 的数据, 请查看 [迁移文档](Migration/README.md)
 
 ---
 

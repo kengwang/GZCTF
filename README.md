@@ -41,15 +41,11 @@ How to migrate to `kengwang/GZCTF`:
 Replace the `image` in `compose.yml` with:
 
 ```
-registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf/gzctf
+registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf:develop
 ```
 
 > [!WARNING]  
-> Please note that due to changes in the database structure, if you have previously used the original GZCTF, you will need to run the following SQL command after migration:
-
-```sql
-UPDATE "Games" SET "Organizations" = '{}';
-```
+> Please note that due to changes in the database structure, if you want to continue using the original GZCTF data, please refer to the [Migration Guide](Migration/README.md).
 
 ---
 
