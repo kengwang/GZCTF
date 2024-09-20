@@ -20,3 +20,11 @@ WHERE "MigrationId" = '20240726155408_Add_Challenge_CanSubmit';
 
 COMMIT;
 
+-- Migrate Invitation Code
+
+START TRANSACTION;
+
+UPDATE "Games" SET "Organizations" = '[]';
+
+COMMIT;
+
