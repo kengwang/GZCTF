@@ -51,7 +51,7 @@ const CustomColorModal: FC<ModalProps> = (props) => {
     } else {
       setCustomColor('brand')
     }
-  }, [debouncedColor, provider, setCustomColor])
+  }, [debouncedColor, provider])
 
   return (
     <Modal title={t('common.content.color.title')} {...props}>
