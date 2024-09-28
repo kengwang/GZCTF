@@ -25,6 +25,7 @@ import classes from '@Styles/ChallengeModal.module.css'
 import { useLocalStorage } from '@mantine/hooks'
 
 export interface ChallengeModalProps extends ModalProps {
+  userGameId?: string
   challenge?: ChallengeDetailModel
   cateData: ChallengeCategoryItemProps
   solved?: boolean
@@ -40,6 +41,7 @@ export interface ChallengeModalProps extends ModalProps {
 
 const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const {
+    userGameId,
     challenge,
     cateData,
     solved,
@@ -62,16 +64,19 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   const [placeholder, setPlaceholder] = useState('')
 
-  const [challengeMarks, setChallengeMarks] = useLocalStorage<Record<string, string | undefined>>({
-    key: 'BaseCTF-challenge-marks',
+  const [challengeMarks, setChallengeMarks] = useLocalStorage<Record<string, Record<string, string | undefined> | undefined>>({
+    key: 'challenge-marks',
     defaultValue: {},
     getInitialValueInEffect: false,
   })
-  const solveMark = challengeMarks[challenge?.id?.toString() ?? ""]
+  const solveMark = challengeMarks[userGameId ?? "_"]?.[challenge?.id?.toString() ?? ""]
   const setSolveMark = (value: string) => {
     setChallengeMarks({
       ...challengeMarks,
-      [challenge?.id?.toString() ?? ""]: value === "(默认)" ? undefined : value,
+      [userGameId ?? "_"]: {
+        ...challengeMarks[userGameId ?? "_"],
+        [challenge?.id?.toString() ?? ""]: value === "(默认)" ? undefined : value,
+      },
     })
   }
 

@@ -29,6 +29,7 @@ import { useChallengeCategoryLabelMap, SubmissionTypeIconMap, SolveMarkIconMap }
 import { useGame, useGameTeamInfo } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeCategory, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengePanel.module.css'
+import { useUser } from '@Utils/useUser'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()
@@ -38,6 +39,8 @@ const ChallengePanel: FC = () => {
   const challenges = teamInfo?.challenges
 
   const { game } = useGame(numId)
+  const { user } = useUser()
+  const userGameId = (user?.userId ?? "") + "_" + numId.toString()
 
   const categories = Object.keys(challenges ?? {})
   const [activeTab, setActiveTab] = useState<ChallengeCategory | 'All'>('All')
@@ -51,8 +54,8 @@ const ChallengePanel: FC = () => {
     defaultValue: false,
     getInitialValueInEffect: false,
   })
-  const [challengeMarks] = useLocalStorage<Record<string, string>>({
-    key: 'BaseCTF-challenge-marks',
+  const [challengeMarks] = useLocalStorage<Record<string, Record<string, string> | undefined>>({
+    key: 'challenge-marks',
     defaultValue: {},
     getInitialValueInEffect: false,
   })
@@ -69,8 +72,8 @@ const ChallengePanel: FC = () => {
       (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
         (chal) =>
           !hideSolved ||
-          (challengeMarks[chal.id!.toString()] !== undefined
-            ? !SolveMarkIconMap[challengeMarks[chal.id!.toString()]]?.regardAsSolved
+          (challengeMarks[userGameId]?.[chal.id!.toString()] !== undefined
+            ? !SolveMarkIconMap[challengeMarks[userGameId]?.[chal.id!.toString()]]?.regardAsSolved
             : (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined)
       )) ?? []
   const searchedChallenges = unsolvedTaggedChallenges.filter(
@@ -291,7 +294,7 @@ const ChallengePanel: FC = () => {
                   iconMap={iconMap}
                   colorMap={colorMap}
                   hideWeekInTitle={hideWeekInTitle}
-                  solveMark={challengeMarks[chal.id!.toString()]}
+                  solveMark={challengeMarks[userGameId]?.[chal.id!.toString()]}
                   onClick={() => {
                     setChallenge(chal)
                     setDetailOpened(true)
@@ -323,6 +326,7 @@ const ChallengePanel: FC = () => {
       )}
       {challenge?.id && (
         <GameChallengeModal
+          userId={user?.userId ?? ''}
           gameId={numId}
           opened={detailOpened}
           withCloseButton={false}

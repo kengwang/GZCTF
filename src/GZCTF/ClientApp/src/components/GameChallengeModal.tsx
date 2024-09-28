@@ -11,6 +11,7 @@ import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
+  userId: string
   gameId: number
   gameEnded: boolean
   cateData: ChallengeCategoryItemProps
@@ -21,7 +22,7 @@ interface GameChallengeModalProps extends ModalProps {
 }
 
 const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
-  const { gameId, gameEnded, challengeId, cateData, status, title, score, ...modalProps } = props
+  const { userId, gameId, gameEnded, challengeId, cateData, status, title, score, ...modalProps } = props
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
     refreshInterval: 120 * 1000,
@@ -29,8 +30,10 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const [challengeMarks, setChallengeMarks] = useLocalStorage<Record<string, string | undefined>>({
-    key: 'BaseCTF-challenge-marks',
+  const userGameId = userId + "_" + gameId.toString()
+
+  const [challengeMarks, setChallengeMarks] = useLocalStorage<Record<string, Record<string, string | undefined> | undefined>>({
+    key: 'challenge-marks',
     defaultValue: {},
     getInitialValueInEffect: false,
   })
@@ -181,7 +184,10 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     if (data === AnswerResult.Accepted) {
       setChallengeMarks({
         ...challengeMarks,
-        [challengeId.toString()]: undefined,
+        [userGameId]: {
+          ...challengeMarks[userGameId],
+          [challengeId.toString()]: undefined,
+        },
       })
       updateNotification({
         id: 'flag-submitted',
@@ -202,7 +208,10 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     {
       setChallengeMarks({
         ...challengeMarks,
-        [challengeId.toString()]: "时钟",
+        [userGameId]: {
+          ...challengeMarks[userGameId],
+          [challengeId.toString()]: "时钟",
+        },
       })
       updateNotification({
         id: 'flag-submitted',
@@ -242,6 +251,7 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   return (
     <ChallengeModal
       {...modalProps}
+      userGameId={userGameId}
       challenge={challenge ?? { title, score }}
       cateData={cateData}
       solved={status !== SubmissionType.Unaccepted && status !== undefined}

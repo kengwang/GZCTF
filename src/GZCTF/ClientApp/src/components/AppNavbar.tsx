@@ -115,8 +115,8 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
 
   const loggedIn = user && !error
 
-  const [, setChallengeMarks] = useLocalStorage<Record<string, string | undefined>>({
-    key: 'BaseCTF-challenge-marks',
+  const [, setChallengeMarks] = useLocalStorage<Record<string, Record<string, string | undefined>>>({
+    key: 'challenge-marks',
     defaultValue: {},
     getInitialValueInEffect: false,
   })
