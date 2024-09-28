@@ -499,7 +499,7 @@
       }
     },
     "teams": {
-      "search": "Search by name"
+      "search": "Search by name or member"
     },
     "users": {
       "real_name": "Empty",

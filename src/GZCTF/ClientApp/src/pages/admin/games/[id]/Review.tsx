@@ -334,7 +334,8 @@ const GameTeamReview: FC = () => {
     (participation) =>
       (selectedStatus === null || participation.status === selectedStatus) &&
       (selectedOrg === null || participation.organization === selectedOrg) &&
-      (search === '' || participation.team?.name?.toLowerCase().includes(search.toLowerCase()))
+      (search === '' || participation.team?.name?.toLowerCase().includes(search.toLowerCase())
+        || participation.team?.members?.some((m) => m.userName?.toLowerCase().includes(search.toLowerCase())))
   )
 
   const pagedParticipations = filteredParticipations?.slice(
