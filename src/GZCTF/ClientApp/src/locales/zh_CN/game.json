@@ -11,7 +11,7 @@
     },
     "finished": "比赛结束",
     "hide_solved": "隐藏已解出",
-    "hide_week_in_title": "隐藏星期",
+    "hide_prefix_in_title": "隐藏标题前缀",
     "join": "报名参赛",
     "leave": "取消报名",
     "login_required": "请先登录",

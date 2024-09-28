@@ -47,7 +47,7 @@ const ChallengePanel: FC = () => {
     getInitialValueInEffect: false,
   })
   const [hideWeekInTitle, setHideWeekInTitle] = useLocalStorage({
-    key: 'hide-week-in-title',
+    key: 'hide-prefix-in-title',
     defaultValue: false,
     getInitialValueInEffect: false,
   })
@@ -183,7 +183,9 @@ const ChallengePanel: FC = () => {
             </Text>
           }
         />
-        <Switch
+        {allChallenges.filter((c) =>
+          /^\s*(\[.*\]|\(.*\)|\<.*\>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)/.test(c.title ?? '')
+        ).length >= 3 && <Switch
           checked={hideWeekInTitle}
           onChange={(e) => setHideWeekInTitle(e.target.checked)}
           w="10rem"
@@ -194,10 +196,10 @@ const ChallengePanel: FC = () => {
           }}
           label={
             <Text fz="md" fw="bold">
-              {t('game.button.hide_week_in_title')}
+              {t('game.button.hide_prefix_in_title')}
             </Text>
           }
-        />
+        />}
         <TextInput
           placeholder={t('game.placeholder.challenge_search')}
           value={searchText}
