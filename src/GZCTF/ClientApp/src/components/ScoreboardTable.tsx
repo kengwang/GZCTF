@@ -38,7 +38,7 @@ import {
   PartialIconProps,
 } from '@Utils/Shared'
 import { useGameScoreboard, generateCustomScoreboard } from '@Utils/useGame'
-import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType } from '@Api'
+import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType, ScoreboardModel } from '@Api'
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 import { mdiMagnify } from '@mdi/js'
@@ -49,6 +49,172 @@ const Widths = Array(5).fill(0)
 Lefts.forEach((val, idx) => {
   Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
 })
+
+const TableFilterForm: FC<{
+  scoreboard: ScoreboardModel | undefined
+  setFilteredItems: React.Dispatch<React.SetStateAction<ScoreboardItem[] | null>>
+  setFilteredChallenges: React.Dispatch<React.SetStateAction<Record<string, ChallengeInfo[]> | null>>
+  setPage: React.Dispatch<React.SetStateAction<number>>
+  organization: string | null
+  setOrganization: (org: string | null) => void
+  hideWeekInTitle: boolean
+  setHideWeekInTitle: (hide: boolean) => void
+}> = ({
+  scoreboard,
+  setFilteredItems,
+  setFilteredChallenges,
+  setPage,
+  organization,
+  setOrganization,
+  hideWeekInTitle,
+  setHideWeekInTitle,
+}) => {
+  const { t } = useTranslation()
+  const challengeTagLabelMap = useChallengeCategoryLabelMap()
+
+  const [titlePattern, setTitlePattern] = useLocalStorage({
+    key: 'scoreboard-search-pattern',
+    defaultValue: '',
+    getInitialValueInEffect: false,
+  })
+  const [category, setCategory] = useState<ChallengeCategory | null>(null)
+
+  const [searchTextBuffer, setSearchTextBuffer] = useInputState<string>('')
+  const [searchCloseButtonVisible, setSearchCloseButtonVisible] = useState(false)
+  const [filterTips, setFilterTips] = useState('')
+
+  const [customScoreboard, setCustomScoreboard] = useState<ReturnType<typeof generateCustomScoreboard>>()
+
+  useEffect(() => {
+    setSearchTextBuffer(titlePattern ?? '')
+    setSearchCloseButtonVisible((titlePattern?.length ?? 0) > 0)
+  }, [titlePattern])
+
+  useEffect(() => {
+    try {
+      setCustomScoreboard(generateCustomScoreboard(
+        scoreboard,
+        organization ?? 'all',
+        titlePattern?.trim() ?? '',
+        category
+      ))
+    } catch {
+      setFilterTips('game.content.custom_scoreboard.regex_error')
+    }
+  }, [scoreboard, organization, titlePattern, category])
+
+  useEffect(() => {
+    if (customScoreboard) {
+      setFilteredItems(customScoreboard.items)
+      setFilteredChallenges(customScoreboard.challenges)
+      setFilterTips(
+        (titlePattern?.trim() ?? '') === '' && category === null
+          ? ''
+          : Object.keys(customScoreboard.challenges ?? {}).length
+            ? 'game.content.custom_scoreboard.enabled'
+            : 'game.content.custom_scoreboard.no_result'
+      )
+    }
+    setPage(1)
+  }, [customScoreboard])
+
+  return <>
+    <Group style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
+      {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
+        <Select
+          defaultValue="all"
+          data={[
+            {
+              group: 'Fixed', items: [
+                { value: 'all', label: t('game.label.score_table.rank_total') },
+                { value: '公开赛道', label: '公开赛道' },
+                { value: 'nopub', label: t('game.label.score_table.rank_nopub') },
+              ]
+            },
+            {
+              group: 'Dynamic', items: [
+                ...Object.keys(scoreboard.timeLines)
+                  .filter((k) => !['all', 'nopub', '公开赛道'].includes(k))
+                  .map((o) => ({ value: o, label: o }))
+              ]
+            },
+          ]}
+          value={organization}
+          searchable
+          onChange={setOrganization}
+          styles={{
+            root: {
+              width: "24%",
+            },
+          }}
+        />
+      )}
+      {scoreboard?.challenges && Object.keys(scoreboard.challenges).length > 0 && (
+        <>
+          <TextInput
+            placeholder={t('game.placeholder.scoreboard_search')}
+            leftSection={
+              <ActionIcon
+                variant="transparent"
+                color="dimmed"
+                onClick={() => setTitlePattern(searchTextBuffer.trim())}
+              >
+                <Icon path={mdiMagnify} size={0.8} />
+              </ActionIcon>
+            }
+            rightSection={
+              searchCloseButtonVisible &&
+              <CloseButton
+                color="dimmed"
+                size={'sm'}
+                onClick={() => setTitlePattern('')}
+              />
+            }
+            onKeyDown={(e) =>
+              e.key === 'Enter' && setTitlePattern(searchTextBuffer.trim() ?? '')
+            }
+            value={searchTextBuffer}
+            onChange={(e) => {
+              setSearchTextBuffer(e.currentTarget.value)
+              setSearchCloseButtonVisible(e.currentTarget.value.length > 0)
+            }}
+            flex={1}
+          />
+          {Object.values(scoreboard.challenges ?? {}).flat().filter((c) =>
+            /^\s*(\[.*\]|\(.*\)|\<.*\>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)/.test(c.title ?? '')
+          ).length >= 3 && <Switch
+            checked={hideWeekInTitle}
+            onChange={(e) => setHideWeekInTitle(e.target.checked)}
+            label={t('game.button.hide_prefix_in_title')}
+          />}
+          <Select
+            placeholder={t('game.label.score_table.tag_all')}
+            clearable
+            searchable
+            value={category}
+            nothingFoundMessage={t('game.label.score_table.tag_empty')}
+            onChange={(value) => setCategory(value as ChallengeCategory | null)}
+            renderOption={ChallengeCategoryItem}
+            data={Object.entries(ChallengeCategory).filter((tag) =>
+              (scoreboard?.challenges ?? {})[tag[1]]?.length ?? 0 > 0
+            ).map((tag) => {
+              const data = challengeTagLabelMap.get(tag[1])
+              return { value: tag[1], label: data?.name, ...data } as ComboboxItem
+            })}
+            styles={{
+              root: {
+                width: "24%",
+              },
+            }}
+          />
+        </>
+      )}
+    </Group>
+    <Text size="md" c="dimmed" style={{ textAlign: 'center' }}>
+      {t(filterTips)}
+    </Text>
+  </>
+}
 
 const TableHeader: FC<{
   table: Record<string, ChallengeInfo[]>
@@ -259,34 +425,20 @@ const ITEM_COUNT_PER_PAGE = 30
 export interface ScoreboardProps {
   organization: string | null
   setOrganization: (org: string | null) => void
-  titlePattern: string | null
-  setTitlePattern: (pattern: string | ((prevState: string) => string)) => void
-  category: ChallengeCategory | null
-  setCategory: (tag: ChallengeCategory | null) => void
 }
 
-const ScoreboardTable: FC<ScoreboardProps> = ({
-  organization, setOrganization,
-  titlePattern, setTitlePattern,
-  category, setCategory,
-}) => {
+const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
-  const challengeTagLabelMap = useChallengeCategoryLabelMap()
 
   const [hideWeekInTitle, setHideWeekInTitle] = useLocalStorage({
     key: 'hide-prefix-in-title',
     defaultValue: false,
     getInitialValueInEffect: false,
   })
-  const [searchTextBuffer, setSearchTextBuffer] = useInputState<string>('')
-  const [searchCloseButtonVisible, setSearchCloseButtonVisible] = useState(false)
-  const [filterTips, setFilterTips] = useState('')
-
-  const [updatingBarrier, setUpdatingBarrier] = useState(true)
 
   const { scoreboard } = useGameScoreboard(numId)
   const [filteredItems, setFilteredItems] = useState<ScoreboardItem[] | null>(null)
@@ -304,139 +456,24 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
     if (scoreboard) {
       setBloodBonus(new BloodBonus(scoreboard.bloodBonus))
     }
-
-    setUpdatingBarrier(false)
-    setSearchTextBuffer(titlePattern ?? '')
-    setSearchCloseButtonVisible((titlePattern?.length ?? 0) > 0)
-    setPage(1)
-    try {
-      const customScoreboard = generateCustomScoreboard(
-        scoreboard,
-        organization ?? 'all',
-        titlePattern?.trim() ?? '',
-        category
-      )
-      setFilteredItems(customScoreboard.items)
-      setFilteredChallenges(customScoreboard.challenges)
-      setFilterTips(
-        (titlePattern?.trim() ?? '') === '' && category === null
-          ? ''
-          : Object.keys(customScoreboard.challenges ?? {}).length
-            ? 'game.content.custom_scoreboard.enabled'
-            : 'game.content.custom_scoreboard.no_result'
-      )
-    } catch {
-      setFilterTips('game.content.custom_scoreboard.regex_error')
-    }
-    setUpdatingBarrier(true)
-  }, [scoreboard, organization, titlePattern, category])
+  }, [scoreboard])
 
   const bloodData = useBonusLabels(bloodBonus)
 
   return (
     <Paper shadow="md" p="md">
       <Stack gap="xs">
-        <Group style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
-          {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
-            <Select
-              defaultValue="all"
-              data={[
-                {
-                  group: 'Fixed', items: [
-                    { value: 'all', label: t('game.label.score_table.rank_total') },
-                    { value: '公开赛道', label: '公开赛道' },
-                    { value: 'nopub', label: t('game.label.score_table.rank_nopub') },
-                  ]
-                },
-                {
-                  group: 'Dynamic', items: [
-                    ...Object.keys(scoreboard.timeLines)
-                      .filter((k) => !['all', 'nopub', '公开赛道'].includes(k))
-                      .map((o) => ({ value: o, label: o }))
-                  ]
-                },
-              ]}
-              value={organization}
-              searchable
-              onChange={(org) => {
-                setOrganization(org)
-                setPage(1)
-              }}
-              styles={{
-                root: {
-                  width: "24%",
-                },
-              }}
-            />
-          )}
-          {scoreboard?.challenges && Object.keys(scoreboard.challenges).length > 0 && (
-            <>
-              <TextInput
-                placeholder={t('game.placeholder.scoreboard_search')}
-                leftSection={
-                  <ActionIcon
-                    variant="transparent"
-                    color="dimmed"
-                    onClick={() => setTitlePattern(searchTextBuffer.trim())}
-                  >
-                    <Icon path={mdiMagnify} size={0.8} />
-                  </ActionIcon>
-                }
-                rightSection={
-                  searchCloseButtonVisible &&
-                  <CloseButton
-                    color="dimmed"
-                    size={'sm'}
-                    onClick={() => setTitlePattern('')}
-                  />
-                }
-                onKeyDown={(e) =>
-                  e.key === 'Enter' && updatingBarrier && setTitlePattern(searchTextBuffer.trim() ?? '')
-                }
-                value={searchTextBuffer}
-                onChange={(e) => {
-                  setSearchTextBuffer(e.currentTarget.value)
-                  setSearchCloseButtonVisible(e.currentTarget.value.length > 0)
-                }}
-                flex={1}
-              />
-              {Object.values(scoreboard.challenges ?? {}).flat().filter((c) =>
-                /^\s*(\[.*\]|\(.*\)|\<.*\>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)/.test(c.title ?? '')
-              ).length >= 3 && <Switch
-                checked={hideWeekInTitle}
-                onChange={(e) => setHideWeekInTitle(e.target.checked)}
-                label={t('game.button.hide_prefix_in_title')}
-              />}
-              <Select
-                placeholder={t('game.label.score_table.tag_all')}
-                clearable
-                searchable
-                value={category}
-                nothingFoundMessage={t('game.label.score_table.tag_empty')}
-                onChange={(value) => {
-                  setCategory(value as ChallengeCategory | null)
-                  setPage(1)
-                }}
-                renderOption={ChallengeCategoryItem}
-                data={Object.entries(ChallengeCategory).filter((tag) =>
-                  (scoreboard?.challenges ?? {})[tag[1]]?.length ?? 0 > 0
-                ).map((tag) => {
-                  const data = challengeTagLabelMap.get(tag[1])
-                  return { value: tag[1], label: data?.name, ...data } as ComboboxItem
-                })}
-                styles={{
-                  root: {
-                    width: "24%",
-                  },
-                }}
-              />
-            </>
-          )}
-        </Group>
-        <Text size="md" c="dimmed" style={{ textAlign: 'center' }}>
-          {t(filterTips)}
-        </Text>
-        {updatingBarrier && Object.keys(filteredChallenges ?? {}).length > 0 && <>
+        <TableFilterForm
+          scoreboard={scoreboard}
+          setFilteredItems={setFilteredItems}
+          setFilteredChallenges={setFilteredChallenges}
+          setPage={setPage}
+          organization={organization}
+          setOrganization={setOrganization}
+          hideWeekInTitle={hideWeekInTitle}
+          setHideWeekInTitle={setHideWeekInTitle}
+        />
+        {Object.keys(filteredChallenges ?? {}).length > 0 && <>
           <Box pos="relative">
             <Table.ScrollContainer
               minWidth="100%"
@@ -509,7 +546,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({
           </Group>
         </>}
       </Stack>
-      {updatingBarrier && Object.keys(filteredChallenges ?? {}).length > 0 &&
+      {Object.keys(filteredChallenges ?? {}).length > 0 &&
         <ScoreboardItemModal
           scoreboard={scoreboard}
           bloodBonusMap={bloodData}
