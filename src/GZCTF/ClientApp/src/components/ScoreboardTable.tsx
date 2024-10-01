@@ -21,6 +21,7 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
+import { useDebouncedValue } from '@mantine/hooks'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -41,7 +42,7 @@ import { useGameScoreboard, generateCustomScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType, ScoreboardModel } from '@Api'
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
-import { mdiMagnify } from '@mdi/js'
+import { mdiAccountGroup, mdiMagnify } from '@mdi/js'
 import { useInputState, useLocalStorage } from '@mantine/hooks'
 
 const Lefts = [0, 55, 110, 350, 420, 480]
@@ -51,6 +52,7 @@ Lefts.forEach((val, idx) => {
 })
 
 const TableFilterForm: FC<{
+  id: string | undefined
   scoreboard: ScoreboardModel | undefined
   setFilteredItems: React.Dispatch<React.SetStateAction<ScoreboardItem[] | null>>
   setFilteredChallenges: React.Dispatch<React.SetStateAction<Record<string, ChallengeInfo[]> | null>>
@@ -60,6 +62,7 @@ const TableFilterForm: FC<{
   hideWeekInTitle: boolean
   setHideWeekInTitle: (hide: boolean) => void
 }> = ({
+  id,
   scoreboard,
   setFilteredItems,
   setFilteredChallenges,
@@ -72,12 +75,16 @@ const TableFilterForm: FC<{
   const { t } = useTranslation()
   const challengeTagLabelMap = useChallengeCategoryLabelMap()
 
+  const multiTimeline = scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1
+
   const [titlePattern, setTitlePattern] = useLocalStorage({
     key: 'scoreboard-search-pattern',
     defaultValue: '',
     getInitialValueInEffect: false,
   })
   const [category, setCategory] = useState<ChallengeCategory | null>(null)
+  const [teamSearchKeyword, setTeamSearchKeyword] = useState('')
+  const [debouncedTeamSearchKeyword] = useDebouncedValue(teamSearchKeyword, 400)
 
   const [searchTextBuffer, setSearchTextBuffer] = useInputState<string>('')
   const [searchCloseButtonVisible, setSearchCloseButtonVisible] = useState(false)
@@ -86,11 +93,21 @@ const TableFilterForm: FC<{
   const [customScoreboard, setCustomScoreboard] = useState<ReturnType<typeof generateCustomScoreboard>>()
 
   useEffect(() => {
+    setPage(1)
+    setOrganization('all')
+    setTitlePattern('')
+    setCategory(null)
+    setTeamSearchKeyword('')
+  }, [id])
+
+  useEffect(() => {
     setSearchTextBuffer(titlePattern ?? '')
     setSearchCloseButtonVisible((titlePattern?.length ?? 0) > 0)
   }, [titlePattern])
 
   useEffect(() => {
+    if (!scoreboard?.items) return
+
     try {
       setCustomScoreboard(generateCustomScoreboard(
         scoreboard,
@@ -105,7 +122,15 @@ const TableFilterForm: FC<{
 
   useEffect(() => {
     if (customScoreboard) {
-      setFilteredItems(customScoreboard.items)
+      if (!!debouncedTeamSearchKeyword && debouncedTeamSearchKeyword.length > 0 && customScoreboard.items) {
+        setFilteredItems(
+          customScoreboard.items.filter((s) =>
+            s.name?.toLowerCase().includes(debouncedTeamSearchKeyword.toLowerCase())
+          )
+        )
+      } else {
+        setFilteredItems(customScoreboard.items)
+      }
       setFilteredChallenges(customScoreboard.challenges)
       setFilterTips(
         (titlePattern?.trim() ?? '') === '' && category === null
@@ -116,7 +141,7 @@ const TableFilterForm: FC<{
       )
     }
     setPage(1)
-  }, [customScoreboard])
+  }, [customScoreboard, debouncedTeamSearchKeyword])
 
   return <>
     <Group style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
@@ -141,10 +166,12 @@ const TableFilterForm: FC<{
           ]}
           value={organization}
           searchable
+          readOnly={!multiTimeline}
           onChange={setOrganization}
+          leftSection={<Icon path={mdiAccountGroup} size={0.8} />}
           styles={{
             root: {
-              width: "24%",
+              width: "20%",
             },
           }}
         />
@@ -180,13 +207,6 @@ const TableFilterForm: FC<{
             }}
             flex={1}
           />
-          {Object.values(scoreboard.challenges ?? {}).flat().filter((c) =>
-            /^\s*(\[.*\]|\(.*\)|\<.*\>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)/.test(c.title ?? '')
-          ).length >= 3 && <Switch
-            checked={hideWeekInTitle}
-            onChange={(e) => setHideWeekInTitle(e.target.checked)}
-            label={t('game.button.hide_prefix_in_title')}
-          />}
           <Select
             placeholder={t('game.label.score_table.tag_all')}
             clearable
@@ -203,7 +223,25 @@ const TableFilterForm: FC<{
             })}
             styles={{
               root: {
-                width: "24%",
+                width: "16%",
+              },
+            }}
+          />
+          {Object.values(scoreboard.challenges ?? {}).flat().filter((c) =>
+            /^\s*(\[.*\]|\(.*\)|\<.*\>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)/.test(c.title ?? '')
+          ).length >= 3 && <Switch
+            checked={hideWeekInTitle}
+            onChange={(e) => setHideWeekInTitle(e.target.checked)}
+            label={t('game.button.hide_prefix_in_title')}
+          />}
+          <TextInput
+            placeholder={t('game.placeholder.search_team')}
+            value={teamSearchKeyword}
+            onChange={(e) => setTeamSearchKeyword(e.currentTarget.value)}
+            leftSection={<Icon path={mdiMagnify} size={0.8} />}
+            styles={{
+              root: {
+                width: "20%",
               },
             }}
           />
@@ -464,6 +502,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
     <Paper shadow="md" p="md">
       <Stack gap="xs">
         <TableFilterForm
+          id={id}
           scoreboard={scoreboard}
           setFilteredItems={setFilteredItems}
           setFilteredChallenges={setFilteredChallenges}
@@ -474,7 +513,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           setHideWeekInTitle={setHideWeekInTitle}
         />
         {Object.keys(filteredChallenges ?? {}).length > 0 && <>
-          <Box pos="relative">
+          <Box pos="relative" mih="calc(100vh - 14rem)">
             <Table.ScrollContainer
               minWidth="100%"
               styles={{

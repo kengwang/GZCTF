@@ -240,7 +240,8 @@
   "placeholder": {
     "challenge_search": "Regular Match Titles",
     "no_solved": "Ouch! This team has not solved any challenges...",
-    "scoreboard_search": "Match challenge titles with a regular expression"
+    "scoreboard_search": "Match challenge titles with a regular expression",
+    "search_team": "Search Team"
   },
   "tab": {
     "challenge": "Challenges",
