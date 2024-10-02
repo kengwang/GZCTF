@@ -330,14 +330,22 @@ const GameChallengeEdit: FC = () => {
               <DateTimePicker
                 label="题目自动上架时间"
                 clearable
-                value={challengeInfo.enableAt == null ? null : new Date(challengeInfo.enableAt)}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, enableAt: e?.toISOString() ?? null })}
+                value={challengeInfo.enableAt == null || new Date(challengeInfo.enableAt).valueOf() === 0
+                  ? null : new Date(challengeInfo.enableAt)}
+                onChange={(e) => setChallengeInfo({
+                  ...challengeInfo,
+                  enableAt: (e ?? new Date(0)).toISOString(),
+                })}
               />
               <DateTimePicker
                 label="自动截止计分时间"
                 clearable
-                value={challengeInfo.endAt == null ? null : new Date(challengeInfo.endAt)}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, endAt: e?.toISOString() ?? null })}
+                value={challengeInfo.endAt == null || new Date(challengeInfo.endAt).valueOf() === 0
+                  ? null : new Date(challengeInfo.endAt)}
+                onChange={(e) => setChallengeInfo({
+                  ...challengeInfo,
+                  endAt: (e ?? new Date(0)).toISOString(),
+                })}
               />
               <HintList
                 label={

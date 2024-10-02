@@ -63,10 +63,18 @@ public class GameChallenge : Challenge
         MinScoreRate = model.MinScoreRate ?? MinScoreRate;
         Difficulty = model.Difficulty ?? Difficulty;
         FileName = model.FileName ?? FileName;
-
-        // 传入 null 则为 null
-        EnableAt = model.EnableAt;
-        EndAt = model.EndAt;
+        
+        // 未作修改、已被清空、已被设置
+        EnableAt = model.EnableAt switch {
+            null => EnableAt,
+            var date when date == DateTimeOffset.UnixEpoch => null,
+            _ => model.EnableAt,
+        };
+        EndAt = model.EndAt switch {
+            null => EndAt,
+            var date when date == DateTimeOffset.UnixEpoch => null,
+            _ => model.EndAt,
+        };
 
         // only set FlagTemplate to null when it pass an empty string (but not null)
         FlagTemplate = model.FlagTemplate is null ? FlagTemplate :
