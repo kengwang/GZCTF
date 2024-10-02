@@ -315,7 +315,7 @@ const TableHeader: FC<{
         {hiddenCol}
         {Object.keys(table).map((key) =>
           table[key].map((item) => <Table.Th key={item.id}>
-            {hideWeekInTitle ? item.title?.replace(/^\s*((\[.*\]|\(.*\)|\<.*\>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)\s*)+/, "") : item.title}
+            {hideWeekInTitle ? item.title?.replace(/^\s*((\[.*?\]|\(.*?\)|\<.*?\>|\{.*?\}|（.*?）|【.*?】|〖.*?〗|「.*?」)\s*)+/, "") : item.title}
           </Table.Th>)
         )}
       </Table.Tr>

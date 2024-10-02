@@ -65,7 +65,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
       <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
           <Text fw="bold" truncate fz="lg">
-            {hideWeekInTitle ? challenge.title?.replace(/^\s*((\[.*\]|\(.*\)|\<.*\>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)\s*)+/, "") : challenge.title}
+            {hideWeekInTitle ? challenge.title?.replace(/^\s*((\[.*?\]|\(.*?\)|\<.*?\>|\{.*?\}|（.*?）|【.*?】|〖.*?〗|「.*?」)\s*)+/, "") : challenge.title}
           </Text>
         </Group>
         <Divider size="sm" color={cateData?.color} />
