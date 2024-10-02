@@ -45,9 +45,14 @@ public class FlagChecker(
         }
 
         await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
+        
         if (File.Exists("/app/files/fake_flags.txt"))
             _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", cancellationToken))
             .Select(t => t.Trim()).ToList();
+        
+        if (File.Exists("/app/files/fake_flags_used.txt"))
+            (await File.ReadAllLinesAsync("/app/files/fake_flags_used.txt", cancellationToken))
+                .Select(t => t.Trim()).ToList().ForEach(s => _fakeFlags.Remove(s));
         
         var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
         Submission[] flags = await submissionRepository.GetUncheckedFlags(TokenSource.Token);
@@ -126,7 +131,8 @@ public class FlagChecker(
 
                                     await eventRepository.AddEvent(
                                         GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);
-
+                                    
+                                    _fakeFlags.Remove(item.Answer);
                                     break;
                                 }
                                 logger.Log(

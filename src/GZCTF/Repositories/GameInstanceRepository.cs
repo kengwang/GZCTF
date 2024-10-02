@@ -267,6 +267,10 @@ public class GameInstanceRepository(
                 else
                     _fakeFlags = (await File.ReadAllLinesAsync("/app/files/fake_flags.txt", token))
                         .Select(t => t.Trim()).ToList();
+                
+                if (File.Exists("/app/files/fake_flags_used.txt"))
+                    (await File.ReadAllLinesAsync("/app/files/fake_flags_used.txt", token))
+                        .Select(t => t.Trim()).ToList().ForEach(s => _fakeFlags.Remove(s));
             }
 
             GameInstance? instance = await Context.GameInstances.IgnoreAutoIncludes()
@@ -287,6 +291,8 @@ public class GameInstanceRepository(
             Submission updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
             if (_fakeFlags.Contains(submission.Answer))
             {
+                _fakeFlags.Remove(submission.Answer);
+                await File.AppendAllLinesAsync("/app/files/fake_flags_used.txt", [submission.Answer], token);
                 var cheatInfo = new CheatInfo()
                 {
                     GameId = submission.GameId,
