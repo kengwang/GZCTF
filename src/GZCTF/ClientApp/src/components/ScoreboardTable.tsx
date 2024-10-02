@@ -126,6 +126,9 @@ const TableFilterForm: FC<{
         setFilteredItems(
           customScoreboard.items.filter((s) =>
             s.name?.toLowerCase().includes(debouncedTeamSearchKeyword.toLowerCase())
+            || s.solvedChallenges?.some(
+              (c) => c.userName?.toLowerCase().includes(debouncedTeamSearchKeyword.toLowerCase())
+            )
           )
         )
       } else {
