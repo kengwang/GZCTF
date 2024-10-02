@@ -29,13 +29,21 @@ public class SubmissionRepository(
 
     public async Task RecalculateChallenge(int gameId, int challengeId, CancellationToken token = default)
     {
-       
+        await Context.GameInstances
+            .IgnoreAutoIncludes()
+            .Include(t=>t.Challenge)
+            .Where(i => i.Challenge.GameId == gameId && i.ChallengeId == challengeId)
+            .ExecuteUpdateAsync(g => g.SetProperty(i => i.IsSolved, false),
+                cancellationToken: token);
+        
         await Context.Submissions
+            .IgnoreAutoIncludes()
             .Where(s => s.GameId == gameId && s.ChallengeId == challengeId)
             .ExecuteUpdateAsync(s => s.SetProperty(submission => submission.Status, AnswerResult.FlagSubmitted),
                 cancellationToken: token);
         
         var allSubmissions = await Context.Submissions
+            .AsNoTracking()
             .Where(s => s.GameId == gameId && s.ChallengeId == challengeId)
             .ToArrayAsync(token);
         
