@@ -88,12 +88,12 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
             var challenges = await challengesRepository.GetChallenges(game.Id);
             foreach (GameChallenge gameChallenge in challenges)
             {
-                if (gameChallenge.EnableAt is null && gameChallenge.EndAt is null)
-                    continue;
-                
-                if (gameChallenge.EnableAt <= currentTime &&
-                    gameChallenge.EndAt > currentTime &&
-                    !gameChallenge.IsEnabled)
+                // 定时上架
+                if (!gameChallenge.IsEnabled
+                    && gameChallenge.EnableAt is not null
+                    && gameChallenge.EnableAt <= currentTime
+                    && currentTime < game.EndTimeUtc
+                    && (gameChallenge.EndAt is null || currentTime < gameChallenge.EndAt))
                 {
                     gameChallenge.IsEnabled = true;
                     await challengesRepository.EnsureInstances(gameChallenge, game);
@@ -102,11 +102,11 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                         await gameNoticeRepository.AddNotice(
                             new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] }); 
                 }
-                
-                if (!gameChallenge.IsEnabled)
-                    continue;
 
-                if (gameChallenge.EndAt <= currentTime)
+                // 定时截止计分
+                if (gameChallenge.IsEnabled
+                    && gameChallenge.EndAt is not null
+                    && gameChallenge.EndAt <= currentTime)
                 {
                     gameChallenge.CanSubmit = false;
                 }
