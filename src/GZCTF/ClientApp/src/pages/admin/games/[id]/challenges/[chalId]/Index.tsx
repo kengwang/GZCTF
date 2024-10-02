@@ -328,17 +328,17 @@ const GameChallengeEdit: FC = () => {
                 checked={challengeInfo.canSubmit == true}
               />
               <DateTimePicker
-                label="开始时间"
+                label="题目自动上架时间"
                 clearable
                 value={challengeInfo.enableAt == null ? null : new Date(challengeInfo.enableAt)}
-                onChange={(e) => setChallengeInfo({ ...challengeInfo, enableAt: e?.toISOString() })}
-                />
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, enableAt: e?.toISOString() ?? null })}
+              />
               <DateTimePicker
-                label="结束时间"
+                label="自动截止计分时间"
                 clearable
                 value={challengeInfo.endAt == null ? null : new Date(challengeInfo.endAt)}
-                onChange={(e) => setChallengeInfo({...challengeInfo, endAt: e?.toISOString()})}
-                />
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, endAt: e?.toISOString() ?? null })}
+              />
               <HintList
                 label={
                   <Group gap="sm">
