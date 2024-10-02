@@ -591,6 +591,12 @@ public class EditController(
 
         res.Update(model);
 
+        // 防止非预期的立即重新上架
+        // model.IsEnabled 只会 在开关题目时出现，其他编辑时为 undefined
+        if (model.IsEnabled == false) {
+            res.EnableAt = null;
+        }
+
         if (model.IsEnabled == true)
         {
             // will also update IsEnabled
