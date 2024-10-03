@@ -5,6 +5,7 @@
     "third_blood": "サードブラッド"
   },
   "button": {
+    "close": "閉じる",
     "download": {
       "attachment": "アタッチメントをダウンロード"
     },

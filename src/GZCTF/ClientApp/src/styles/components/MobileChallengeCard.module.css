@@ -1,0 +1,56 @@
+@keyframes spike {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+.spike {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 200%;
+  z-index: 91;
+  animation: spike 2s linear 0s infinite alternate;
+
+  filter: light-dark(brightness(0.8) saturate(0.5), brightness(1.2) saturate(0.8));
+
+  &[data-blood] {
+    display: block;
+    background: linear-gradient(0deg, #fff0, var(--blood-color), #fff0);
+  }
+}
+
+.root {
+  padding: var(--mantine-spacing-sm);
+  filter: saturate(0.9);
+
+  &[data-solved] {
+    @mixin dark {
+      filter: brightness(0.8);
+    }
+
+    @mixin light {
+      filter: brightness(0.9);
+    }
+  }
+}
+
+.flag {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  z-index: 130;
+  pointer-events: none;
+  top: 0;
+  right: 0;
+  padding: calc(0.25 * var(--mantine-spacing-xs));
+  border-radius: 0 0 0 var(--mantine-radius-md);
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-3));
+  color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}

@@ -24,15 +24,16 @@ The following new features have been added:
 
 * Allows submissions during the competition that do not count towards scoring
 * Allows multiple organizations to join via (or without) invitation code
-* Optimized scoreboard display (portrait mode, show affiliated organizations)
+* Challenges page adapts to low-width windows/devices
 * Allows administrators to modify organization of specific team
 * Search for challenges on the challenges page (regex)
-* Scoreboard filters out non-public.
+* Scoreboard filters out non-public, filters challenges, displays associated organizations
 * Monitoring page hides Flag (for live streaming)
 * Scheduled challenge availability
 * Fake Flags (organizers set specified Flags, participants can submit them with correct message but counted as cheating in backend)
 * Custom icons for problem-solving status
 * Scoreboard export with username
+* Recalculate submission correctness (for updating after adding a Flag)
 
 We are open to modification suggestions and welcome Issues or PRs.
 

@@ -22,23 +22,23 @@ const Scoreboard: FC = () => {
 
   return (
     <WithNavBar width="90%" minWidth={0}>
-      {isMobile ? (
-        <Stack pt="md">
-          {teamInfo && !error && <TeamRank />}
-          {isVertical ? (
-            <MobileScoreboardTable
-              organization={organization}
-              setOrganization={setOrganization}
-            />
-          ) : (
-            <ScoreboardTable
-              organization={organization}
-              setOrganization={setOrganization}
-            />
-          )}
-        </Stack>
-      ) : (
-        <WithGameTab>
+      <WithGameTab>
+        {isMobile ? (
+          <Stack>
+            {teamInfo && !error && <TeamRank />}
+            {isVertical ? (
+              <MobileScoreboardTable
+                organization={organization}
+                setOrganization={setOrganization}
+              />
+            ) : (
+              <ScoreboardTable
+                organization={organization}
+                setOrganization={setOrganization}
+              />
+            )}
+          </Stack>
+        ) : (
           <Stack pb="2rem">
             <TimeLine organization={organization ?? 'all'} />
             <ScoreboardTable
@@ -46,8 +46,8 @@ const Scoreboard: FC = () => {
               setOrganization={setOrganization}
             />
           </Stack>
-        </WithGameTab>
-      )}
+        )}
+      </WithGameTab>
     </WithNavBar>
   )
 }

@@ -5,6 +5,7 @@
     "third_blood": "third blood"
   },
   "button": {
+    "close": "Close",
     "download": {
       "attachment": "Download Attachment"
     },

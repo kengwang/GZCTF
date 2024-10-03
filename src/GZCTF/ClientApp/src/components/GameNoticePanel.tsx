@@ -89,7 +89,9 @@ const formatNotice = (t: TFunction, notice: GameNotice) => {
 
 const PANEL_HEIGHT = 'calc(100vh - 25rem)'
 
-const GameNoticePanel: FC = () => {
+const GameNoticePanel: FC<{
+  panelHeight?: string
+}> = ({ panelHeight }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
@@ -195,7 +197,7 @@ const GameNoticePanel: FC = () => {
           ]}
         />
         {filteredNotices.length ? (
-          <ScrollArea offsetScrollbars scrollbarSize={0} h={PANEL_HEIGHT}>
+          <ScrollArea offsetScrollbars scrollbarSize={0} h={panelHeight ?? PANEL_HEIGHT}>
             <List
               size="sm"
               spacing={3}
@@ -229,7 +231,7 @@ const GameNoticePanel: FC = () => {
             </List>
           </ScrollArea>
         ) : (
-          <Center h={PANEL_HEIGHT}>
+          <Center h={panelHeight ?? PANEL_HEIGHT}>
             <Empty description={t('game.content.no_notice')} />
           </Center>
         )}

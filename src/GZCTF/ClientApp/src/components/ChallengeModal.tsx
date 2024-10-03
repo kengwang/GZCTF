@@ -12,8 +12,9 @@ import {
   ScrollAreaAutosize,
   Skeleton,
   Select,
+  FocusTrap,
 } from '@mantine/core'
-import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
+import { mdiClose, mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -23,6 +24,7 @@ import { ChallengeCategoryItemProps , defaultEmojis, SolveMarkIconItem, SolveMar
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
 import { useLocalStorage } from '@mantine/hooks'
+import { useIsMobile } from '@Utils/ThemeOverride'
 
 export interface ChallengeModalProps extends ModalProps {
   userGameId?: string
@@ -57,6 +59,8 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   } = props
   const { t } = useTranslation()
   const theme = useMantineTheme()
+
+  const isVertical = useIsMobile()
 
   const placeholders = t('challenge.content.flag_placeholders', {
     returnObjects: true,
@@ -195,7 +199,8 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
         }}
       >
         <Group justify="space-between" gap="sm" align="flex-end">
-          <Select
+          {isVertical && <FocusTrap.InitialFocus />}
+          {!isVertical && <Select
             placeholder={solveMark ?? "(默认)"}
             data={Object.keys(SolveMarkIconMap)}
             renderOption={SolveMarkIconItem}
@@ -208,13 +213,13 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
             maw="20%"
             comboboxProps={{width: "20%"}}
             flex={1}
-          />
+          />}
           <TextInput
             placeholder={placeholder}
             value={solved ? t('challenge.content.already_solved') : flag}
             disabled={disabled || solved}
             onChange={setFlag}
-            data-autofocus
+            data-autofocus={!isVertical}
             style={{ flexGrow: 1 }}
             styles={{
               input: {
@@ -225,6 +230,15 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           <Button miw="6rem" type="submit" disabled={disabled || solved}>
             {t('challenge.button.submit_flag')}
           </Button>
+          {isVertical &&
+            <Button
+              variant="default"
+              onClick={modalProps.onClose}
+              leftSection={<Icon path={mdiClose} size={0.8} />}
+            >
+              {t('challenge.button.close')}
+            </Button>
+          }
         </Group>
       </form>
     </Stack>
@@ -237,7 +251,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   return (
     <Modal.Root
-      size="40vw"
+      size="min(max(40dvw, 600px), 100dvw)"
       {...modalProps}
       onClose={() => {
         setFlag('')

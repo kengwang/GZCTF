@@ -217,7 +217,6 @@ const GameDetail: FC = () => {
       )}
       {status === ParticipationStatus.Accepted &&
         started &&
-        !isMobile &&
         (!finished || game?.practiceMode) && (
           <Button onClick={() => navigate(`/games/${numId}/challenges`)}>
             {t('game.button.challenges')}

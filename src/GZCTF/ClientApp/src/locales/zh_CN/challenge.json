@@ -5,6 +5,7 @@
     "third_blood": "三血"
   },
   "button": {
+    "close": "关闭",
     "download": {
       "attachment": "下载附件"
     },

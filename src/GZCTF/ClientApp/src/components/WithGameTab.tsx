@@ -1,6 +1,6 @@
 import { Card, LoadingOverlay, Stack, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
+import { mdiBullhornOutline, mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -15,6 +15,7 @@ import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
+import { useIsMobile } from '@Utils/ThemeOverride'
 
 dayjs.extend(duration)
 
@@ -62,6 +63,9 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
+  const isMobile = useIsMobile(1080)
+  const isVertical = useIsMobile()
+
   const { role } = useUserRole()
   const { game, status } = useGame(numId)
   const { t } = useTranslation()
@@ -75,6 +79,14 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       path: 'challenges',
       link: 'challenges',
       requireJoin: true,
+      requireRole: Role.User,
+    },
+    {
+      icon: mdiBullhornOutline,
+      title: t('game.tab.notice'),
+      path: 'notice',
+      link: 'notice',
+      requireJoin: false,
       requireRole: Role.User,
     },
     {
@@ -96,6 +108,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   ]
 
   const filteredPages = pages
+    .filter((p) => isMobile && p.path !== 'monitor' || !isMobile && p.path !== 'notice')
     .filter((p) => RequireRole(p.requireRole, role))
     .filter((p) => !p.requireJoin || game?.status === ParticipationStatus.Accepted)
     .filter((p) => !p.requireJoin || !finished || game?.practiceMode)
@@ -166,19 +179,27 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <Stack pos="relative" mt="md">
       <LoadingOverlay visible={!game} overlayProps={DEFAULT_LOADING_OVERLAY} />
-      <IconTabs
+      {isVertical ? <IconTabs
+        active={activeTab}
+        onTabChange={onChange}
+        tabs={tabs}
+        w="100%"
+        mih={44}
+        mah={44}
+        style={{ justifyContent: "space-between", textWrap: "pretty" }}
+      /> : <IconTabs
         active={activeTab}
         onTabChange={onChange}
         tabs={tabs}
         aside={
           game && (
             <>
-              <Title>{game?.title}</Title>
+              {!isMobile && <Title>{game?.title}</Title>}
               <GameCountdown game={game} />
             </>
           )
         }
-      />
+      />}
       {children}
     </Stack>
   )
