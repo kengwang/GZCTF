@@ -153,14 +153,14 @@ const TableFilterForm: FC<{
           defaultValue="all"
           data={[
             {
-              group: 'Fixed', items: [
+              group: '', items: [
                 { value: 'all', label: t('game.label.score_table.rank_total') },
                 { value: '公开赛道', label: '公开赛道' },
                 { value: 'nopub', label: t('game.label.score_table.rank_nopub') },
               ]
             },
             {
-              group: 'Dynamic', items: [
+              group: ' ', items: [
                 ...Object.keys(scoreboard.timeLines)
                   .filter((k) => !['all', 'nopub', '公开赛道'].includes(k))
                   .map((o) => ({ value: o, label: o }))

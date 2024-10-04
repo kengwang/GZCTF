@@ -94,7 +94,9 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
   const filtered =
     organization === 'all'
       ? scoreboard?.items
-      : scoreboard?.items?.filter((s) => s.organization === organization)
+      : organization === 'nopub'
+        ? scoreboard?.items?.filter((s) => s.organization !== '公开赛道')
+        : scoreboard?.items?.filter((s) => s.organization === organization)
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
   const currentItems = filtered?.slice(base, base + ITEM_COUNT_PER_PAGE)
@@ -119,13 +121,20 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
           <Select
             defaultValue="all"
             data={[
-              { value: 'all', label: t('game.label.score_table.rank_total') },
-              ...Object.keys(scoreboard.timeLines)
-                .filter((k) => k !== 'all')
-                .map((o) => ({
-                  value: o,
-                  label: o === 'all' ? t('game.label.score_table.rank_total') : o,
-                })),
+              {
+                group: '', items: [
+                  { value: 'all', label: t('game.label.score_table.rank_total') },
+                  { value: '公开赛道', label: '公开赛道' },
+                  { value: 'nopub', label: t('game.label.score_table.rank_nopub') },
+                ]
+              },
+              {
+                group: ' ', items: [
+                  ...Object.keys(scoreboard.timeLines)
+                    .filter((k) => !['all', 'nopub', '公开赛道'].includes(k))
+                    .map((o) => ({ value: o, label: o }))
+                ]
+              },
             ]}
             value={organization}
             onChange={(org) => {
