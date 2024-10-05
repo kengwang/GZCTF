@@ -45,6 +45,7 @@ public class SubmissionRepository(
         var allSubmissions = await Context.Submissions
             .AsNoTracking()
             .Where(s => s.GameId == gameId && s.ChallengeId == challengeId)
+            .Include(e => e.Game)
             .ToArrayAsync(token);
         
         foreach (var submission in allSubmissions)
