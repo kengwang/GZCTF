@@ -161,7 +161,10 @@ public class FlagChecker(
 
                                 await eventRepository.AddEvent(
                                     GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);
-
+                                
+                                if (!item.GameChallenge.CanSubmit)
+                                    break;
+                                
                                 CheatCheckInfo result = await instanceRepository.CheckCheat(item, token);
                                 ans = result.AnswerResult;
 
