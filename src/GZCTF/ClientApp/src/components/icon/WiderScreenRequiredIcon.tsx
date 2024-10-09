@@ -7,8 +7,8 @@ const IconWiderScreenRequired: FC = () => {
       id="IconWiderScreenRequired"
       xmlns="http://www.w3.org/2000/svg"
       width="320"
-      height="320"
-      viewBox="0 0 6400 6400"
+      height="240"
+      viewBox="0 800 6400 4800"
     >
       <path
         id="arrowRodL2"

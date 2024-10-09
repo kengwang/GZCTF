@@ -54,6 +54,7 @@
     "no_data": "No data",
     "report_error": "Please report this error to the administrator if you think this is a bug",
     "wider": {
+      "button": "Still show (may cause unexpected effects)",
       "text": "Try to use a wider device",
       "title": "Not wide enough"
     }
