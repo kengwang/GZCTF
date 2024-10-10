@@ -186,7 +186,12 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         w="100%"
         mih={44}
         mah={44}
-        style={{ justifyContent: "space-between", textWrap: "pretty" }}
+        style={{
+          justifyContent: "space-between",
+          textWrap: "nowrap",
+          overflow: "auto",
+          scrollbarWidth: "none",
+        }}
       /> : <IconTabs
         active={activeTab}
         onTabChange={onChange}
