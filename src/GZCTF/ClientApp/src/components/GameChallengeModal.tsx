@@ -38,7 +38,7 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     getInitialValueInEffect: false,
   })
 
-  const wrong_flag_hints = t('challenge.content.wrong_flag_hints', {
+  const wrongFlagHints = t('challenge.content.wrong_flag_hints', {
     returnObjects: true,
   }) as string[]
 
@@ -228,7 +228,7 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         id: 'flag-submitted',
         color: 'red',
         title: t('challenge.notification.flag.wrong'),
-        message: wrong_flag_hints[Math.floor(Math.random() * wrong_flag_hints.length)],
+        message: wrongFlagHints[Math.floor(Math.random() * wrongFlagHints.length)],
         icon: <Icon path={mdiClose} size={1} />,
         autoClose: 8000,
         loading: false,
