@@ -59,6 +59,7 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Process"/>
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime"/>
     <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis"/>
+    <PackageReference Include="Scrutor" />
     <PackageReference Include="Serilog.AspNetCore"/>
     <PackageReference Include="Serilog.Expressions"/>
     <PackageReference Include="Serilog.Extensions.Logging"/>

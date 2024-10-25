@@ -1,10 +1,15 @@
-﻿using GZCTF.Models.Request.Info;
+﻿using System.Diagnostics.Metrics;
+using GZCTF.Models.Internal;
+using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITeamRepository
+public class TeamRepository(
+    AppDbContext context,
+    IServiceProvider serviceProvider
+    ) : RepositoryBase(context), ITeamRepository
 {
     public async Task<bool> AnyActiveGame(Team team, CancellationToken token = default)
     {
@@ -38,14 +43,25 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
 
         await Context.AddAsync(team, token);
         await SaveAsync(token);
-
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.TeamCount));
+        counter?.Add(1,
+            new KeyValuePair<string, object?>("id", team.Id),
+            new KeyValuePair<string, object?>("name", team.Name),
+            new KeyValuePair<string, object?>("captain.id", team.Captain.Id),
+            new KeyValuePair<string, object?>("captain.name", team.Captain.UserName)
+        );
         return team;
     }
 
-    public Task DeleteTeam(Team team, CancellationToken token = default)
+    public async Task DeleteTeam(Team team, CancellationToken token = default)
     {
         Context.Remove(team);
-        return SaveAsync(token);
+        await SaveAsync(token);
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.TeamCount));
+        counter?.Add(-1,
+            new KeyValuePair<string, object?>("id", team.Id),
+            new KeyValuePair<string, object?>("name", team.Name)
+        );
     }
 
     public Task<Team?> GetTeamById(int id, CancellationToken token = default) =>

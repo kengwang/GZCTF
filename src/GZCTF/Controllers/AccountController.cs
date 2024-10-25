@@ -1,4 +1,5 @@
-﻿using System.Net.Mime;
+﻿using System.Diagnostics.Metrics;
+using System.Net.Mime;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
@@ -30,6 +31,7 @@ public class AccountController(
     UserManager<UserInfo> userManager,
     SignInManager<UserInfo> signInManager,
     ILogger<AccountController> logger,
+    IServiceProvider serviceProvider,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
@@ -77,6 +79,13 @@ public class AccountController(
             user = current;
         }
 
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.UserCount));
+        counter?.Add(1,
+            new KeyValuePair<string, object?>("username", user.UserName),
+            new KeyValuePair<string, object?>("email", user.Email),
+            new KeyValuePair<string, object?>("id", user.Id)
+        );
+        
         if (accountPolicy.Value.ActiveOnRegister)
         {
             user.EmailConfirmed = true;
@@ -114,7 +123,8 @@ public class AccountController(
             if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email, link, localizer, globalConfig))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
-
+        
+        
         return Ok(new RequestResponse<RegisterStatus>(
             localizer[nameof(Resources.Program.Account_UserRegisteredWaitingEmailVerification)],
             RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
@@ -254,6 +264,13 @@ public class AccountController(
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
 
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.UserVerifiedCount));
+        counter?.Add(1,
+            new KeyValuePair<string, object?>("id", user.Id),
+            new KeyValuePair<string, object?>("name", user.UserName),
+            new KeyValuePair<string, object?>("email", user.Email)
+            );
+        
         return Ok();
     }
 

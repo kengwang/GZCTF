@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Metrics;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Channels;
@@ -32,6 +33,7 @@ public class GameController(
     IFileRepository fileService,
     IGameRepository gameRepository,
     ITeamRepository teamRepository,
+    IServiceProvider serviceProvider,
     IGameEventRepository eventRepository,
     IGameNoticeRepository noticeRepository,
     ICheatInfoRepository cheatInfoRepository,
@@ -179,6 +181,17 @@ public class GameController(
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_JoinSucceeded), team.Name, game.Title], user,
             TaskStatus.Success);
 
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameJoinedCount));
+        counter?.Add(1,
+            new KeyValuePair<string, object?>("game.id", game.Id),
+            new KeyValuePair<string, object?>("game.name", game.Title),
+            new KeyValuePair<string, object?>("team.id", team.Id),
+            new KeyValuePair<string, object?>("team.name", team.Name),
+            new KeyValuePair<string, object?>("user.id", user?.Id),
+            new KeyValuePair<string, object?>("participation.id" , part.Id),
+            new KeyValuePair<string, object?>("participation.organization", model.Organization),
+            new KeyValuePair<string, object?>("user.name", user?.UserName));
+        
         return Ok();
     }
 
@@ -224,7 +237,18 @@ public class GameController(
             await participationRepository.RemoveParticipation(part, token);
         else
             await participationRepository.SaveAsync(token);
-
+        
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameJoinedCount));
+        counter?.Add(-1,
+            new KeyValuePair<string, object?>("game.id", game.Id),
+            new KeyValuePair<string, object?>("game.name", game.Title),
+            new KeyValuePair<string, object?>("team.id", part.Team.Id),
+            new KeyValuePair<string, object?>("team.name", part.Team.Name),
+            new KeyValuePair<string, object?>("user.id", user?.Id),
+            new KeyValuePair<string, object?>("participation.id" , part.Id),
+            new KeyValuePair<string, object?>("participation.organization", part.Organization),
+            new KeyValuePair<string, object?>("user.name", user?.UserName));
+        
         return Ok();
     }
 
@@ -957,6 +981,17 @@ public class GameController(
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_WriteupSubmitted), team.Name, game.Title],
             context.User!,
             TaskStatus.Success);
+
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameWriteupCount));
+        counter?.Add(1,
+            new KeyValuePair<string, object?>("game.id", game.Id),
+            new KeyValuePair<string, object?>("game.name", game.Title),
+            new KeyValuePair<string, object?>("team.id", team.Id),
+            new KeyValuePair<string, object?>("team.name", team.Name),
+            new KeyValuePair<string, object?>("writeup.id", part.Writeup?.Id),
+            new KeyValuePair<string, object?>("writeup.name", part.Writeup?.Name),
+            new KeyValuePair<string, object?>("writeup.hash", part.Writeup?.Hash)
+            );
 
         return Ok();
     }

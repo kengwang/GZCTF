@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+﻿using System.Diagnostics.Metrics;
+using System.Threading.Channels;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
@@ -10,6 +11,7 @@ public class FlagChecker(
     ChannelReader<Submission> channelReader,
     ChannelWriter<Submission> channelWriter,
     ILogger<FlagChecker> logger,
+    IServiceProvider serviceProvider,
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
     CancellationTokenSource TokenSource { get; set; } = new();
@@ -106,6 +108,8 @@ public class FlagChecker(
                 {
                     (SubmissionType type, AnswerResult ans) = await instanceRepository.VerifyAnswer(item, token);
 
+                    var isFakeFlag = false;
+                    
                     switch (ans)
                     {
                         case AnswerResult.Expired:
@@ -122,6 +126,7 @@ public class FlagChecker(
                             {
                                 if (_fakeFlags.Contains(item.Answer))
                                 {
+                                    isFakeFlag = true;
                                     logger.Log(
                                         Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected),
                                             item.Team.Name,
@@ -133,6 +138,20 @@ public class FlagChecker(
                                         GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);
                                     
                                     _fakeFlags.Remove(item.Answer);
+                                    var cheatCounter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.FlagCheatedCount));
+                                    cheatCounter?.Add(1,
+                                        new KeyValuePair<string, object?>("id", item.Id),
+                                        new KeyValuePair<string, object?>("game.id", item.GameId),
+                                        new KeyValuePair<string, object?>("team.id", item.TeamId),
+                                        new KeyValuePair<string, object?>("challenge.id", item.ChallengeId),
+                                        new KeyValuePair<string, object?>("user.id", item.UserId),
+                                        new KeyValuePair<string, object?>("time", item.SubmitTimeUtc),
+                                        new KeyValuePair<string, object?>("user.name", item.UserName),
+                                        new KeyValuePair<string, object?>("team.name", item.TeamName),
+                                        new KeyValuePair<string, object?>("flag", item.Answer),
+                                        new KeyValuePair<string, object?>("source.team.name", item.TeamName),
+                                        new KeyValuePair<string, object?>("source.team.id", item.TeamId)
+                                    );
                                     break;
                                 }
                                 logger.Log(
@@ -187,6 +206,21 @@ public class FlagChecker(
                                             UserId = item.UserId,
                                             GameId = item.GameId
                                         }, token);
+                                    
+                                    var cheatCounter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.FlagCheatedCount));
+                                    cheatCounter?.Add(1,
+                                        new KeyValuePair<string, object?>("id", item.Id),
+                                        new KeyValuePair<string, object?>("game.id", item.GameId),
+                                        new KeyValuePair<string, object?>("team.id", item.TeamId),
+                                        new KeyValuePair<string, object?>("challenge.id", item.ChallengeId),
+                                        new KeyValuePair<string, object?>("user.id", item.UserId),
+                                        new KeyValuePair<string, object?>("time", item.SubmitTimeUtc),
+                                        new KeyValuePair<string, object?>("user.name", item.UserName),
+                                        new KeyValuePair<string, object?>("team.name", item.TeamName),
+                                        new KeyValuePair<string, object?>("flag", item.Answer),
+                                        new KeyValuePair<string, object?>("source.team.name", result.SourceTeamName),
+                                        new KeyValuePair<string, object?>("source.team.id", result.SourceTeamId)
+                                        );
                                 }
 
                                 break;
@@ -198,9 +232,23 @@ public class FlagChecker(
                         && type != SubmissionType.Normal)
                         await gameNoticeRepository.AddNotice(
                             GameNotice.FromSubmission(item, type, Program.StaticLocalizer), token);
-
+                    
                     item.Status = ans;
                     await submissionRepository.SendSubmission(item);
+                    
+                    var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.FlagCheckedCount));
+                    counter?.Add(1, 
+                        new KeyValuePair<string, object?>("id", item.Id),
+                        new KeyValuePair<string, object?>("game.id", item.GameId),
+                        new KeyValuePair<string, object?>("team.id", item.TeamId),
+                        new KeyValuePair<string, object?>("challenge.id", item.ChallengeId),
+                        new KeyValuePair<string, object?>("user.id", item.UserId),
+                        new KeyValuePair<string, object?>("time", item.SubmitTimeUtc),
+                        new KeyValuePair<string, object?>("user.name", item.UserName),
+                        new KeyValuePair<string, object?>("team.name", item.TeamName),
+                        new KeyValuePair<string, object?>("status", isFakeFlag ? AnswerResult.CheatDetected : ans),
+                        new KeyValuePair<string, object?>("flag", item.Answer)
+                        );
                 }
                 catch (DbUpdateConcurrencyException)
                 {

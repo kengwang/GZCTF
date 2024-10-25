@@ -1,7 +1,9 @@
-﻿using System.Threading.Channels;
+﻿using System.Diagnostics.Metrics;
+using System.Threading.Channels;
 using GZCTF.Extensions;
 using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
+using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -11,13 +13,29 @@ namespace GZCTF.Repositories;
 public class SubmissionRepository(
     IHubContext<MonitorHub, IMonitorClient> hub,
     ChannelWriter<Submission> channelWriter,
+    IServiceProvider serviceProvider,
     AppDbContext context) : RepositoryBase(context), ISubmissionRepository
 {
     public async Task<Submission> AddSubmission(Submission submission, CancellationToken token = default)
     {
         await Context.AddAsync(submission, token);
         await Context.SaveChangesAsync(token);
-
+        
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.FlagSubmittedCount));
+        counter?.Add(1,
+            new KeyValuePair<string, object?>("id", submission.Id),
+            new KeyValuePair<string, object?>("game.id", submission.GameId),
+            new KeyValuePair<string, object?>("game.name", submission.Game.Title),
+            new KeyValuePair<string, object?>("challenge.id", submission.ChallengeId),
+            new KeyValuePair<string, object?>("challenge.name", submission.GameChallenge.Title),
+            new KeyValuePair<string, object?>("user.id", submission.UserId),
+            new KeyValuePair<string, object?>("user.name", submission.User.UserName),
+            new KeyValuePair<string, object?>("team.id", submission.TeamId),
+            new KeyValuePair<string, object?>("team.name", submission.Team.Name),
+            new KeyValuePair<string, object?>("time", submission.SubmitTimeUtc),
+            new KeyValuePair<string, object?>("flag", submission.Answer)
+            );
+        
         return submission;
     }
 

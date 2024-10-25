@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Metrics;
 using System.Net.Mime;
 using System.Reflection;
 using GZCTF.Extensions;
@@ -561,7 +562,46 @@ public class AdminController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)],
                 StatusCodes.Status404NotFound));
 
+        var oldStatus = participation.Status;
+
         await participationRepository.UpdateParticipationStatus(participation, status, token);
+
+
+        if (oldStatus == ParticipationStatus.Pending && status == ParticipationStatus.Accepted)
+        {
+            var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.TeamReviewedCount));
+            if (counter is not null)
+            {
+                var user = await userManager.GetUserAsync(User);
+                counter.Add(1,
+                    new KeyValuePair<string, object?>("id", participation.Id),
+                    new KeyValuePair<string, object?>("teamId", participation.TeamId),
+                    new KeyValuePair<string, object?>("gameId", participation.GameId),
+                    new KeyValuePair<string, object?>("organization", participation.Organization),
+                    new KeyValuePair<string, object?>("teamName", participation.Team.Name),
+                    new KeyValuePair<string, object?>("operator.name", user?.UserName),
+                    new KeyValuePair<string, object?>("operator.id", user?.Id),
+                    new KeyValuePair<string, object?>("status", status));
+            }
+        }
+
+        if (oldStatus != ParticipationStatus.Suspended && status == ParticipationStatus.Suspended)
+        {
+            var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.TeamBannedCount));
+            if (counter is not null)
+            {
+                var user = await userManager.GetUserAsync(User);
+                counter.Add(1,
+                    new KeyValuePair<string, object?>("id", participation.Id),
+                    new KeyValuePair<string, object?>("teamId", participation.TeamId),
+                    new KeyValuePair<string, object?>("gameId", participation.GameId),
+                    new KeyValuePair<string, object?>("organization", participation.Organization),
+                    new KeyValuePair<string, object?>("teamName", participation.Team.Name),
+                    new KeyValuePair<string, object?>("operator.name", user?.UserName),
+                    new KeyValuePair<string, object?>("operator.id", user?.Id),
+                    new KeyValuePair<string, object?>("status", status));
+            }
+        }
 
         return Ok();
     }

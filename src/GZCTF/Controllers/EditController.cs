@@ -1,4 +1,5 @@
-﻿using System.Net.Mime;
+﻿using System.Diagnostics.Metrics;
+using System.Net.Mime;
 using System.Threading.Channels;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
@@ -36,6 +37,7 @@ public class EditController(
     IGameInstanceRepository instanceRepository,
     IGameNoticeRepository gameNoticeRepository,
     IGameRepository gameRepository,
+    IServiceProvider serviceProvider,
     IContainerManager containerService,
     ISubmissionRepository submissionRepository,
     IFileRepository fileService,
@@ -135,6 +137,22 @@ public class EditController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CreationFailed)]));
 
         gameRepository.FlushGameInfoCache();
+
+        
+        
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameCount));
+        if (counter is not null)
+        {
+            var user = await userManager.GetUserAsync(User);
+            counter.Add(1,
+                new KeyValuePair<string, object?>("game.id", game.Id),
+                new KeyValuePair<string, object?>("game.name", game.Title),
+                new KeyValuePair<string, object?>("game.startTime", game.StartTimeUtc),
+                new KeyValuePair<string, object?>("game.endTime", game.EndTimeUtc),
+                new KeyValuePair<string, object?>("operator.id",user?.Id),
+                new KeyValuePair<string, object?>("operator.username",user?.UserName)
+            );
+        }
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -254,7 +272,25 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        return await gameRepository.DeleteGame(game, token) switch
+        var result = await gameRepository.DeleteGame(game, token);
+        if (result == TaskStatus.Success)
+        {
+            var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameCount));
+            if (counter is not null)
+            {
+                var user = await userManager.GetUserAsync(User);
+                counter.Add(-1,
+                    new KeyValuePair<string, object?>("game.id", game.Id),
+                    new KeyValuePair<string, object?>("game.name", game.Title),
+                    new KeyValuePair<string, object?>("game.startTime", game.StartTimeUtc),
+                    new KeyValuePair<string, object?>("game.endTime", game.EndTimeUtc),
+                    new KeyValuePair<string, object?>("operator.id", user?.Id),
+                    new KeyValuePair<string, object?>("operator.username", user?.UserName)
+                );
+            }
+        }
+
+        return result switch
         {
             TaskStatus.Success => Ok(),
             _ => BadRequest(
@@ -470,6 +506,22 @@ public class EditController(
         GameChallenge res = await challengeRepository.CreateChallenge(game,
             new GameChallenge { Title = model.Title, Type = model.Type, Category = model.Category, FlagTemplate = globalConfig.Value.DefaultFlagTemplate}, token);
 
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameChallengeCount));
+        if (counter is not null)
+        {
+            var user = await userManager.GetUserAsync(User);
+            counter.Add(1,
+                new KeyValuePair<string, object?>("game.id", game.Id),
+                new KeyValuePair<string, object?>("game.name", game.Title),
+                new KeyValuePair<string, object?>("challenge.id", res.Id),
+                new KeyValuePair<string, object?>("challenge.title", res.Title),
+                new KeyValuePair<string, object?>("challenge.type", res.Type),
+                new KeyValuePair<string, object?>("challenge.category", res.Category),
+                new KeyValuePair<string, object?>("operator.id", user?.Id),
+                new KeyValuePair<string, object?>("operator.username", user?.UserName)
+            );
+        }
+        
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }
 
@@ -591,10 +643,26 @@ public class EditController(
 
         res.Update(model);
 
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameChallengeEnabledCount));
+
         // 防止非预期的立即重新上架
         // model.IsEnabled 只会 在开关题目时出现，其他编辑时为 undefined
         if (model.IsEnabled == false) {
             res.EnableAt = null;
+            if (counter is not null)
+            {
+                var user = await userManager.GetUserAsync(User);
+                counter.Add(-1,
+                    new KeyValuePair<string, object?>("game.id", game.Id),
+                    new KeyValuePair<string, object?>("game.name", game.Title),
+                    new KeyValuePair<string, object?>("challenge.id", res.Id),
+                    new KeyValuePair<string, object?>("challenge.title", res.Title),
+                    new KeyValuePair<string, object?>("challenge.type", res.Type),
+                    new KeyValuePair<string, object?>("challenge.category", res.Category),
+                    new KeyValuePair<string, object?>("operator.id", user?.Id),
+                    new KeyValuePair<string, object?>("operator.username", user?.UserName)
+                );
+            }
         }
 
         if (model.IsEnabled == true)
@@ -605,6 +673,21 @@ public class EditController(
             if (game.IsActive)
                 await gameNoticeRepository.AddNotice(
                     new() { Game = game, Type = NoticeType.NewChallenge, Values = [res.Title] }, token);
+            
+            if (counter is not null)
+            {
+                var user = await userManager.GetUserAsync(User);
+                counter.Add(1,
+                    new KeyValuePair<string, object?>("game.id", game.Id),
+                    new KeyValuePair<string, object?>("game.name", game.Title),
+                    new KeyValuePair<string, object?>("challenge.id", res.Id),
+                    new KeyValuePair<string, object?>("challenge.title", res.Title),
+                    new KeyValuePair<string, object?>("challenge.type", res.Type),
+                    new KeyValuePair<string, object?>("challenge.category", res.Category),
+                    new KeyValuePair<string, object?>("operator.id", user?.Id),
+                    new KeyValuePair<string, object?>("operator.username", user?.UserName)
+                );
+            }
         }
         else
         {
@@ -759,7 +842,21 @@ public class EditController(
 
         // always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);
-
+        var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameChallengeCount));
+        if (counter is not null)
+        {
+            var user = await userManager.GetUserAsync(User);
+            counter.Add(-1,
+                new KeyValuePair<string, object?>("game.id", game.Id),
+                new KeyValuePair<string, object?>("game.name", game.Title),
+                new KeyValuePair<string, object?>("challenge.id", res.Id),
+                new KeyValuePair<string, object?>("challenge.title", res.Title),
+                new KeyValuePair<string, object?>("challenge.type", res.Type),
+                new KeyValuePair<string, object?>("challenge.category", res.Category),
+                new KeyValuePair<string, object?>("operator.id", user?.Id),
+                new KeyValuePair<string, object?>("operator.username", user?.UserName)
+            );
+        }
         return Ok();
     }
 

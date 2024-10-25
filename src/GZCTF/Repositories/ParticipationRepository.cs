@@ -1,4 +1,6 @@
-﻿using GZCTF.Models.Request.Admin;
+﻿using System.Diagnostics.Metrics;
+using GZCTF.Models.Internal;
+using GZCTF.Models.Request.Admin;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +10,8 @@ namespace GZCTF.Repositories;
 public class ParticipationRepository(
     CacheHelper cacheHelper,
     IFileRepository fileRepository,
-    AppDbContext context) : RepositoryBase(context), IParticipationRepository
+    AppDbContext context,
+    IServiceProvider serviceProvider) : RepositoryBase(context), IParticipationRepository
 {
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
@@ -65,14 +68,14 @@ public class ParticipationRepository(
         if (status == ParticipationStatus.Accepted)
         {
             part.Team.Locked = true;
-
+    
             // will also update participation status, update team lock
             // will call SaveAsync
             // also flush scoreboard when a team is re-accepted
             if (await EnsureInstances(part, part.Game, token) || oldStatus == ParticipationStatus.Suspended)
                 // flush scoreboard when instances are updated
                 await cacheHelper.FlushScoreboardCache(part.Game.Id, token);
-
+            
             return;
         }
 

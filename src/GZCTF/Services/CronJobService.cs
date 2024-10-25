@@ -1,4 +1,6 @@
-﻿using System.Threading.Channels;
+﻿using System.Diagnostics.Metrics;
+using System.Threading.Channels;
+using GZCTF.Models.Internal;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
@@ -6,7 +8,10 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services;
 
-public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger) : IHostedService, IDisposable
+public class CronJobService(
+    IServiceScopeFactory provider,
+    ILogger<CronJobService> logger,
+    IServiceProvider serviceProvider) : IHostedService, IDisposable
 {
     Timer? _timer;
     bool _isFinished = true;
@@ -100,7 +105,19 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
                     hasChanged = true;
                     if (game.IsActive)
                         await gameNoticeRepository.AddNotice(
-                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] }); 
+                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [gameChallenge.Title] });
+                    
+                    var counter = serviceProvider.GetKeyedService<UpDownCounter<int>>(nameof(TelemetryMeters.GameChallengeEnabledCount));
+                    counter?.Add(1,
+                        new KeyValuePair<string, object?>("game.id", game.Id),
+                        new KeyValuePair<string, object?>("game.name", game.Title),
+                        new KeyValuePair<string, object?>("challenge.id", gameChallenge.Id),
+                        new KeyValuePair<string, object?>("challenge.title", gameChallenge.Title),
+                        new KeyValuePair<string, object?>("challenge.type", gameChallenge.Type),
+                        new KeyValuePair<string, object?>("challenge.category", gameChallenge.Category),
+                        new KeyValuePair<string, object?>("operator.id", -1),
+                        new KeyValuePair<string, object?>("operator.username", "System"));
+                    
                 }
 
                 // 定时截止计分

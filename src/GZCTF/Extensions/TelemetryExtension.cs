@@ -1,5 +1,9 @@
-﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
+﻿using System.Diagnostics.Metrics;
+using System.Reflection;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GZCTF.Models.Internal;
+using GZCTF.Services.Container.Manager;
+using GZCTF.Services.Telemetry;
 using Npgsql;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
@@ -13,7 +17,7 @@ public static class TelemetryExtension
     public static void AddTelemetry(this IServiceCollection services, TelemetryConfig? config)
     {
         if (config is not (
-        { OpenTelemetry.Enable: true }
+            { OpenTelemetry.Enable: true }
             or { Prometheus.Enable: true }
             or { AzureMonitor.Enable: true }
             or { Console.Enable: true }))
@@ -31,6 +35,7 @@ public static class TelemetryExtension
             metrics.AddHttpClientInstrumentation();
             metrics.AddRuntimeInstrumentation();
             metrics.AddProcessInstrumentation();
+            metrics.AddGZCTFMetrics();
 
             if (config is { Prometheus.Enable: true })
                 metrics.AddPrometheusExporter(options =>
@@ -60,6 +65,38 @@ public static class TelemetryExtension
         if (config is { OpenTelemetry.Enable: true })
             otl.UseOtlpExporter(config.OpenTelemetry.Protocol,
                 new(config.OpenTelemetry.EndpointUri ?? "http://localhost:4317"));
+    }
+
+    public static void AddGZCTFMetrics(this MeterProviderBuilder metrics)
+    {
+        var gzctfMeter = new Meter(typeof(Program).Assembly.GetName().Name ?? "GZCTF",
+            typeof(Program).Assembly.GetName().Version?.ToString(3));
+
+        metrics.ConfigureServices(
+            services =>
+            {
+                services.AddKeyedSingleton("gzctf", gzctfMeter);
+            });
+
+
+        var meterNameFields = typeof(TelemetryMeters).GetFields(BindingFlags.Public | BindingFlags.Static);
+        foreach (var meterNameField in meterNameFields)
+        {
+            var meterName = meterNameField.GetValue(null);
+            if (meterName is not string name)
+                continue;
+            var meter = gzctfMeter.CreateUpDownCounter<int>(name);
+            metrics.ConfigureServices(
+                services => services.AddKeyedSingleton(meterNameField.Name, meter)
+                );
+        }
+        
+        // decorate services
+        metrics.ConfigureServices(
+            services =>
+            {
+                services.Decorate<IContainerManager, ContainerTelemetryService>();
+            });
     }
 
     public static void UseTelemetry(this IApplicationBuilder app, TelemetryConfig? config)
