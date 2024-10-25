@@ -225,12 +225,6 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 
 #endregion Identity
 
-#region Telemetry
-
-var telemetryOptions = builder.Configuration.GetSection("Telemetry").Get<TelemetryConfig>();
-builder.Services.AddTelemetry(telemetryOptions);
-
-#endregion
 
 #region Services and Repositories
 
@@ -309,6 +303,13 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 });
 
 #endregion Services and Repositories
+
+#region Telemetry
+
+var telemetryOptions = builder.Configuration.GetSection("Telemetry").Get<TelemetryConfig>();
+builder.Services.AddTelemetry(telemetryOptions);
+
+#endregion
 
 #region Middlewares
 
