@@ -71,7 +71,7 @@ public static class TelemetryExtension
     {
         var gzctfMeter = new Meter(typeof(Program).Assembly.GetName().Name ?? "GZCTF",
             typeof(Program).Assembly.GetName().Version?.ToString(3));
-
+        metrics.AddMeter(gzctfMeter.Name);
         metrics.ConfigureServices(
             services =>
             {
