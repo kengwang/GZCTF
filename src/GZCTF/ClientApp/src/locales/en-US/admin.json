@@ -29,6 +29,9 @@
       "next": "Next",
       "preview": "Preview",
       "previous": "Previous",
+      "submissions": {
+        "recalculate": "Recalculate Submissions"
+      },
       "test_container": {
         "create": "Create",
         "destroy": "Destroy"
@@ -183,6 +186,7 @@
           "label": "Maximum Team Member"
         },
         "organizations": {
+          "add": "Add Organization",
           "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
           "label": "List of Participating Divisions"
         },
@@ -226,6 +230,11 @@
         "participation": {
           "joined": "Joined",
           "not_joined": "Not Registered",
+          "organization": {
+            "cancel": "Cancel",
+            "edit": "Edit Team Division",
+            "save": "Save"
+          },
           "stats": "{{count}}/{{total}} joined",
           "update": "Set this team's status to: \"{{status}}\"?"
         }
@@ -303,6 +312,11 @@
           "description": "Site description provided for SEO",
           "label": "Site Description"
         },
+        "flag_template": {
+          "description": "For unset dynamic questions, this Flag template will be used, and the format is the same as the Flag management page.",
+          "label": "Default Flag template",
+          "placeholder": "flag{[GUID]}"
+        },
         "footer": {
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"
@@ -338,6 +352,14 @@
         "title": "Reset password for {{name}}"
       },
       "stats": "<1>{{current}}</1> out of <1>{{total}}</1> users displayed"
+    }
+  },
+  "game": {
+    "edit": {
+      "organizations": {
+        "add": "Add Organization",
+        "delete": "Delete organization"
+      }
     }
   },
   "label": {
@@ -385,6 +407,9 @@
           "attachment_downloaded": "Pretend the attachment has been downloaded!",
           "flag_submitted": "Flag submitted!"
         },
+        "submissions": {
+          "recalculated": "Submission has been recalculated"
+        },
         "updated": "Challenge updated"
       },
       "created": "Game created",
@@ -392,6 +417,7 @@
         "accept_count_updated": "AC counter updated",
         "deleted": "Game deleted",
         "info_updated": "Game updated",
+        "organizations": "Click to edit divisions",
         "poster": {
           "upload_failed": "Post upload failed",
           "uploaded": "Poster successfully uploaded",
@@ -410,6 +436,8 @@
         "updated": "Notice updated"
       },
       "participation": {
+        "organization_empty": "Team division cannot be empty",
+        "organization_updated": "Team division has been updated",
         "updated": "Team status has been updated"
       }
     },
@@ -445,9 +473,10 @@
           }
         }
       },
-      "organizations": "Enter to add a division.",
+      "organizations": "Click to edit divisions",
       "participation": {
         "bio": "(no bio)",
+        "organization": "Choose a division",
         "team": "(no name)"
       }
     },
@@ -470,7 +499,7 @@
       }
     },
     "teams": {
-      "search": "Search by name"
+      "search": "Search by name or member"
     },
     "users": {
       "real_name": "Empty",

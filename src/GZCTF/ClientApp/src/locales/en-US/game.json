@@ -11,6 +11,7 @@
     },
     "finished": "Game Ended",
     "hide_solved": "Hide Solved",
+    "hide_prefix_in_title": "Hide Prefix",
     "join": "Join",
     "leave": "Leave Game",
     "login_required": "Please Login",
@@ -26,6 +27,11 @@
       "comment": "Perhaps more difficult challenges are waiting for you...",
       "title": "All challenges were solved!"
     },
+    "custom_scoreboard": {
+      "enabled": "Temporary custom scoreboard is displayed, for reference only.",
+      "no_result": "No records match the current conditions. Try adjusting your search conditions.",
+      "regex_error": "⚠ The regular expression you entered is invalid."
+    },
     "duration": "{{hours}} hour(s)",
     "end_at": "Ends at",
     "end_time": "End Time",
@@ -34,6 +40,10 @@
     "hide_container_events": {
       "description": "Hide container creation/destroying events",
       "label": "Hide container events"
+    },
+    "hide_flag": {
+      "description": "Don't show Flag in events",
+      "label": "Hide Flag"
     },
     "join": {
       "confirm": "Confirm Registration",
@@ -49,6 +59,10 @@
       "organization": {
         "description": "This game has multiple division available. Please select your division.",
         "label": "Select Division"
+      },
+      "organization_verify_code": {
+        "description": "This game has invitation-only divisions. If your division doesn't require an invitation code, please leave it blank.",
+        "label": "Please enter the invitation code for the division"
       },
       "team": {
         "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
@@ -140,11 +154,14 @@
     "score_formatter": "{value} pts",
     "score_table": {
       "all_teams": "All Teams",
+      "rank_nopub": "No Public",
       "rank_organization": "Rank",
       "rank_total": "Overall",
       "score": "Score",
       "score_total": "Score",
       "solved_count": "Solved",
+      "tag_all": "All",
+      "tag_empty": "Nothing found",
       "team": "Team",
       "type": "Type"
     },
@@ -181,6 +198,7 @@
       "submitted": "Writeup was successfully submitted"
     }
   },
+  "organization": "Organization",
   "participation": {
     "actions": {
       "accepted": "Approved",
@@ -220,7 +238,9 @@
     }
   },
   "placeholder": {
+    "challenge_search": "Regular Match Titles",
     "no_solved": "Ouch! This team has not solved any challenges...",
+    "scoreboard_search": "Match challenge titles with a regular expression",
     "search_team": "Search Team"
   },
   "tab": {
@@ -232,6 +252,7 @@
       "submissions": "Submissions",
       "traffic": "Traffics"
     },
+    "notice": "Notice",
     "scoreboard": "Scoreboard"
   },
   "tag": {
