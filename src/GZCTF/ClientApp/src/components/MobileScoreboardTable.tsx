@@ -123,7 +123,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             data={[
               {
                 group: '', items: [
-                  { value: 'all', label: t('game.label.score_table.rank_total') },
+                  { value: 'all', label: t('game.label.score_table.all_teams') },
                   { value: '公开赛道', label: '公开赛道' },
                   { value: 'nopub', label: t('game.label.score_table.rank_nopub') },
                 ]

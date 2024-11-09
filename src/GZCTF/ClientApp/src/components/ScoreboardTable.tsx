@@ -28,6 +28,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ScoreboardItemModal from '@Components/ScoreboardItemModal'
+import { useLanguage } from '@Utils/I18n'
 import {
   BloodBonus,
   BloodsTypes,
@@ -156,7 +157,7 @@ const TableFilterForm: FC<{
           data={[
             {
               group: '', items: [
-                { value: 'all', label: t('game.label.score_table.rank_total') },
+                { value: 'all', label: t('game.label.score_table.all_teams') },
                 { value: '公开赛道', label: '公开赛道' },
                 { value: 'nopub', label: t('game.label.score_table.rank_nopub') },
               ]
@@ -233,7 +234,7 @@ const TableFilterForm: FC<{
             }}
           />
           {Object.values(scoreboard.challenges ?? {}).flat().filter((c) =>
-            /^\s*(\[.*\]|\(.*\)|\<.*\>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)/.test(c.title ?? '')
+            /^\s*(\[.*\]|\(.*\)|<.*>|\{.*\}|（.*）|【.*】|〖.*〗|「.*」)/.test(c.title ?? '')
           ).length >= 3 && <Switch
             checked={hideWeekInTitle}
             onChange={(e) => setHideWeekInTitle(e.target.checked)}
@@ -320,7 +321,7 @@ const TableHeader: FC<{
         {hiddenCol}
         {Object.keys(table).map((key) =>
           table[key].map((item) => <Table.Th key={item.id}>
-            {hideWeekInTitle ? item.title?.replace(/^\s*((\[.*?\]|\(.*?\)|\<.*?\>|\{.*?\}|（.*?）|【.*?】|〖.*?〗|「.*?」)\s*)+/, "") : item.title}
+            {hideWeekInTitle ? item.title?.replace(/^\s*((\[.*?\]|\(.*?\)|<.*?>|\{.*?\}|（.*?）|【.*?】|〖.*?〗|「.*?」)\s*)+/, "") : item.title}
           </Table.Th>)
         )}
       </Table.Tr>
@@ -365,6 +366,7 @@ const TableRow: FC<{
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const solved = item.solvedChallenges
   const theme = useMantineTheme()
+  const { locale } = useLanguage()
 
   return (
     <Table.Tr>
@@ -438,7 +440,7 @@ const TableRow: FC<{
                         + {chal?.score} pts
                       </Text>
                       <Text c="dimmed" fz="xs" className={classes.text}>
-                        # {dayjs(chal?.time).format('MM/DD HH:mm:ss')}
+                        # {dayjs(chal?.time).locale(locale).format('L LTS')}
                       </Text>
                     </Stack>
                   }

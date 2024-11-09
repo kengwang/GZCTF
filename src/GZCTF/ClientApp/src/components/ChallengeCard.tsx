@@ -18,6 +18,7 @@ import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Trans } from 'react-i18next'
+import { useLanguage } from '@Utils/I18n'
 import { BloodsTypes, PartialIconProps, useChallengeCategoryLabelMap, SolveMarkIconMap } from '@Utils/Shared'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengeCard.module.css'
@@ -40,6 +41,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const cateData = challengeCategoryLabelMap.get(challenge.category!)
   const theme = useMantineTheme()
+  const { locale } = useLanguage()
 
   // was solved || undefined
   const darkenCard = solveMark ? (SolveMarkIconMap[solveMark]?.regardAsSolved || undefined) : solved || undefined
@@ -65,7 +67,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
       <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
           <Text fw="bold" truncate fz="lg">
-            {hideWeekInTitle ? challenge.title?.replace(/^\s*((\[.*?\]|\(.*?\)|\<.*?\>|\{.*?\}|（.*?）|【.*?】|〖.*?〗|「.*?」)\s*)+/, "") : challenge.title}
+            {hideWeekInTitle ? challenge.title?.replace(/^\s*((\[.*?\]|\(.*?\)|<.*?>|\{.*?\}|（.*?）|【.*?】|〖.*?〗|「.*?」)\s*)+/, "") : challenge.title}
           </Text>
         </Group>
         <Divider size="sm" color={cateData?.color} />
@@ -104,7 +106,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                             {blood?.name}
                           </Text>
                           <Text fw={500} size="xs" c="dimmed">
-                            {dayjs(blood?.submitTimeUtc).format('YY/MM/DD HH:mm:ss')}
+                            {dayjs(blood?.submitTimeUtc).locale(locale).format('SLL LTS')}
                           </Text>
                         </Stack>
                       }

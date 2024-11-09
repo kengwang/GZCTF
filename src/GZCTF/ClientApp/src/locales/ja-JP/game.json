@@ -153,6 +153,7 @@
     "score": "点数",
     "score_formatter": "{value} 点",
     "score_table": {
+      "all_teams": "すべてのチーム",
       "rank_nopub": "非公開順位",
       "rank_organization": "順位",
       "rank_total": "総合順位",

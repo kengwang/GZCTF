@@ -249,7 +249,7 @@
     <value>Файл обновлен [{0}] {1} @ {2} байт</value>
   </data>
   <data name="Auth_AccessForbidden" xml:space="preserve">
-    <value>Доступ запрещён</value>
+    <value>Отказано в доступе</value>
   </data>
   <data name="Auth_LoginRequired" xml:space="preserve">
     <value>Сначала войдите в аккаунт</value>
@@ -297,7 +297,7 @@
     <value>Добавлен параметр настроек платформы: {0} =&gt; {1}</value>
   </data>
   <data name="Config_GlobalConfigUpdated" xml:space="preserve">
-    <value>Изменён параметр настроек платформы: {0} =&gt; {1}</value>
+    <value>Изменен параметр настроек платформы: {0} =&gt; {1}</value>
   </data>
   <data name="Config_InitializingDatabase" xml:space="preserve">
     <value>Инициализация базы данных...</value>
@@ -480,7 +480,7 @@
     <value>Cleaning up {1} team files for game {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>The different or key in the configuration file is not set and the match key will be stored explicitly in the database.</value>
+    <value>The XOR key in the configuration file is not set and the game key will be stored explicitly in the database.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>Can not exit the game after entrance approval</value>
