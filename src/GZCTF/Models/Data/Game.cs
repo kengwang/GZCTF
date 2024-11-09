@@ -77,7 +77,12 @@ public class Game
     /// <summary>
     /// 参赛所属单位列表
     /// </summary>
-    public Dictionary<string,string?>? Organizations { get; set; }
+    public List<string>? Organizations { get; set; }
+    
+    /// <summary>
+    /// 所属单位邀请码
+    /// </summary>
+    public Dictionary<string, string?>? OrganizationsInviteCodes { get; set; }
     
     /// <summary>
     /// 队员数量限制, 0 为无上限
@@ -178,6 +183,7 @@ public class Game
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
         Organizations = model.Organizations;
+        OrganizationsInviteCodes = model.OrganizationsInviteCodes;
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;
         TeamMemberCountLimit = model.TeamMemberCountLimit;

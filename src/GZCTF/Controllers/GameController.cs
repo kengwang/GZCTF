@@ -118,13 +118,13 @@ public class GameController(
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
 
-        if (game.Organizations is { Count: > 0 } && game.Organizations.All(o => o.Key != model.Organization))
+        if (game.Organizations is { Count: > 0 } && (string.IsNullOrEmpty(model.Organization) || !game.Organizations.Contains(model.Organization)))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidOrganization)]));
 
         if (model.Organization is not null
-            && game.Organizations?.ContainsKey(model.Organization) is true
-            && !string.IsNullOrWhiteSpace(game.Organizations[model.Organization])
-            && game.Organizations[model.Organization] != model.OrganizationVerifyCode)
+            && game.Organizations?.Contains(model.Organization) is true
+            && !string.IsNullOrWhiteSpace(game.OrganizationsInviteCodes?[model.Organization])
+            && game.OrganizationsInviteCodes?[model.Organization] != model.OrganizationVerifyCode)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidOrganizationVerifyCode)]));
 
         UserInfo? user = await userManager.GetUserAsync(User);

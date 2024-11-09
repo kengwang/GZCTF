@@ -11,7 +11,7 @@ namespace GZCTF.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "OrganizationsVerifyCode",
+                name: "OrganizationsInviteCodes",
                 table: "Games",
                 type: "text",
                 nullable: true);
@@ -21,7 +21,7 @@ namespace GZCTF.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "OrganizationsVerifyCode",
+                name: "OrganizationsInviteCodes",
                 table: "Games");
         }
     }

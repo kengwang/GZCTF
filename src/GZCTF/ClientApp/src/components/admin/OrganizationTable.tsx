@@ -25,7 +25,6 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
   const { t } = useTranslation()
   const [organization, setOrganization] = useState<Record<string, string | null>>(initialOrganization);
   const [newKey, setNewKey] = useState<string>('');
-
   useEffect(() => {
     setOrganization(initialOrganization);
   }, [initialOrganization]);
@@ -58,7 +57,7 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
     setOrganization(remaining);
     onOrganizationChange(remaining);
   };
-
+  console.log(organization)
   return (
     <Container>
       <Table highlightOnHover>

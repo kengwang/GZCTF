@@ -110,7 +110,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
             label={t('game.content.join.organization.label')}
             description={t('game.content.join.organization.description')}
             data={
-              Object.keys(game.organizations)
+              game.organizations
             }
             disabled={disabled}
             value={organization}

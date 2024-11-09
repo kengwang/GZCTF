@@ -88,7 +88,7 @@ const GameInfoEdit: FC = () => {
       setEnd(dayjs(gameSource.end))
       const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
-      setOrgs(Object.keys(gameSource.organizations ?? {}))
+      setOrgs(gameSource.organizations)
     }
   }, [id, gameSource])
 
@@ -505,14 +505,14 @@ const GameInfoEdit: FC = () => {
         </Grid.Col>
         <Modal title={t('game.organization')} opened={orgsEditModelOpened} onClose={
           () => {
-            setOrgs(Object.keys(game?.organizations ?? {}))
+            setOrgs(game?.organizations)
             setOrgsEditModelOpened(false)
           }}>
           <OrganizationTable
-            organization={game?.organizations ?? {}}
+            organization={ game?.organizationsInviteCodes }
             onOrganizationChange={(newOrgs) => {
               if (!game) return
-              setGame({ ...game, organizations: newOrgs })
+              setGame({ ...game, organizationsInviteCodes: newOrgs , organizations: Object.keys(newOrgs)})
               setOrgs(Object.keys(newOrgs))
             }}
           />

@@ -762,7 +762,9 @@ export interface GameInfoModel {
    */
   inviteCode?: string | null;
   /** 参赛所属单位列表 */
-  organizations?: Record<string, string | null>;
+  organizations?: string[] | null;
+  /** 所属单位邀请码 */
+  organizationsInviteCodes?: Record<string, string | null>;
   /**
    * 队员数量限制, 0 为无上限
    * @format int32
@@ -1219,7 +1221,7 @@ export interface DetailedGameInfoModel {
   /** 是否为隐藏比赛 */
   hidden?: boolean;
   /** 参赛所属单位列表 */
-  organizations?: Record<string, string | null>;
+  organizations?: string[] | null;
   /** 是否存在单位需要相应邀请码 */
   organizationVerifyCodeRequired?: boolean;
   /** 是否需要邀请码 */
