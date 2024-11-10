@@ -509,7 +509,7 @@ const GameInfoEdit: FC = () => {
             setOrgsEditModelOpened(false)
           }}>
           <OrganizationTable
-            organization={ game?.organizationsInviteCodes }
+            organization={ game?.organizationsInviteCodes || {} }
             onOrganizationChange={(newOrgs) => {
               if (!game) return
               setGame({ ...game, organizationsInviteCodes: newOrgs , organizations: Object.keys(newOrgs)})
