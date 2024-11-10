@@ -45,9 +45,6 @@ Replace the `image` in `compose.yml` with:
 registry.cn-hangzhou.aliyuncs.com/kengwang/gzctf:develop
 ```
 
-> [!WARNING]  
-> Please note that due to changes in the database structure, if you want to continue using the original GZCTF data, please refer to the [Migration Guide](Migration/README.md).
-
 ---
 
 
