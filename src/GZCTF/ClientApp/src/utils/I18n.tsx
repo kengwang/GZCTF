@@ -22,7 +22,7 @@ export const LanguageMap = {
   'zh-TW': '🇨🇳 繁體中文',
   'ja-JP': '🇯🇵 日本語',
   'id-ID': '🇮🇩 Bahasa',
-  'ko-KR': '🇰🇷 한국어 (WIP)',
+  'ko-KR': '🇰🇷 한국어',
   'ru-RU': '🇷🇺 Русский (WIP)',
   'de-DE': '🇩🇪 Deutsch (MT)',
   'fr-FR': '🇫🇷 Français (MT)',
@@ -41,6 +41,7 @@ const shortLocalFormat = new Map<string, ShortLocalFormat>([
   ['ko', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
   ['ru', { SL: 'DD.MM', SLL: 'DD.MM.YY' }],
   ['de', { SL: 'DD.MM', SLL: 'DD.MM.YY' }],
+  ['id', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
   ['fr', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
   ['es', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
 ])

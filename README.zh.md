@@ -103,6 +103,9 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - 比赛期间裁判监控、提交和主要事件日志
 - 题目流量 **TCP over WebSocket 代理转发**、可配置流量捕获
 - 基于 Redis 的集群缓存、基于 PGSQL 的数据库存储后端
+- 支持本地文件系统和 **对象存储 (MinIO, S3 等)** 作为文件存储后端
+- 支持暗黑模式、多国语言、自定义主题颜色
+- 支持 **网站页脚**、**网站图标** 和 **HTML 描述** 的自定义，以提升 SEO
 - 全局配置项自定义、平台标题、备案信息
 - 支持测量和分布式追踪
 - 以及更多……
@@ -118,7 +121,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - 繁体中文 (zh-TW)：完全支持
 - 日语 (ja-JP)：完全支持，由 [Steve](https://github.com/hez2010) 翻译
 - 印度尼西亚语 (id-ID)：完全支持，由 [Rio](https://github.com/riodrwn) 翻译
-- 韩语 (ko-KR)：翻译进行中，由 [Sy2n0](https://github.com/Sy2n0) 翻译
+- 韩语 (ko-KR)：完全支持，由 [Sy2n0](https://github.com/Sy2n0), [kimjw0427](https://github.com/kimjw0427), [LittleDev0617](https://github.com/LittleDev0617), [Jungwoong Kim](https://github.com/jungwngkim) 和 [blluv](https://github.com/blluv) 翻译
 - 俄语 (ru-RU)：翻译进行中，由 [FazaN](https://github.com/CyberFazaN) 翻译
 
 ### 由机器和 AI 翻译

@@ -39,8 +39,8 @@ public class EditController(
     IGameRepository gameRepository,
     IServiceProvider serviceProvider,
     IContainerManager containerService,
+    IBlobRepository blobService,
     ISubmissionRepository submissionRepository,
-    IFileRepository fileService,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     IStringLocalizer<Program> localizer) : Controller
 {
@@ -350,7 +350,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        LocalFile? poster = await fileService.CreateOrUpdateImage(file, "poster", 0, token);
+        LocalFile? poster = await blobService.CreateOrUpdateImage(file, "poster", 0, token);
 
         if (poster is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_CreationFailed)]));

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using GZCTF.Models.Internal;
-using GZCTF.Models.Request.Admin;
+﻿using GZCTF.Models.Request.Admin;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +7,8 @@ namespace GZCTF.Repositories;
 
 public class ParticipationRepository(
     CacheHelper cacheHelper,
-    IFileRepository fileRepository,
-    AppDbContext context,
-    IServiceProvider serviceProvider) : RepositoryBase(context), IParticipationRepository
+    IBlobRepository blobRepository,
+    AppDbContext context) : RepositoryBase(context), IParticipationRepository
 {
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
@@ -119,7 +116,7 @@ public class ParticipationRepository(
     public Task DeleteParticipationWriteUp(Participation part, CancellationToken token = default)
     {
         if (part.Writeup is not null)
-            return fileRepository.DeleteFile(part.Writeup, token);
+            return blobRepository.DeleteBlob(part.Writeup, token);
         return Task.CompletedTask;
     }
 }

@@ -303,8 +303,7 @@ public class GameInstanceRepository(
             }
             else
             {
-
-                if (instance.FlagContext is null && submission.GameChallenge.Type.IsStatic())
+                if (instance.FlagContext is null && submission.GameChallenge?.Type.IsStatic() is true)
                     updateSub.Status = await Context.FlagContexts.AsNoTracking()
                         .AnyAsync(
                             f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
@@ -318,9 +317,9 @@ public class GameInstanceRepository(
             }
 
             var firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
-            var beforeEnd = submission.Game.EndTimeUtc > submission.SubmitTimeUtc;
-            var canSubmit = submission.GameChallenge.CanSubmit;
-            updateSub.GameChallenge.SubmissionCount++;
+            var beforeEnd = submission.Game!.EndTimeUtc > submission.SubmitTimeUtc;
+            bool canSubmit = submission.GameChallenge?.CanSubmit ?? false;
+            updateSub.GameChallenge!.SubmissionCount++;
 
             if (firstTime && beforeEnd && canSubmit)
             {
