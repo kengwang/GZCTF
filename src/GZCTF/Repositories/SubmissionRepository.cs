@@ -25,13 +25,13 @@ public class SubmissionRepository(
         counter?.Add(1,
             new KeyValuePair<string, object?>("id", submission.Id),
             new KeyValuePair<string, object?>("game.id", submission.GameId),
-            new KeyValuePair<string, object?>("game.name", submission.Game.Title),
+            new KeyValuePair<string, object?>("game.name", submission.Game?.Title),
             new KeyValuePair<string, object?>("challenge.id", submission.ChallengeId),
-            new KeyValuePair<string, object?>("challenge.name", submission.GameChallenge.Title),
+            new KeyValuePair<string, object?>("challenge.name", submission.ChallengeName),
             new KeyValuePair<string, object?>("user.id", submission.UserId),
-            new KeyValuePair<string, object?>("user.name", submission.User.UserName),
+            new KeyValuePair<string, object?>("user.name", submission.UserName),
             new KeyValuePair<string, object?>("team.id", submission.TeamId),
-            new KeyValuePair<string, object?>("team.name", submission.Team.Name),
+            new KeyValuePair<string, object?>("team.name", submission.TeamName),
             new KeyValuePair<string, object?>("time", submission.SubmitTimeUtc),
             new KeyValuePair<string, object?>("flag", submission.Answer)
             );

@@ -53,7 +53,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
         ValueConverter<List<string>?, string> listConverter = GetJsonConverter<List<string>>();
         ValueConverter<HashSet<string>?, string> setConverter = GetJsonConverter<HashSet<string>>();
-        ValueConverter<Dictionary<string, string?>?, string> dictConverter = GetJsonConverter<Dictionary<string, string>>();
+        ValueConverter<Dictionary<string, string?>?, string> dictConverter = GetJsonConverter<Dictionary<string, string?>>();
         ValueComparer<List<string>> listComparer = GetEnumerableComparer<List<string>, string>();
         ValueComparer<HashSet<string>> setComparer = GetEnumerableComparer<HashSet<string>, string>();
         ValueComparer<Dictionary<string, string>> dictComparer = GetEnumerableComparer<Dictionary<string, string>, KeyValuePair<string, string>>();

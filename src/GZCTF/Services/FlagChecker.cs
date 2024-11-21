@@ -129,8 +129,8 @@ public class FlagChecker(
                                     isFakeFlag = true;
                                     logger.Log(
                                         Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected),
-                                            item.Team.Name,
-                                            item.GameChallenge.Title,
+                                            item.TeamName,
+                                            item.ChallengeName,
                                             item.Answer],
                                         item.User, TaskStatus.Failed, LogLevel.Information);
 
@@ -181,7 +181,7 @@ public class FlagChecker(
                                 await eventRepository.AddEvent(
                                     GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);
                                 
-                                if (!item.GameChallenge.CanSubmit)
+                                if (item.GameChallenge?.CanSubmit is not true)
                                     break;
                                 
                                 CheatCheckInfo result = await instanceRepository.CheckCheat(item, token);
