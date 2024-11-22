@@ -63,7 +63,7 @@ const GameInfoEdit: FC = () => {
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
   const [wpddl, setWpddl] = useInputState(3)
-  const [orgs, setOrgs] = useInputState<string[]>([])
+  const [orgs, setOrgs] = useInputState<string[] | null>([])
   const [orgsEditModelOpened, setOrgsEditModelOpened] = useState(false)
 
   const modals = useModals()
@@ -88,8 +88,7 @@ const GameInfoEdit: FC = () => {
       setEnd(dayjs(gameSource.end))
       const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
-      if (gameSource.organizations)
-        setOrgs(gameSource.organizations)
+      setOrgs(gameSource.organizations)
     }
   }, [id, gameSource])
 
@@ -414,8 +413,8 @@ const GameInfoEdit: FC = () => {
           w="100%"
           autosize
           disabled={disabled}
-          minRows={5}
-          maxRows={5}
+          minRows={3}
+          maxRows={3}
           onChange={(e) => game && setGame({ ...game, writeupNote: e.target.value })}
         />
         <TagsInput
@@ -430,7 +429,7 @@ const GameInfoEdit: FC = () => {
           disabled={disabled}
           placeholder={t('admin.placeholder.games.organizations')}
           maxDropdownHeight={300}
-          value={orgs}
+          value={orgs ?? []}
           onClick={() => { setOrgsEditModelOpened(true) }}
           styles={{
             input: {
