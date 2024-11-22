@@ -108,10 +108,11 @@ const showBanner = () => {
 
 %cCopyright (C) 2022-now, GZTimeWalker, All rights reserved.
 
-%cLicense  : %cGNU Affero General Public License v3.0
-%cCommit   : %c${valid ? sha : 'Unofficial build version'}
-%cBuilt at : %c${buildTime.format('YYYY-MM-DDTHH:mm:ssZ')}
-%cIssues   : %c${repo}/issues
+%cLicense    : %cGNU Affero General Public License v3.0
+%cCommit     : %c${valid ? sha : 'Unofficial build version'}
+%cBuilt at   : %c${buildTime.format('YYYY-MM-DDTHH:mm:ssZ')}
+%cIssues     : %c${repo}/issues
+%cModified by: %cBaseCTF Dev.
  `
 
   // rewrite the show banner function with %c and css
