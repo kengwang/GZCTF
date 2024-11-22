@@ -57,7 +57,6 @@ const OrganizationTable: React.FC<OrganizationTableProps> = ({
     setOrganization(remaining);
     onOrganizationChange(remaining);
   };
-  console.log(organization)
   return (
     <Container>
       <Table highlightOnHover>

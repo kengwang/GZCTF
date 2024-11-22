@@ -88,7 +88,8 @@ const GameInfoEdit: FC = () => {
       setEnd(dayjs(gameSource.end))
       const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
-      setOrgs(gameSource.organizations)
+      if (gameSource.organizations)
+        setOrgs(gameSource.organizations)
     }
   }, [id, gameSource])
 
