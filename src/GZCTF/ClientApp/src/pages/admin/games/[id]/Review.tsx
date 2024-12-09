@@ -397,7 +397,7 @@ const GameTeamReview: FC = () => {
                 key={participation.id}
                 participation={participation}
                 disabled={disabled}
-                gameOrganizations={Object.keys(game?.organizations ?? {})}
+                gameOrganizations={(game?.organizations ?? [])}
                 setParticipationOrganization={setParticipationOrganization}
                 setParticipationStatus={setParticipationStatus}
               />
